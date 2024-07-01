@@ -17,15 +17,15 @@ public class Member {
     @Column(nullable = false)
     private String email;
     @Column(nullable = false)
-    private String platformId;
+    private String serialId;
     @Enumerated(EnumType.STRING)
     private Platform platform;
 
-    public static Member createUser(String name, String email, String platformId, Platform platform) {
+    public static Member createUser(String name, String email, String serialId, Platform platform) {
         return Member.builder()
                 .name(name)
                 .email(email)
-                .platformId(platformId)
+                .serialId(serialId)
                 .platform(platform)
                 .build();
     }

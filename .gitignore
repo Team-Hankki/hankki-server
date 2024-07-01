@@ -153,3 +153,6 @@ Temporary Items
 
 application-local.yml
 application-dev.yml
+
+# Qclass
+/src/main/generated

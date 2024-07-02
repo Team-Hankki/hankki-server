@@ -5,23 +5,23 @@ import org.hankki.hankkiserver.auth.jwt.JwtProvider;
 import org.hankki.hankkiserver.auth.jwt.JwtValidator;
 import org.hankki.hankkiserver.auth.jwt.Token;
 import org.hankki.hankkiserver.common.dto.ErrorMessage;
-import org.hankki.hankkiserver.domain.Member;
-import org.hankki.hankkiserver.domain.MemberInfo;
+import org.hankki.hankkiserver.domain.User;
+import org.hankki.hankkiserver.domain.UserInfo;
 import org.hankki.hankkiserver.domain.Platform;
 import org.hankki.hankkiserver.exception.EntityNotFoundException;
 import org.hankki.hankkiserver.exception.UnauthorizedException;
 import org.hankki.hankkiserver.oauth.kakao.dto.SocialInfoDto;
 import org.hankki.hankkiserver.oauth.kakao.KakaoOAuthProvider;
-import org.hankki.hankkiserver.repository.MemberInfoRepository;
-import org.hankki.hankkiserver.repository.MemberRepository;
+import org.hankki.hankkiserver.repository.UserInfoRepository;
+import org.hankki.hankkiserver.repository.UserRepository;
 import org.hankki.hankkiserver.service.dto.request.UserLoginRequest;
 import org.hankki.hankkiserver.service.dto.request.UserReissueRequest;
 import org.hankki.hankkiserver.service.dto.response.UserLoginResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.hankki.hankkiserver.domain.Member.createUser;
-import static org.hankki.hankkiserver.domain.MemberInfo.createMemberInfo;
+import static org.hankki.hankkiserver.domain.User.createUser;
+import static org.hankki.hankkiserver.domain.UserInfo.createMemberInfo;
 import static org.hankki.hankkiserver.domain.Platform.KAKAO;
 import static org.hankki.hankkiserver.domain.Platform.getEnumPlatformFromStringPlatform;
 
@@ -30,8 +30,8 @@ import static org.hankki.hankkiserver.domain.Platform.getEnumPlatformFromStringP
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final MemberRepository memberRepository;
-    private final MemberInfoRepository memberInfoRepository;
+    private final UserRepository userRepository;
+    private final UserInfoRepository userInfoRepository;
     private final JwtProvider jwtProvider;
     private final JwtValidator jwtValidator;
     private final KakaoOAuthProvider kakaoOAuthProvider;
@@ -41,19 +41,19 @@ public class AuthService {
             final UserLoginRequest request) {
         Platform platform = getEnumPlatformFromStringPlatform(request.platform());
         SocialInfoDto socialInfo = getSocialInfo(token, platform);
-        Member findMember = loadOrCreateUser(platform, socialInfo);
-        Token issuedToken = generateTokens(findMember.getId());
+        User findUser = loadOrCreateUser(platform, socialInfo);
+        Token issuedToken = generateTokens(findUser.getId());
         return UserLoginResponse.of(issuedToken);
     }
 
     public void signOut(final Long userId) {
-        MemberInfo findMemberInfo = getUserInfo(userId);
-        updateRefreshToken(null, findMemberInfo);
+        UserInfo findUserInfo = getUserInfo(userId);
+        updateRefreshToken(null, findUserInfo);
     }
 
     public void withdraw(final Long userId) {
-        memberRepository.deleteById(userId);
-        memberInfoRepository.deleteByMemberId(userId);
+        userRepository.deleteById(userId);
+        userInfoRepository.deleteByUserId(userId);
     }
 
     @Transactional(noRollbackFor = UnauthorizedException.class)
@@ -62,17 +62,17 @@ public class AuthService {
             final UserReissueRequest request) {
         Long userId = request.userId();
         validateRefreshToken(refreshToken, userId);
-        MemberInfo findMemberInfo = getUserInfo(userId);
+        UserInfo findUserInfo = getUserInfo(userId);
         Token issueToken = jwtProvider.issueToken(userId);
-        updateRefreshToken(issueToken.refreshToken(), findMemberInfo);
+        updateRefreshToken(issueToken.refreshToken(), findUserInfo);
         return UserLoginResponse.of(issueToken);
     }
 
     private Token generateTokens(final Long userId) {
         Token issuedToken = jwtProvider.issueToken(userId);
         jwtProvider.issueToken(userId);
-        MemberInfo findMemberInfo = getUserInfo(userId);
-        updateRefreshToken(issuedToken.refreshToken(), findMemberInfo);
+        UserInfo findUserInfo = getUserInfo(userId);
+        updateRefreshToken(issuedToken.refreshToken(), findUserInfo);
         return issuedToken;
     }
 
@@ -85,49 +85,49 @@ public class AuthService {
         return null; // appleLoginService.getInfo(providerToken);
     }
 
-    private Member loadOrCreateUser(Platform platform, SocialInfoDto socialInfo){
-        boolean isRegistered = memberRepository.existsByPlatformAndSerialId(
+    private User loadOrCreateUser(Platform platform, SocialInfoDto socialInfo){
+        boolean isRegistered = userRepository.existsByPlatformAndSerialId(
                 platform,
                 socialInfo.serialId());
         if (!isRegistered){
-            Member newMember = createUser(
+            User newUser = createUser(
                     socialInfo.name(),
                     socialInfo.email(),
                     socialInfo.serialId(),
                     platform);
-            saveMember(newMember);
+            saveMember(newUser);
         }
         return getUser(platform, socialInfo.serialId());
     }
 
-    private Member getUser(
+    private User getUser(
             final Platform platform,
             final String serialId) {
-        return memberRepository.findByPlatformAndSerialId(platform, serialId)
+        return userRepository.findByPlatformAndSerialId(platform, serialId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.USER_NOT_FOUND));
     }
 
-    private MemberInfo getUserInfo(final Long memberId) {
-        return memberInfoRepository.findByMemberId(memberId)
+    private UserInfo getUserInfo(final Long memberId) {
+        return userInfoRepository.findByUserId(memberId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.USER_INFO_NOT_FOUND));
     }
 
     private String getRefreshToken(final Long userId) {
-        return memberInfoRepository.findByMemberId(userId)
+        return userInfoRepository.findByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.REFRESH_TOKEN_NOT_FOUND))
                 .getRefreshToken();
     }
 
-    private void saveMember(final Member member) {
-        memberRepository.save(member);
-        MemberInfo memberInfo = createMemberInfo(member, null);
-        memberInfoRepository.save(memberInfo);
+    private void saveMember(final User user) {
+        userRepository.save(user);
+        UserInfo userInfo = createMemberInfo(user, null);
+        userInfoRepository.save(userInfo);
     }
 
     private void updateRefreshToken(
             final String refreshToken,
-            final MemberInfo memberInfo) {
-        memberInfo.updateRefreshToken(refreshToken);
+            final UserInfo userInfo) {
+        userInfo.updateRefreshToken(refreshToken);
     }
 
     private void validateRefreshToken(

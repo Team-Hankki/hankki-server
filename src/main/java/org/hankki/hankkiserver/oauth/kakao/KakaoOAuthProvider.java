@@ -2,17 +2,18 @@ package org.hankki.hankkiserver.oauth.kakao;
 
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.oauth.kakao.dto.KakaoUserInfo;
-import org.hankki.hankkiserver.oauth.kakao.dto.SocialInfoDto;
-import org.springframework.stereotype.Service;
+import org.hankki.hankkiserver.oauth.dto.SocialInfoDto;
+import org.springframework.stereotype.Component;
 
 import static org.hankki.hankkiserver.oauth.kakao.KakaoAccessToken.createKakaoAccessToken;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class KakaoOAuthProvider {
 
     private final KakaoFeignClient kakaoFeignClient;
-    public SocialInfoDto getUserInfo(final String providerToken) {
+
+    public SocialInfoDto getKakaoUserInfo(final String providerToken) {
         KakaoAccessToken kakaoAccessToken = createKakaoAccessToken(providerToken);
         String accessTokenWithTokenType = kakaoAccessToken.getAccessTokenWithTokenType();
         KakaoUserInfo kakaoUserInfo = kakaoFeignClient.getUserInfo(accessTokenWithTokenType);

@@ -9,6 +9,7 @@ import org.hankki.hankkiserver.service.AuthService;
 import org.hankki.hankkiserver.service.dto.request.UserLoginRequest;
 import org.hankki.hankkiserver.service.dto.request.UserReissueRequest;
 import org.hankki.hankkiserver.service.dto.response.UserLoginResponse;
+import org.hankki.hankkiserver.service.dto.response.UserReissueResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,7 +47,7 @@ public class UserController {
     public ResponseEntity<BaseResponse<?>> reissue(
             @RequestHeader(HttpHeaders.AUTHORIZATION) final String refreshtoken,
             @RequestBody final UserReissueRequest request) {
-        final UserLoginResponse response = authService.reissue(refreshtoken, request);
+        final UserReissueResponse response = authService.reissue(refreshtoken, request);
         return ApiResponse.success(SuccessMessage.OK, response);
     }
 }

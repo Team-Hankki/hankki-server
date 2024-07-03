@@ -20,6 +20,7 @@ public class User {
     private String email;
     @Column(nullable = false)
     private String serialId;
+    private boolean isDeleted;
     @Enumerated(EnumType.STRING)
     private Platform platform;
 
@@ -32,7 +33,12 @@ public class User {
                 .name(name)
                 .email(email)
                 .serialId(serialId)
+                .isDeleted(false)
                 .platform(platform)
                 .build();
+    }
+
+    public void delete(boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 }

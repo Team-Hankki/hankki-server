@@ -2,18 +2,17 @@ package org.hankki.hankkiserver.auth.jwt;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtParser;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.common.dto.ErrorMessage;
 import org.hankki.hankkiserver.exception.UnauthorizedException;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
+
+import static org.hankki.hankkiserver.auth.filter.JwtAuthenticationFilter.BEARER;
 
 @RequiredArgsConstructor
 @Component
 public class JwtValidator {
 
-    public static final String BEARER = "Bearer ";
     private final JwtGenerator jwtGenerator;
 
     public void validateAccessToken(String accessToken) {

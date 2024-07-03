@@ -18,6 +18,7 @@ import org.hankki.hankkiserver.repository.UserRepository;
 import org.hankki.hankkiserver.service.dto.request.UserLoginRequest;
 import org.hankki.hankkiserver.service.dto.request.UserReissueRequest;
 import org.hankki.hankkiserver.service.dto.response.UserLoginResponse;
+import org.hankki.hankkiserver.service.dto.response.UserReissueResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,9 +43,10 @@ public class AuthService {
             final UserLoginRequest request) {
         Platform platform = getEnumPlatformFromStringPlatform(request.platform());
         SocialInfoDto socialInfo = getSocialInfo(token, platform, request.name());
-        User findUser = loadOrCreateUser(platform, socialInfo);
+        boolean isRegistered = isRegisteredUser(platform, socialInfo);
+        User findUser = loadOrCreateUser(platform, socialInfo, isRegistered);  // 여기까진 refresh token = null
         Token issuedToken = generateTokens(findUser.getId());
-        return UserLoginResponse.of(issuedToken);
+        return UserLoginResponse.of(issuedToken, isRegistered);
     }
 
     public void signOut(final Long userId) {
@@ -52,13 +54,13 @@ public class AuthService {
         updateRefreshToken(null, findUserInfo);
     }
 
-    public void withdraw(final Long userId) {  // soft delete로 수정 필요
-        userRepository.deleteById(userId);
-        userInfoRepository.deleteByUserId(userId);
+    public void withdraw(final Long userId) {
+        userRepository.softDeleteById(userId);
+        userInfoRepository.softDeleteByUserId(userId);
     }
 
     @Transactional(noRollbackFor = UnauthorizedException.class)
-    public UserLoginResponse reissue(
+    public UserReissueResponse reissue(
             final String refreshToken,
             final UserReissueRequest request) {
         Long userId = request.userId();
@@ -66,12 +68,11 @@ public class AuthService {
         UserInfo findUserInfo = getUserInfo(userId);
         Token issueToken = jwtProvider.issueToken(userId);
         updateRefreshToken(issueToken.refreshToken(), findUserInfo);
-        return UserLoginResponse.of(issueToken);
+        return UserReissueResponse.of(issueToken);
     }
 
     private Token generateTokens(final Long userId) {
         Token issuedToken = jwtProvider.issueToken(userId);
-        jwtProvider.issueToken(userId);
         UserInfo findUserInfo = getUserInfo(userId);
         updateRefreshToken(issuedToken.refreshToken(), findUserInfo);
         return issuedToken;
@@ -89,10 +90,14 @@ public class AuthService {
         throw new EntityNotFoundException(ErrorMessage.INVALID_PLATFORM_TYPE);
     }
 
-    private User loadOrCreateUser(Platform platform, SocialInfoDto socialInfo){
-        boolean isRegistered = userRepository.existsByPlatformAndSerialId(
+    private boolean isRegisteredUser(Platform platform, SocialInfoDto socialInfo){
+        return userRepository.existsByPlatformAndSerialIdAndIsDeleted(
                 platform,
-                socialInfo.serialId());
+                socialInfo.serialId(),
+                false);
+    }
+
+    private User loadOrCreateUser(Platform platform, SocialInfoDto socialInfo, boolean isRegistered){
         if (!isRegistered){
             User newUser = createUser(
                     socialInfo.name(),
@@ -100,8 +105,15 @@ public class AuthService {
                     socialInfo.serialId(),
                     platform);
             saveMember(newUser);
+            return newUser;
         }
-        return getUser(platform, socialInfo.serialId());
+
+        User findUser = getUser(platform, socialInfo.serialId());
+        if (findUser.isDeleted()) {
+            findUser.delete(false);
+            userRepository.save(findUser);
+        }
+        return findUser;
     }
 
     private User getUser(

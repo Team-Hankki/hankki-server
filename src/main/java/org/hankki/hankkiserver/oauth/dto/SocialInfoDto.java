@@ -1,4 +1,4 @@
-package org.hankki.hankkiserver.oauth.kakao.dto;
+package org.hankki.hankkiserver.oauth.dto;
 
 public record SocialInfoDto(
         String serialId,

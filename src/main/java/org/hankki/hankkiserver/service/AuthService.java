@@ -10,7 +10,8 @@ import org.hankki.hankkiserver.domain.UserInfo;
 import org.hankki.hankkiserver.domain.Platform;
 import org.hankki.hankkiserver.exception.EntityNotFoundException;
 import org.hankki.hankkiserver.exception.UnauthorizedException;
-import org.hankki.hankkiserver.oauth.kakao.dto.SocialInfoDto;
+import org.hankki.hankkiserver.oauth.apple.AppleOAuthProvider;
+import org.hankki.hankkiserver.oauth.dto.SocialInfoDto;
 import org.hankki.hankkiserver.oauth.kakao.KakaoOAuthProvider;
 import org.hankki.hankkiserver.repository.UserInfoRepository;
 import org.hankki.hankkiserver.repository.UserRepository;
@@ -20,10 +21,9 @@ import org.hankki.hankkiserver.service.dto.response.UserLoginResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.hankki.hankkiserver.domain.Platform.*;
 import static org.hankki.hankkiserver.domain.User.createUser;
 import static org.hankki.hankkiserver.domain.UserInfo.createMemberInfo;
-import static org.hankki.hankkiserver.domain.Platform.KAKAO;
-import static org.hankki.hankkiserver.domain.Platform.getEnumPlatformFromStringPlatform;
 
 @Service
 @Transactional
@@ -35,12 +35,13 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final JwtValidator jwtValidator;
     private final KakaoOAuthProvider kakaoOAuthProvider;
+    private final AppleOAuthProvider appleLoginService;
 
     public UserLoginResponse login(
             final String token,
             final UserLoginRequest request) {
         Platform platform = getEnumPlatformFromStringPlatform(request.platform());
-        SocialInfoDto socialInfo = getSocialInfo(token, platform);
+        SocialInfoDto socialInfo = getSocialInfo(token, platform, request.name());
         User findUser = loadOrCreateUser(platform, socialInfo);
         Token issuedToken = generateTokens(findUser.getId());
         return UserLoginResponse.of(issuedToken);
@@ -51,7 +52,7 @@ public class AuthService {
         updateRefreshToken(null, findUserInfo);
     }
 
-    public void withdraw(final Long userId) {
+    public void withdraw(final Long userId) {  // soft delete로 수정 필요
         userRepository.deleteById(userId);
         userInfoRepository.deleteByUserId(userId);
     }
@@ -78,11 +79,14 @@ public class AuthService {
 
     private SocialInfoDto getSocialInfo(
             final String providerToken,
-            final Platform platform) {
+            final Platform platform,
+            final String name) {
         if (platform == KAKAO){
-            return kakaoOAuthProvider.getUserInfo(providerToken);
+            return kakaoOAuthProvider.getKakaoUserInfo(providerToken);
+        } else if (platform == APPLE){
+            return appleLoginService.getAppleUserInfo(providerToken, name);
         }
-        return null; // appleLoginService.getInfo(providerToken);
+        throw new EntityNotFoundException(ErrorMessage.INVALID_PLATFORM_TYPE);
     }
 
     private User loadOrCreateUser(Platform platform, SocialInfoDto socialInfo){

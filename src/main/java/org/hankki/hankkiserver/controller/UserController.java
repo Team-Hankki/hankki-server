@@ -7,7 +7,6 @@ import org.hankki.hankkiserver.common.BaseResponse;
 import org.hankki.hankkiserver.common.dto.SuccessMessage;
 import org.hankki.hankkiserver.service.AuthService;
 import org.hankki.hankkiserver.service.dto.request.UserLoginRequest;
-import org.hankki.hankkiserver.service.dto.request.UserReissueRequest;
 import org.hankki.hankkiserver.service.dto.response.UserLoginResponse;
 import org.hankki.hankkiserver.service.dto.response.UserReissueResponse;
 import org.springframework.http.HttpHeaders;
@@ -29,10 +28,10 @@ public class UserController {
         return ApiResponse.success(SuccessMessage.OK, response);
     }
 
-    @PatchMapping("/users/signout")
+    @PatchMapping("/users/logout")
     public ResponseEntity<BaseResponse<?>> signOut(
             @UserId final Long userId) {
-        authService.signOut(userId);
+        authService.logOut(userId);
         return ApiResponse.success(SuccessMessage.OK);
     }
 
@@ -45,9 +44,8 @@ public class UserController {
 
     @PostMapping("/users/reissue")
     public ResponseEntity<BaseResponse<?>> reissue(
-            @RequestHeader(HttpHeaders.AUTHORIZATION) final String refreshtoken,
-            @RequestBody final UserReissueRequest request) {
-        final UserReissueResponse response = authService.reissue(refreshtoken, request);
+            @RequestHeader(HttpHeaders.AUTHORIZATION) final String refreshtoken) {
+        final UserReissueResponse response = authService.reissue(refreshtoken);
         return ApiResponse.success(SuccessMessage.OK, response);
     }
 }

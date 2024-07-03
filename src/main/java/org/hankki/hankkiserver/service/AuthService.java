@@ -16,7 +16,6 @@ import org.hankki.hankkiserver.oauth.kakao.KakaoOAuthProvider;
 import org.hankki.hankkiserver.repository.UserInfoRepository;
 import org.hankki.hankkiserver.repository.UserRepository;
 import org.hankki.hankkiserver.service.dto.request.UserLoginRequest;
-import org.hankki.hankkiserver.service.dto.request.UserReissueRequest;
 import org.hankki.hankkiserver.service.dto.response.UserLoginResponse;
 import org.hankki.hankkiserver.service.dto.response.UserReissueResponse;
 import org.springframework.stereotype.Service;
@@ -25,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.hankki.hankkiserver.domain.Platform.*;
 import static org.hankki.hankkiserver.domain.User.createUser;
 import static org.hankki.hankkiserver.domain.UserInfo.createMemberInfo;
+import static org.hankki.hankkiserver.auth.filter.JwtAuthenticationFilter.BEARER;
 
 @Service
 @Transactional
@@ -44,12 +44,12 @@ public class AuthService {
         Platform platform = getEnumPlatformFromStringPlatform(request.platform());
         SocialInfoDto socialInfo = getSocialInfo(token, platform, request.name());
         boolean isRegistered = isRegisteredUser(platform, socialInfo);
-        User findUser = loadOrCreateUser(platform, socialInfo, isRegistered);  // 여기까진 refresh token = null
+        User findUser = loadOrCreateUser(platform, socialInfo, isRegistered);
         Token issuedToken = generateTokens(findUser.getId());
         return UserLoginResponse.of(issuedToken, isRegistered);
     }
 
-    public void signOut(final Long userId) {
+    public void logOut(final Long userId) {
         UserInfo findUserInfo = getUserInfo(userId);
         updateRefreshToken(null, findUserInfo);
     }
@@ -60,10 +60,8 @@ public class AuthService {
     }
 
     @Transactional(noRollbackFor = UnauthorizedException.class)
-    public UserReissueResponse reissue(
-            final String refreshToken,
-            final UserReissueRequest request) {
-        Long userId = request.userId();
+    public UserReissueResponse reissue(final String refreshToken) {
+        Long userId = jwtProvider.getSubject(refreshToken.substring(BEARER.length()));
         validateRefreshToken(refreshToken, userId);
         UserInfo findUserInfo = getUserInfo(userId);
         Token issueToken = jwtProvider.issueToken(userId);
@@ -154,7 +152,7 @@ public class AuthService {
             String storedRefreshToken = getRefreshToken(userId);
             jwtValidator.equalsRefreshToken(refreshToken, storedRefreshToken);
         } catch (UnauthorizedException e) {
-            signOut(userId);
+            logOut(userId);
             throw e;
         }
     }

@@ -50,7 +50,7 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-task copyPrivate(type: Copy) {
+tasks.register('copyYml', Copy) {
 	copy {
 		from './server-yml'
 		include "*.yml"

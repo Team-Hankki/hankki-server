@@ -12,7 +12,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          token: ${{GIT_SECRET}}
+          token: ${{ GIT_SECRET }}
           submodules: true
 
       - name: Set up JDK 17

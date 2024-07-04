@@ -12,7 +12,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          token: ${{ GIT_SECRET }}
+          token: ${{ secrets.GIT_SECRET }}
           submodules: true
 
       - name: Set up JDK 17
@@ -20,11 +20,6 @@ jobs:
         with:
           java-version: '17'
           distribution: 'corretto'
-      - name: Checkout repo
-        uses: actions/checkout@v4
-        with:
-          token: ${{ GIT_SECRET }}
-          submodules: true
 
       - name: build with gradle
         run: |

@@ -20,6 +20,9 @@ jobs:
         with:
           java-version: '17'
           distribution: 'corretto'
+      - name: Copy yml files
+        run: ./gradlew copyYml
+        shell: bash
 
       - name: build with gradle
         run: |

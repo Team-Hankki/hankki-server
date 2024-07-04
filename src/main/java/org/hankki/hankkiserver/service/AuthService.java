@@ -68,7 +68,7 @@ public class AuthService {
             }
         }
 
-        userRepository.softDeleteById(userId);
+        userRepository.softDeleteById(userId, INACTIVE);
         userInfoRepository.softDeleteByUserId(userId);
         user.softDelete(INACTIVE);
     }

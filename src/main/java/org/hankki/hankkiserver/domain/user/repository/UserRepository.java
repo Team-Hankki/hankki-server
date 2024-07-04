@@ -18,6 +18,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Modifying
     @Transactional
-    @Query("UPDATE User u SET u.memberStatus = true WHERE u.id = :userId")
-    void softDeleteById(@Param("userId") Long userId);
+    @Query("UPDATE User u SET u.memberStatus = :memberStatus WHERE u.id = :userId")
+    void softDeleteById(@Param("userId") Long userId, @Param("memberStatus") MemberStatus memberStatus);
 }

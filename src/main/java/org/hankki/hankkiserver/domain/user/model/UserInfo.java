@@ -19,7 +19,6 @@ public class UserInfo {
     @Column(nullable = false)
     private String nickname;
 
-    @Column(nullable = false)
     private String profileImageUrl;
 
     private String refreshToken;

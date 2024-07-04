@@ -1,0 +1,3 @@
+[submodule "server-yml"]
+	path = server-yml
+	url = https://github.com/Team-Hankki/server-yml.git

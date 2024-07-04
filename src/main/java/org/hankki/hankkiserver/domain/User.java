@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+import static org.hankki.hankkiserver.domain.Role.PARTICIPANTS;
+
 @Entity
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
@@ -26,6 +28,8 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Platform platform;
     private LocalDateTime deletedAt;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     public static User createUser(
             final String name,
@@ -38,6 +42,7 @@ public class User extends BaseTimeEntity {
                 .serialId(serialId)
                 .isDeleted(false)
                 .platform(platform)
+                .role(PARTICIPANTS)
                 .build();
     }
 

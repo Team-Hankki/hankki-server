@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1")
-public class UserController {
+public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/users/login")
+    @PostMapping("/auth/login")
     public ResponseEntity<BaseResponse<?>> login(
             @RequestHeader(HttpHeaders.AUTHORIZATION) final String token,
             @RequestBody final UserLoginRequest request) {
@@ -29,22 +29,22 @@ public class UserController {
         return ApiResponse.success(SuccessMessage.OK, response);
     }
 
-    @PatchMapping("/users/logout")
+    @PatchMapping("/auth/logout")
     public ResponseEntity<BaseResponse<?>> signOut(
             @UserId final Long userId) {
         authService.logOut(userId);
         return ApiResponse.success(SuccessMessage.OK);
     }
 
-    @DeleteMapping("/users/withdraw")
+    @DeleteMapping("/auth/withdraw")
     public ResponseEntity<BaseResponse<?>> withdraw(
             @UserId final Long userId,
-            @Nullable @RequestHeader("X-Apple-Code") final String code){
+            @RequestHeader("X-Apple-Code") final String code){
         authService.withdraw(userId,code);
         return ApiResponse.success(SuccessMessage.OK);
     }
 
-    @PostMapping("/users/reissue")
+    @PostMapping("/auth/reissue")
     public ResponseEntity<BaseResponse<?>> reissue(
             @RequestHeader(HttpHeaders.AUTHORIZATION) final String refreshtoken) {
         final UserReissueResponse response = authService.reissue(refreshtoken);

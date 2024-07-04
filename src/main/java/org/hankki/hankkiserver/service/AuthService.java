@@ -5,26 +5,28 @@ import org.hankki.hankkiserver.auth.jwt.JwtProvider;
 import org.hankki.hankkiserver.auth.jwt.JwtValidator;
 import org.hankki.hankkiserver.auth.jwt.Token;
 import org.hankki.hankkiserver.common.dto.ErrorMessage;
-import org.hankki.hankkiserver.domain.User;
-import org.hankki.hankkiserver.domain.UserInfo;
-import org.hankki.hankkiserver.domain.Platform;
+import org.hankki.hankkiserver.domain.user.model.User;
+import org.hankki.hankkiserver.domain.user.model.UserInfo;
+import org.hankki.hankkiserver.domain.user.model.Platform;
 import org.hankki.hankkiserver.exception.EntityNotFoundException;
 import org.hankki.hankkiserver.exception.InvalidValueException;
 import org.hankki.hankkiserver.exception.UnauthorizedException;
 import org.hankki.hankkiserver.oauth.apple.AppleOAuthProvider;
 import org.hankki.hankkiserver.oauth.dto.SocialInfoDto;
 import org.hankki.hankkiserver.oauth.kakao.KakaoOAuthProvider;
-import org.hankki.hankkiserver.repository.UserInfoRepository;
-import org.hankki.hankkiserver.repository.UserRepository;
+import org.hankki.hankkiserver.domain.user.repository.UserInfoRepository;
+import org.hankki.hankkiserver.domain.user.repository.UserRepository;
 import org.hankki.hankkiserver.service.dto.request.UserLoginRequest;
 import org.hankki.hankkiserver.service.dto.response.UserLoginResponse;
 import org.hankki.hankkiserver.service.dto.response.UserReissueResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.hankki.hankkiserver.domain.Platform.*;
-import static org.hankki.hankkiserver.domain.User.createUser;
-import static org.hankki.hankkiserver.domain.UserInfo.createMemberInfo;
+import static org.hankki.hankkiserver.domain.user.model.MemberStatus.ACTIVE;
+import static org.hankki.hankkiserver.domain.user.model.MemberStatus.INACTIVE;
+import static org.hankki.hankkiserver.domain.user.model.Platform.*;
+import static org.hankki.hankkiserver.domain.user.model.User.createUser;
+import static org.hankki.hankkiserver.domain.user.model.UserInfo.createMemberInfo;
 import static org.hankki.hankkiserver.auth.filter.JwtAuthenticationFilter.BEARER;
 
 @Service
@@ -68,7 +70,7 @@ public class AuthService {
 
         userRepository.softDeleteById(userId);
         userInfoRepository.softDeleteByUserId(userId);
-        user.softDelete(true);
+        user.softDelete(INACTIVE);
     }
 
     @Transactional(noRollbackFor = UnauthorizedException.class)
@@ -92,19 +94,19 @@ public class AuthService {
             final String providerToken,
             final Platform platform,
             final String name) {
-        if (platform == KAKAO){
+        if (KAKAO == platform){
             return kakaoOAuthProvider.getKakaoUserInfo(providerToken);
-        } else if (platform == APPLE){
+        } else if (APPLE == platform){
             return appleOAuthProvider.getAppleUserInfo(providerToken, name);
         }
         throw new EntityNotFoundException(ErrorMessage.INVALID_PLATFORM_TYPE);
     }
 
     private boolean isRegisteredUser(Platform platform, SocialInfoDto socialInfo){
-        return userRepository.existsByPlatformAndSerialIdAndIsDeleted(
+        return userRepository.existsByPlatformAndSerialIdAndMemberStatus(
                 platform,
                 socialInfo.serialId(),
-                false);
+                ACTIVE);
     }
 
     private User loadOrCreateUser(Platform platform, SocialInfoDto socialInfo, boolean isRegistered){
@@ -119,8 +121,8 @@ public class AuthService {
         }
 
         User findUser = getUser(platform, socialInfo.serialId());
-        if (findUser.isDeleted()) {
-            findUser.softDelete(false);
+        if (INACTIVE == findUser.getMemberStatus()) {
+            findUser.softDelete(ACTIVE);
             userRepository.save(findUser);
         }
         return findUser;

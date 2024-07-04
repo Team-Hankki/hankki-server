@@ -1,13 +1,14 @@
 package org.hankki.hankkiserver.domain.user.model;
 
+
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
+@Builder(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserInfo {
 
     @Id
@@ -23,4 +24,25 @@ public class UserInfo {
 
     private String refreshToken;
 
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public static UserInfo createMemberInfo(
+            final User user,
+            final String refreshToken) {
+        return UserInfo.builder()
+                .user(user)
+                .refreshToken(refreshToken)
+                .nickname(user.getName())
+                .build();
+    }
+
+    public void updateRefreshToken(final String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    public void updateNickname(final String nickname) {
+        this.nickname = nickname;
+    }
 }

@@ -1,14 +1,13 @@
 package org.hankki.hankkiserver.domain.user.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public enum MemberStatus {
-
-    ACTIVE("ACTIVE"), INACTICE("INACTIVE");
+    ACTIVE("ACTIVE"),
+    INACTIVE("INACTIVE");
 
     private final String value;
-
 }

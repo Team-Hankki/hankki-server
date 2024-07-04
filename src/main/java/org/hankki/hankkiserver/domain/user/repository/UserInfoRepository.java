@@ -15,7 +15,6 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Long> {
     Optional<UserInfo> findByUserId(Long userId);
 
     @Modifying
-    @Transactional
     @Query("UPDATE UserInfo ui SET ui.refreshToken = null, ui.nickname = '알 수 없음' WHERE ui.user.id = :userId")
     void softDeleteByUserId(Long userId);
 }

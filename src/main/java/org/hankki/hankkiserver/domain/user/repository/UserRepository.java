@@ -17,7 +17,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByPlatformAndSerialId(Platform platform, String platformId);
 
     @Modifying
-    @Transactional
     @Query("UPDATE User u SET u.memberStatus = :memberStatus WHERE u.id = :userId")
     void softDeleteById(@Param("userId") Long userId, @Param("memberStatus") MemberStatus memberStatus);
 }

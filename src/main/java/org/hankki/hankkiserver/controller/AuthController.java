@@ -39,7 +39,7 @@ public class AuthController {
     @DeleteMapping("/auth/withdraw")
     public ResponseEntity<BaseResponse<?>> withdraw(
             @UserId final Long userId,
-            @RequestHeader("X-Apple-Code") final String code){
+            @Nullable @RequestHeader("X-Apple-Code") final String code){
         authService.withdraw(userId,code);
         return ApiResponse.success(SuccessMessage.OK);
     }

@@ -3,13 +3,15 @@ package org.hankki.hankkiserver.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(name = "users")
-public class User {
+public class User extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +25,7 @@ public class User {
     private boolean isDeleted;
     @Enumerated(EnumType.STRING)
     private Platform platform;
+    private LocalDateTime deletedAt;
 
     public static User createUser(
             final String name,
@@ -38,7 +41,10 @@ public class User {
                 .build();
     }
 
-    public void delete(boolean isDeleted) {
+    public void softDelete(boolean isDeleted) {
         this.isDeleted = isDeleted;
+        if (isDeleted) {
+            this.deletedAt = LocalDateTime.now();
+        }
     }
 }

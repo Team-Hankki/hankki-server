@@ -65,8 +65,10 @@ public class AuthService {
                 throw new InvalidValueException(ErrorMessage.APPLE_REVOKE_FAILED);
             }
         }
+
         userRepository.softDeleteById(userId);
         userInfoRepository.softDeleteByUserId(userId);
+        user.softDelete(true);
     }
 
     @Transactional(noRollbackFor = UnauthorizedException.class)
@@ -118,7 +120,7 @@ public class AuthService {
 
         User findUser = getUser(platform, socialInfo.serialId());
         if (findUser.isDeleted()) {
-            findUser.delete(false);
+            findUser.softDelete(false);
             userRepository.save(findUser);
         }
         return findUser;

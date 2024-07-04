@@ -41,7 +41,7 @@ public class AuthController {
             @UserId final Long userId,
             @Nullable @RequestHeader("X-Apple-Code") final String code){
         authService.withdraw(userId,code);
-        return ApiResponse.success(SuccessMessage.OK);
+        return ApiResponse.success(SuccessMessage.NO_CONTENT);
     }
 
     @PostMapping("/auth/reissue")

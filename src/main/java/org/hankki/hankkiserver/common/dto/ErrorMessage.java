@@ -14,6 +14,8 @@ public enum ErrorMessage {
     INVALID_PLATFORM_TYPE(HttpStatus.BAD_REQUEST, "유효하지 않은 플랫폼입니다."),
     UNSUPPORTED_ALGORITHM(HttpStatus.BAD_REQUEST, "키 생성에 사용된 알고리즘을 지원하지 않습니다: "),
     INVALID_KEY_SPEC(HttpStatus.BAD_REQUEST, "공개 키 생성에 잘못된 키 사양이 제공되었습니다."),
+    FAILED_TO_LOAD_PRIVATE_KEY(HttpStatus.BAD_REQUEST, "개인 키를 로드하는 데 실패했습니다."),
+    APPLE_REVOKE_FAILED(HttpStatus.BAD_REQUEST, "Apple 탈퇴에 실패했습니다."),
 
     // unauthorized error
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "리소스 접근 권한이 없습니다."),

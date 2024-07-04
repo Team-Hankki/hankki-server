@@ -37,8 +37,9 @@ public class UserController {
 
     @DeleteMapping("/users/withdraw")
     public ResponseEntity<BaseResponse<?>> withdraw(
-            @UserId final Long userId) {
-        authService.withdraw(userId);
+            @UserId final Long userId,
+            @RequestHeader("X-Apple-Code") final String code){
+        authService.withdraw(userId,code);
         return ApiResponse.success(SuccessMessage.OK);
     }
 

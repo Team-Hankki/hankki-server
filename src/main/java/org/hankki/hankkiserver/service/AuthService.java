@@ -9,6 +9,7 @@ import org.hankki.hankkiserver.domain.User;
 import org.hankki.hankkiserver.domain.UserInfo;
 import org.hankki.hankkiserver.domain.Platform;
 import org.hankki.hankkiserver.exception.EntityNotFoundException;
+import org.hankki.hankkiserver.exception.InvalidValueException;
 import org.hankki.hankkiserver.exception.UnauthorizedException;
 import org.hankki.hankkiserver.oauth.apple.AppleOAuthProvider;
 import org.hankki.hankkiserver.oauth.dto.SocialInfoDto;
@@ -36,7 +37,7 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final JwtValidator jwtValidator;
     private final KakaoOAuthProvider kakaoOAuthProvider;
-    private final AppleOAuthProvider appleLoginService;
+    private final AppleOAuthProvider appleOAuthProvider;
 
     public UserLoginResponse login(
             final String token,
@@ -54,7 +55,16 @@ public class AuthService {
         updateRefreshToken(null, findUserInfo);
     }
 
-    public void withdraw(final Long userId) {
+    public void withdraw(final Long userId, final String code) {
+        User user = getUser(userId);
+        if (user.getPlatform() == APPLE){
+            try {
+                String refreshToken = appleOAuthProvider.getAppleToken(code);
+                appleOAuthProvider.requestRevoke(refreshToken);
+            } catch (Exception e) {
+                throw new InvalidValueException(ErrorMessage.APPLE_REVOKE_FAILED);
+            }
+        }
         userRepository.softDeleteById(userId);
         userInfoRepository.softDeleteByUserId(userId);
     }
@@ -83,7 +93,7 @@ public class AuthService {
         if (platform == KAKAO){
             return kakaoOAuthProvider.getKakaoUserInfo(providerToken);
         } else if (platform == APPLE){
-            return appleLoginService.getAppleUserInfo(providerToken, name);
+            return appleOAuthProvider.getAppleUserInfo(providerToken, name);
         }
         throw new EntityNotFoundException(ErrorMessage.INVALID_PLATFORM_TYPE);
     }
@@ -102,7 +112,7 @@ public class AuthService {
                     socialInfo.email(),
                     socialInfo.serialId(),
                     platform);
-            saveMember(newUser);
+            saveUser(newUser);
             return newUser;
         }
 
@@ -121,6 +131,11 @@ public class AuthService {
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.USER_NOT_FOUND));
     }
 
+    private User getUser(final Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.USER_NOT_FOUND));
+    }
+
     private UserInfo getUserInfo(final Long memberId) {
         return userInfoRepository.findByUserId(memberId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.USER_INFO_NOT_FOUND));
@@ -132,7 +147,7 @@ public class AuthService {
                 .getRefreshToken();
     }
 
-    private void saveMember(final User user) {
+    private void saveUser(final User user) {
         userRepository.save(user);
         UserInfo userInfo = createMemberInfo(user, null);
         userInfoRepository.save(userInfo);

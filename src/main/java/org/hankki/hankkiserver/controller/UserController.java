@@ -1,5 +1,6 @@
 package org.hankki.hankkiserver.controller;
 
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.auth.UserId;
 import org.hankki.hankkiserver.common.ApiResponse;
@@ -38,7 +39,7 @@ public class UserController {
     @DeleteMapping("/users/withdraw")
     public ResponseEntity<BaseResponse<?>> withdraw(
             @UserId final Long userId,
-            @RequestHeader("X-Apple-Code") final String code){
+            @Nullable @RequestHeader("X-Apple-Code") final String code){
         authService.withdraw(userId,code);
         return ApiResponse.success(SuccessMessage.OK);
     }

@@ -2,6 +2,7 @@ package org.hankki.hankkiserver.domain.favorite.model;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hankki.hankkiserver.domain.common.BaseTimeEntity;
@@ -26,7 +27,18 @@ public class Favorite extends BaseTimeEntity {
 
     private String detail;
 
-    @Column(nullable = false)
-    private String favorite_image_url;
+    public static Favorite create(User user, String name, String detail) {
+        return Favorite.builder()
+            .user(user)
+            .name(name)
+            .detail(detail)
+            .build();
+    }
 
+    @Builder
+    private Favorite(User user, String name, String detail) {
+        this.user = user;
+        this.name = name;
+        this.detail = detail;
+    }
 }

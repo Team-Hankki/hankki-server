@@ -1,4 +1,4 @@
-package org.hankki.hankkiserver.common;
+package org.hankki.hankkiserver.common.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.hankki.hankkiserver.common.code.ErrorCode;

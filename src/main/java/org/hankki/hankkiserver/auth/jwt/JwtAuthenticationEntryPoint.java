@@ -3,7 +3,7 @@ package org.hankki.hankkiserver.auth.jwt;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.hankki.hankkiserver.common.BaseResponse;
+import org.hankki.hankkiserver.common.response.BaseResponse;
 import org.hankki.hankkiserver.common.code.ErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

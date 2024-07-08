@@ -8,7 +8,6 @@ import org.hankki.hankkiserver.common.code.ErrorCode;
 import org.hankki.hankkiserver.domain.user.model.User;
 import org.hankki.hankkiserver.domain.user.model.UserInfo;
 import org.hankki.hankkiserver.domain.user.model.Platform;
-import org.hankki.hankkiserver.common.exception.EntityNotFoundException;
 import org.hankki.hankkiserver.common.exception.InvalidValueException;
 import org.hankki.hankkiserver.common.exception.UnauthorizedException;
 import org.hankki.hankkiserver.external.openfeign.apple.AppleOAuthProvider;
@@ -20,7 +19,9 @@ import org.hankki.hankkiserver.external.openfeign.kakao.KakaoOAuthProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.hankki.hankkiserver.domain.user.model.MemberStatus.INACTIVE;
+import java.util.Optional;
+
+import static org.hankki.hankkiserver.domain.user.model.MemberStatus.ACTIVE;
 import static org.hankki.hankkiserver.domain.user.model.Platform.APPLE;
 import static org.hankki.hankkiserver.domain.user.model.Platform.KAKAO;
 import static org.hankki.hankkiserver.auth.filter.JwtAuthenticationFilter.BEARER;
@@ -30,8 +31,11 @@ import static org.hankki.hankkiserver.auth.filter.JwtAuthenticationFilter.BEARER
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final UserAdapter userAdapter;
-    private final UserInfoAdapter userInfoAdapter;
+    private final UserFinder userFinder;
+    private final UserSaver userSaver;
+    private final UserInfoFinder userInfoFinder;
+    private final UserInfoSaver userInfoSaver;
+    private final UserInfoDeleter userInfoDeleter;
     private final JwtProvider jwtProvider;
     private final JwtValidator jwtValidator;
     private final KakaoOAuthProvider kakaoOAuthProvider;
@@ -40,21 +44,21 @@ public class AuthService {
     public UserLoginResponse login(
             final String token,
             final UserLoginRequest request) {
-        Platform platform = request.platform();
+        Platform platform = Platform.getEnumPlatformFromStringPlatform(request.platform());
         SocialInfoDto socialInfo = getSocialInfo(token, platform, request.name());
-        boolean isRegistered = userAdapter.isRegisteredUser(platform, socialInfo);
-        User findUser = loadOrCreateUser(platform, socialInfo, isRegistered);
+        boolean isRegistered = userFinder.isRegisteredUser(platform, socialInfo);
+        User findUser = loadOrCreateUser(platform, socialInfo);
         Token issuedToken = generateTokens(findUser.getId());
         return UserLoginResponse.of(issuedToken, isRegistered);
     }
 
     public void logOut(final long userId) {
-        UserInfo findUserInfo = userInfoAdapter.getUserInfo(userId);
-        updateRefreshToken(null, findUserInfo);
+        UserInfo findUserInfo = userInfoFinder.getUserInfo(userId);
+        findUserInfo.updateRefreshToken(null);
     }
 
     public void withdraw(final long userId, final String code) {
-        User user = userAdapter.getUser(userId);
+        User user = userFinder.getUser(userId);
         if (APPLE == user.getPlatform()){
             try {
                 String refreshToken = appleOAuthProvider.getAppleToken(code);
@@ -63,24 +67,24 @@ public class AuthService {
                 throw new InvalidValueException(ErrorCode.APPLE_REVOKE_FAILED);
             }
         }
-        user.softDelete(INACTIVE);
-        userInfoAdapter.softDelete(userId);
+        user.softDelete();
+        userInfoDeleter.softDelete(userId);
     }
 
     @Transactional(noRollbackFor = UnauthorizedException.class)
     public UserReissueResponse reissue(final String refreshToken) {
         long userId = jwtProvider.getSubject(refreshToken.substring(BEARER.length()));
         validateRefreshToken(refreshToken, userId);
-        UserInfo findUserInfo = userInfoAdapter.getUserInfo(userId);
-        Token issueTokens = jwtProvider.issueTokens(userId);
-        updateRefreshToken(issueTokens.refreshToken(), findUserInfo);
-        return UserReissueResponse.of(issueTokens);
+        UserInfo findUserInfo = userInfoFinder.getUserInfo(userId);
+        Token issuedTokens = jwtProvider.issueTokens(userId);
+        findUserInfo.updateRefreshToken(issuedTokens.refreshToken());
+        return UserReissueResponse.of(issuedTokens);
     }
 
     private Token generateTokens(final long userId) {
         Token issuedTokens = jwtProvider.issueTokens(userId);
-        UserInfo findUserInfo = userInfoAdapter.getUserInfo(userId);
-        updateRefreshToken(issuedTokens.refreshToken(), findUserInfo);
+        UserInfo findUserInfo = userInfoFinder.getUserInfo(userId);
+        findUserInfo.updateRefreshToken(issuedTokens.refreshToken());
         return issuedTokens;
     }
 
@@ -90,14 +94,13 @@ public class AuthService {
             final String name) {
         if (KAKAO == platform){
             return kakaoOAuthProvider.getKakaoUserInfo(providerToken);
-        } else if (APPLE == platform){
-            return appleOAuthProvider.getAppleUserInfo(providerToken, name);
         }
-        throw new InvalidValueException(ErrorCode.INVALID_PLATFORM_TYPE);
+        return appleOAuthProvider.getAppleUserInfo(providerToken, name);
     }
 
-    private User loadOrCreateUser(Platform platform, SocialInfoDto socialInfo, boolean isRegistered){
-        if (!isRegistered){
+    private User loadOrCreateUser(final Platform platform, final SocialInfoDto socialInfo){
+        Optional<User> existedUserOptional = userFinder.isExistedUser(platform, socialInfo.serialId());
+        if (existedUserOptional.isEmpty()) {
             User newUser = User.createUser(
                     socialInfo.name(),
                     socialInfo.email(),
@@ -106,22 +109,25 @@ public class AuthService {
             saveUser(newUser);
             return newUser;
         }
-        return userAdapter.getUser(platform, socialInfo.serialId());
+        User existedUser = existedUserOptional.get();
+        return updateUserInfo(existedUser);
+    }
+
+    private User updateUserInfo(final User user) {
+        user.updateStatus(ACTIVE);
+        userInfoFinder.getUserInfo(user.getId()).updateNickname(user.getName());
+        return user;
     }
 
     private String getRefreshToken(final Long userId) {
-        return userInfoAdapter.getUserInfo(userId)
+        return userInfoFinder.getUserInfo(userId)
                 .getRefreshToken();
     }
 
     private void saveUser(final User user) {
-        userAdapter.saveUser(user);
+        userSaver.saveUser(user);
         UserInfo userInfo = UserInfo.createMemberInfo(user, null);
-        userInfoAdapter.saveUserInfo(userInfo);
-    }
-
-    private void updateRefreshToken(final String refreshToken, final UserInfo userInfo) {
-        userInfo.updateRefreshToken(refreshToken);
+        userInfoSaver.saveUserInfo(userInfo);
     }
 
     private void validateRefreshToken(final String refreshToken, final long userId) {

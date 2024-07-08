@@ -55,8 +55,8 @@ public class User extends BaseTimeEntity {
                 .build();
     }
 
-    public void softDelete(MemberStatus memberStatus) {
-        updateStatus(memberStatus);
+    public void softDelete() {
+        updateStatus(INACTIVE);
         this.deletedAt = LocalDateTime.now();
     }
 

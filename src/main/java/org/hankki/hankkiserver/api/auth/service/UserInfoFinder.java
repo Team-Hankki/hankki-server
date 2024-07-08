@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class UserInfoAdapter {
+public class UserInfoFinder {
 
     private final UserInfoRepository userInfoRepository;
 
@@ -17,13 +17,4 @@ public class UserInfoAdapter {
         return userInfoRepository.findByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_INFO_NOT_FOUND));
     }
-
-    public void saveUserInfo(final UserInfo userInfo) {
-        userInfoRepository.save(userInfo);
-    }
-
-    public void softDelete(final long userId) {
-        userInfoRepository.softDeleteByUserId(userId);
-    }
-
 }

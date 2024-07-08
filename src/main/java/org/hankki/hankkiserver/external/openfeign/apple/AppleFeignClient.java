@@ -8,7 +8,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-@FeignClient(name = "${oauth.apple.name}", url = "${oauth.apple.url}")
+@FeignClient(name = "appleClient", url = "https://appleid.apple.com/auth")
 public interface AppleFeignClient {
 
     @GetMapping("/keys")

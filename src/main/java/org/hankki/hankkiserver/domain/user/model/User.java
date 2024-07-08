@@ -44,11 +44,7 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private MemberStatus memberStatus;
 
-    public static User createUser(
-            final String name,
-            final String email,
-            final String serialId,
-            final Platform platform) {
+    public static User createUser(final String name, final String email, final String serialId, final Platform platform) {
         return User.builder()
                 .name(name)
                 .email(email)
@@ -59,10 +55,12 @@ public class User extends BaseTimeEntity {
                 .build();
     }
 
-    public void softDelete(MemberStatus memberStatus) {
+    public void softDelete() {
+        updateStatus(INACTIVE);
+        this.deletedAt = LocalDateTime.now();
+    }
+
+    public void updateStatus(MemberStatus memberStatus) {
         this.memberStatus = memberStatus;
-        if (INACTIVE == memberStatus) {
-            this.deletedAt = LocalDateTime.now();
-        }
     }
 }

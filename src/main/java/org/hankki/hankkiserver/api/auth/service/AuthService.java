@@ -8,13 +8,10 @@ import org.hankki.hankkiserver.common.code.ErrorCode;
 import org.hankki.hankkiserver.domain.user.model.User;
 import org.hankki.hankkiserver.domain.user.model.UserInfo;
 import org.hankki.hankkiserver.domain.user.model.Platform;
-import org.hankki.hankkiserver.common.exception.EntityNotFoundException;
 import org.hankki.hankkiserver.common.exception.InvalidValueException;
 import org.hankki.hankkiserver.common.exception.UnauthorizedException;
 import org.hankki.hankkiserver.external.openfeign.apple.AppleOAuthProvider;
 import org.hankki.hankkiserver.external.openfeign.dto.SocialInfoDto;
-import org.hankki.hankkiserver.domain.user.repository.UserInfoRepository;
-import org.hankki.hankkiserver.domain.user.repository.UserRepository;
 import org.hankki.hankkiserver.api.auth.controller.request.UserLoginRequest;
 import org.hankki.hankkiserver.api.auth.service.response.UserLoginResponse;
 import org.hankki.hankkiserver.api.auth.service.response.UserReissueResponse;
@@ -22,20 +19,24 @@ import org.hankki.hankkiserver.external.openfeign.kakao.KakaoOAuthProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 import static org.hankki.hankkiserver.domain.user.model.MemberStatus.ACTIVE;
-import static org.hankki.hankkiserver.domain.user.model.MemberStatus.INACTIVE;
-import static org.hankki.hankkiserver.domain.user.model.Platform.*;
-import static org.hankki.hankkiserver.domain.user.model.User.createUser;
-import static org.hankki.hankkiserver.domain.user.model.UserInfo.createMemberInfo;
+import static org.hankki.hankkiserver.domain.user.model.Platform.APPLE;
+import static org.hankki.hankkiserver.domain.user.model.Platform.KAKAO;
 import static org.hankki.hankkiserver.auth.filter.JwtAuthenticationFilter.BEARER;
+import static org.hankki.hankkiserver.domain.user.model.User.createUser;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final UserRepository userRepository;
-    private final UserInfoRepository userInfoRepository;
+    private final UserFinder userFinder;
+    private final UserSaver userSaver;
+    private final UserInfoFinder userInfoFinder;
+    private final UserInfoSaver userInfoSaver;
+    private final UserInfoDeleter userInfoDeleter;
     private final JwtProvider jwtProvider;
     private final JwtValidator jwtValidator;
     private final KakaoOAuthProvider kakaoOAuthProvider;
@@ -44,22 +45,22 @@ public class AuthService {
     public UserLoginResponse login(
             final String token,
             final UserLoginRequest request) {
-        Platform platform = getEnumPlatformFromStringPlatform(request.platform());
+        Platform platform = Platform.getEnumPlatformFromStringPlatform(request.platform());
         SocialInfoDto socialInfo = getSocialInfo(token, platform, request.name());
-        boolean isRegistered = isRegisteredUser(platform, socialInfo);
-        User findUser = loadOrCreateUser(platform, socialInfo, isRegistered);
+        boolean isRegistered = userFinder.isRegisteredUser(platform, socialInfo);
+        User findUser = loadOrCreateUser(platform, socialInfo);
         Token issuedToken = generateTokens(findUser.getId());
         return UserLoginResponse.of(issuedToken, isRegistered);
     }
 
-    public void logOut(final Long userId) {
-        UserInfo findUserInfo = getUserInfo(userId);
-        updateRefreshToken(null, findUserInfo);
+    public void logOut(final long userId) {
+        UserInfo findUserInfo = userInfoFinder.getUserInfo(userId);
+        findUserInfo.updateRefreshToken(null);
     }
 
-    public void withdraw(final Long userId, final String code) {
-        User user = getUser(userId);
-        if (user.getPlatform() == APPLE){
+    public void withdraw(final long userId, final String code) {
+        User user = userFinder.getUser(userId);
+        if (APPLE == user.getPlatform()){
             try {
                 String refreshToken = appleOAuthProvider.getAppleToken(code);
                 appleOAuthProvider.requestRevoke(refreshToken);
@@ -67,27 +68,25 @@ public class AuthService {
                 throw new InvalidValueException(ErrorCode.APPLE_REVOKE_FAILED);
             }
         }
-
-        userRepository.softDeleteById(userId, INACTIVE);
-        userInfoRepository.softDeleteByUserId(userId);
-        user.softDelete(INACTIVE);
+        user.softDelete();
+        userInfoDeleter.softDelete(userId);
     }
 
     @Transactional(noRollbackFor = UnauthorizedException.class)
     public UserReissueResponse reissue(final String refreshToken) {
-        Long userId = jwtProvider.getSubject(refreshToken.substring(BEARER.length()));
+        long userId = jwtProvider.getSubject(refreshToken.substring(BEARER.length()));
         validateRefreshToken(refreshToken, userId);
-        UserInfo findUserInfo = getUserInfo(userId);
-        Token issueToken = jwtProvider.issueToken(userId);
-        updateRefreshToken(issueToken.refreshToken(), findUserInfo);
-        return UserReissueResponse.of(issueToken);
+        UserInfo findUserInfo = userInfoFinder.getUserInfo(userId);
+        Token issuedTokens = jwtProvider.issueTokens(userId);
+        findUserInfo.updateRefreshToken(issuedTokens.refreshToken());
+        return UserReissueResponse.of(issuedTokens);
     }
 
-    private Token generateTokens(final Long userId) {
-        Token issuedToken = jwtProvider.issueToken(userId);
-        UserInfo findUserInfo = getUserInfo(userId);
-        updateRefreshToken(issuedToken.refreshToken(), findUserInfo);
-        return issuedToken;
+    private Token generateTokens(final long userId) {
+        Token issuedTokens = jwtProvider.issueTokens(userId);
+        UserInfo findUserInfo = userInfoFinder.getUserInfo(userId);
+        findUserInfo.updateRefreshToken(issuedTokens.refreshToken());
+        return issuedTokens;
     }
 
     private SocialInfoDto getSocialInfo(
@@ -96,76 +95,43 @@ public class AuthService {
             final String name) {
         if (KAKAO == platform){
             return kakaoOAuthProvider.getKakaoUserInfo(providerToken);
-        } else if (APPLE == platform){
-            return appleOAuthProvider.getAppleUserInfo(providerToken, name);
         }
-        throw new EntityNotFoundException(ErrorCode.INVALID_PLATFORM_TYPE);
+        return appleOAuthProvider.getAppleUserInfo(providerToken, name);
     }
 
-    private boolean isRegisteredUser(Platform platform, SocialInfoDto socialInfo){
-        return userRepository.existsByPlatformAndSerialIdAndMemberStatus(
-                platform,
-                socialInfo.serialId(),
-                ACTIVE);
+    private User loadOrCreateUser(final Platform platform, final SocialInfoDto socialInfo) {
+        return userFinder.findUserByPlatFormAndSeralId(platform, socialInfo.serialId())
+                .map(this::updateUserInfo)
+                .orElseGet(() -> {
+                    User newUser = createUser(
+                            socialInfo.name(),
+                            socialInfo.email(),
+                            socialInfo.serialId(),
+                            platform);
+                    saveUserAndUserInfo(newUser);
+                    return newUser;
+                });
     }
 
-    private User loadOrCreateUser(Platform platform, SocialInfoDto socialInfo, boolean isRegistered){
-        if (!isRegistered){
-            User newUser = createUser(
-                    socialInfo.name(),
-                    socialInfo.email(),
-                    socialInfo.serialId(),
-                    platform);
-            saveUser(newUser);
-            return newUser;
-        }
 
-        User findUser = getUser(platform, socialInfo.serialId());
-        if (INACTIVE == findUser.getMemberStatus()) {
-            findUser.softDelete(ACTIVE);
-            userRepository.save(findUser);
-        }
-        return findUser;
-    }
-
-    private User getUser(
-            final Platform platform,
-            final String serialId) {
-        return userRepository.findByPlatformAndSerialId(platform, serialId)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
-    }
-
-    private User getUser(final Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
-    }
-
-    private UserInfo getUserInfo(final Long memberId) {
-        return userInfoRepository.findByUserId(memberId)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_INFO_NOT_FOUND));
+    private User updateUserInfo(final User user) {
+        user.updateStatus(ACTIVE);
+        userInfoFinder.getUserInfo(user.getId()).updateNickname(user.getName());
+        return user;
     }
 
     private String getRefreshToken(final Long userId) {
-        return userInfoRepository.findByUserId(userId)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.REFRESH_TOKEN_NOT_FOUND))
+        return userInfoFinder.getUserInfo(userId)
                 .getRefreshToken();
     }
 
-    private void saveUser(final User user) {
-        userRepository.save(user);
-        UserInfo userInfo = createMemberInfo(user, null);
-        userInfoRepository.save(userInfo);
+    private void saveUserAndUserInfo(final User user) {
+        userSaver.saveUser(user);
+        UserInfo userInfo = UserInfo.createMemberInfo(user, null);
+        userInfoSaver.saveUserInfo(userInfo);
     }
 
-    private void updateRefreshToken(
-            final String refreshToken,
-            final UserInfo userInfo) {
-        userInfo.updateRefreshToken(refreshToken);
-    }
-
-    private void validateRefreshToken(
-            final String refreshToken,
-            final Long userId) {
+    private void validateRefreshToken(final String refreshToken, final long userId) {
         try {
             jwtValidator.validateRefreshToken(refreshToken);
             String storedRefreshToken = getRefreshToken(userId);

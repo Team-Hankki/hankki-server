@@ -1,6 +1,6 @@
 package org.hankki.hankkiserver.oauth.apple.dto;
 
-import org.hankki.hankkiserver.common.code.ErrorCode;
+import org.hankki.hankkiserver.common.response.code.ErrorCode;
 import org.hankki.hankkiserver.common.exception.UnauthorizedException;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package org.hankki.hankkiserver.common.exception;
 
-import org.hankki.hankkiserver.common.code.ErrorCode;
+import org.hankki.hankkiserver.common.response.code.ErrorCode;
 
 public class InvalidValueException extends BusinessException {
     public InvalidValueException() {

@@ -3,7 +3,7 @@ package org.hankki.hankkiserver.oauth.apple;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 
-import org.hankki.hankkiserver.common.code.ErrorCode;
+import org.hankki.hankkiserver.common.response.code.ErrorCode;
 import org.hankki.hankkiserver.common.exception.InvalidValueException;
 import org.hankki.hankkiserver.oauth.apple.dto.ApplePublicKeys;
 import org.hankki.hankkiserver.oauth.apple.dto.AppleRevokeRequest;

@@ -1,6 +1,6 @@
 package org.hankki.hankkiserver.oauth.apple;
 
-import org.hankki.hankkiserver.common.code.ErrorCode;
+import org.hankki.hankkiserver.common.response.code.ErrorCode;
 import org.hankki.hankkiserver.common.exception.UnauthorizedException;
 import org.hankki.hankkiserver.oauth.apple.dto.ApplePublicKey;
 import org.hankki.hankkiserver.oauth.apple.dto.ApplePublicKeys;

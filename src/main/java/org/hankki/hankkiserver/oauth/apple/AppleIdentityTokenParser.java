@@ -3,7 +3,7 @@ package org.hankki.hankkiserver.oauth.apple;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.*;
-import org.hankki.hankkiserver.common.code.ErrorCode;
+import org.hankki.hankkiserver.common.response.code.ErrorCode;
 import org.hankki.hankkiserver.common.exception.UnauthorizedException;
 import org.springframework.stereotype.Component;
 

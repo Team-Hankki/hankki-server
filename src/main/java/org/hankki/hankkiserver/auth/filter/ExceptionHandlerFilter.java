@@ -5,7 +5,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.hankki.hankkiserver.common.response.BaseResponse;
-import org.hankki.hankkiserver.common.code.ErrorCode;
+import org.hankki.hankkiserver.common.response.code.ErrorCode;
 import org.hankki.hankkiserver.common.exception.UnauthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

@@ -1,4 +1,4 @@
-package org.hankki.hankkiserver.api.controller;
+package org.hankki.hankkiserver.api.auth.controller;
 
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
@@ -6,7 +6,7 @@ import org.hankki.hankkiserver.auth.UserId;
 import org.hankki.hankkiserver.common.ApiResponse;
 import org.hankki.hankkiserver.common.BaseResponse;
 import org.hankki.hankkiserver.common.code.SuccessCode;
-import org.hankki.hankkiserver.service.AuthService;
+import org.hankki.hankkiserver.api.auth.service.AuthService;
 import org.hankki.hankkiserver.service.dto.request.UserLoginRequest;
 import org.hankki.hankkiserver.service.dto.response.UserLoginResponse;
 import org.hankki.hankkiserver.service.dto.response.UserReissueResponse;

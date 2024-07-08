@@ -1,4 +1,4 @@
-package org.hankki.hankkiserver.service;
+package org.hankki.hankkiserver.api.auth.service;
 
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.auth.jwt.JwtProvider;

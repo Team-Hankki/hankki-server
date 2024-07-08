@@ -1,4 +1,4 @@
-package org.hankki.hankkiserver.oauth.kakao.dto;
+package org.hankki.hankkiserver.external.openfeign.kakao.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;

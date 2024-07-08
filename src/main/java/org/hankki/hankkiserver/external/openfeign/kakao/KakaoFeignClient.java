@@ -1,6 +1,6 @@
-package org.hankki.hankkiserver.oauth.kakao;
+package org.hankki.hankkiserver.external.openfeign.kakao;
 
-import org.hankki.hankkiserver.oauth.kakao.dto.KakaoUserInfo;
+import org.hankki.hankkiserver.external.openfeign.kakao.dto.KakaoUserInfo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.GetMapping;

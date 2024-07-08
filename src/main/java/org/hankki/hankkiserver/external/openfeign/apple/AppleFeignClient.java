@@ -1,9 +1,9 @@
-package org.hankki.hankkiserver.oauth.apple;
+package org.hankki.hankkiserver.external.openfeign.apple;
 
-import org.hankki.hankkiserver.oauth.apple.dto.AppleRevokeRequest;
-import org.hankki.hankkiserver.oauth.apple.dto.AppleTokenRequest;
-import org.hankki.hankkiserver.oauth.apple.dto.AppleTokenResponse;
-import org.hankki.hankkiserver.oauth.apple.dto.ApplePublicKeys;
+import org.hankki.hankkiserver.external.openfeign.apple.dto.ApplePublicKeys;
+import org.hankki.hankkiserver.external.openfeign.apple.dto.AppleTokenRequest;
+import org.hankki.hankkiserver.external.openfeign.apple.dto.AppleRevokeRequest;
+import org.hankki.hankkiserver.external.openfeign.apple.dto.AppleTokenResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;

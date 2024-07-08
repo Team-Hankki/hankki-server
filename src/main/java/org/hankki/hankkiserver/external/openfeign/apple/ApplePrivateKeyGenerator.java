@@ -1,4 +1,4 @@
-package org.hankki.hankkiserver.oauth.apple;
+package org.hankki.hankkiserver.external.openfeign.apple;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

@@ -1,9 +1,9 @@
-package org.hankki.hankkiserver.oauth.apple;
+package org.hankki.hankkiserver.external.openfeign.apple;
 
 import org.hankki.hankkiserver.common.response.code.ErrorCode;
 import org.hankki.hankkiserver.common.exception.UnauthorizedException;
-import org.hankki.hankkiserver.oauth.apple.dto.ApplePublicKey;
-import org.hankki.hankkiserver.oauth.apple.dto.ApplePublicKeys;
+import org.hankki.hankkiserver.external.openfeign.apple.dto.ApplePublicKeys;
+import org.hankki.hankkiserver.external.openfeign.apple.dto.ApplePublicKey;
 import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;

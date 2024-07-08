@@ -19,7 +19,7 @@ public class FavoriteCommandService {
 
   private final FavoriteRepository favoriteRepository;
   private final UserRepository userRepository;
-  private final FavoriteAdpater favoriteAdpater;
+  private final FavoriteFinder favoriteFinder;
 
   @Transactional
   public Long create(final FavoritePostCommand favoritePostCommand) {
@@ -43,13 +43,13 @@ public class FavoriteCommandService {
     List<Long> favoriteIds = favoriteDeleteRequest.favoriteIds();
 
     List<Favorite> favorites = favoriteIds.stream()
-        .map(favoriteAdpater::findById)  // 각 ID에 대해 findById 호출
+        .map(favoriteFinder::findById)  // 각 ID에 대해 findById 호출
         .toList();
 
     if (!favorites.isEmpty()) {
       favoriteRepository.deleteAll(favorites);
     } else {
-      throw new OperationFailedException(ErrorCode.INTERNAL_SERVER_ERROR);
-    }
+    throw new OperationFailedException(ErrorCode.INTERNAL_SERVER_ERROR);
+  }
   }
 }

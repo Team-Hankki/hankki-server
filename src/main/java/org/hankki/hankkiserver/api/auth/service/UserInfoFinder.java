@@ -1,7 +1,7 @@
 package org.hankki.hankkiserver.api.auth.service;
 
 import lombok.RequiredArgsConstructor;
-import org.hankki.hankkiserver.common.code.ErrorCode;
+import org.hankki.hankkiserver.common.code.AuthErrorCode;
 import org.hankki.hankkiserver.common.exception.EntityNotFoundException;
 import org.hankki.hankkiserver.domain.user.model.UserInfo;
 import org.hankki.hankkiserver.domain.user.repository.UserInfoRepository;
@@ -15,6 +15,6 @@ public class UserInfoFinder {
 
     public UserInfo getUserInfo(final long userId) {
         return userInfoRepository.findByUserId(userId)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_INFO_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(AuthErrorCode.USER_INFO_NOT_FOUND));
     }
 }

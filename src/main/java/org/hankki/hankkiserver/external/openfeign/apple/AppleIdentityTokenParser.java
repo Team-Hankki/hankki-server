@@ -3,7 +3,7 @@ package org.hankki.hankkiserver.external.openfeign.apple;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.*;
-import org.hankki.hankkiserver.common.code.ErrorCode;
+import org.hankki.hankkiserver.common.code.AuthErrorCode;
 import org.hankki.hankkiserver.common.exception.UnauthorizedException;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +22,7 @@ public class AppleIdentityTokenParser {
             String decodedHeader = new String(Base64.getUrlDecoder().decode(encodedHeader));
             return OBJECT_MAPPER.readValue(decodedHeader, Map.class);
         } catch (JsonProcessingException | ArrayIndexOutOfBoundsException e) {
-            throw new UnauthorizedException(ErrorCode.INVALID_APPLE_IDENTITY_TOKEN);
+            throw new UnauthorizedException(AuthErrorCode.INVALID_APPLE_IDENTITY_TOKEN);
         }
     }
 
@@ -35,9 +35,9 @@ public class AppleIdentityTokenParser {
                     .getBody();
 
         } catch (ExpiredJwtException e) {
-            throw new UnauthorizedException(ErrorCode.EXPIRED_IDENTITY_TOKEN);
+            throw new UnauthorizedException(AuthErrorCode.EXPIRED_IDENTITY_TOKEN);
         } catch (UnsupportedJwtException | MalformedJwtException | IllegalArgumentException e) {
-            throw new UnauthorizedException(ErrorCode.INVALID_IDENTITY_TOKEN_VALUE);
+            throw new UnauthorizedException(AuthErrorCode.INVALID_IDENTITY_TOKEN_VALUE);
         }
     }
 }

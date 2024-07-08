@@ -1,6 +1,6 @@
 package org.hankki.hankkiserver.external.openfeign.apple;
 
-import org.hankki.hankkiserver.common.code.ErrorCode;
+import org.hankki.hankkiserver.common.code.AuthErrorCode;
 import org.hankki.hankkiserver.common.exception.UnauthorizedException;
 import org.hankki.hankkiserver.external.openfeign.apple.dto.ApplePublicKeys;
 import org.hankki.hankkiserver.external.openfeign.apple.dto.ApplePublicKey;
@@ -38,11 +38,11 @@ public class ApplePublicKeyGenerator {
             KeyFactory keyFactory = KeyFactory.getInstance(applePublicKey.kty());
             return keyFactory.generatePublic(rsaPublicKeySpec);
         } catch (NoSuchAlgorithmException e) {
-            throw new UnauthorizedException(ErrorCode.UNSUPPORTED_ALGORITHM);
+            throw new UnauthorizedException(AuthErrorCode.UNSUPPORTED_ALGORITHM);
         } catch (InvalidKeySpecException e) {
-            throw new UnauthorizedException(ErrorCode.INVALID_KEY_SPEC);
+            throw new UnauthorizedException(AuthErrorCode.INVALID_KEY_SPEC);
         } catch (Exception e) {
-            throw new UnauthorizedException(ErrorCode.INTERNAL_SERVER_ERROR);
+            throw new UnauthorizedException(AuthErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 }

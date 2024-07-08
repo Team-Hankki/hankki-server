@@ -1,8 +1,8 @@
 package org.hankki.hankkiserver.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.hankki.hankkiserver.common.code.ErrorCode;
-import org.hankki.hankkiserver.common.code.SuccessCode;
+import org.hankki.hankkiserver.common.code.AuthErrorCode;
+import org.hankki.hankkiserver.common.code.CommonSuccessCode;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,25 +18,25 @@ public class BaseResponse<T> {
     @JsonInclude(value = JsonInclude.Include.NON_NULL)
     private final T data;
 
-    public static BaseResponse<?> of(SuccessCode successCode) {
+    public static BaseResponse<?> of(CommonSuccessCode commonSuccessCode) {
         return builder()
-                .status(successCode.getHttpStatus().value())
-                .message(successCode.getMessage())
+                .status(commonSuccessCode.getHttpStatus().value())
+                .message(commonSuccessCode.getMessage())
                 .build();
     }
 
-    public static <T> BaseResponse<?> of(SuccessCode successCode, T data) {
+    public static <T> BaseResponse<?> of(CommonSuccessCode commonSuccessCode, T data) {
         return builder()
-                .status(successCode.getHttpStatus().value())
-                .message(successCode.getMessage())
+                .status(commonSuccessCode.getHttpStatus().value())
+                .message(commonSuccessCode.getMessage())
                 .data(data)
                 .build();
     }
 
-    public static BaseResponse<?> of(ErrorCode errorCode) {
+    public static BaseResponse<?> of(AuthErrorCode authErrorCode) {
         return builder()
-                .status(errorCode.getHttpStatus().value())
-                .message(errorCode.getMessage())
+                .status(authErrorCode.getHttpStatus().value())
+                .message(authErrorCode.getMessage())
                 .build();
     }
 }

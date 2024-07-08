@@ -1,14 +1,14 @@
 package org.hankki.hankkiserver.common.exception;
 
-import org.hankki.hankkiserver.common.code.ErrorCode;
+import org.hankki.hankkiserver.common.code.AuthErrorCode;
 
 public class InvalidValueException extends BusinessException {
     public InvalidValueException() {
-        super(ErrorCode.BAD_REQUEST);
+        super(AuthErrorCode.BAD_REQUEST);
     }
 
-    public InvalidValueException(ErrorCode errorCode) {
-        super(errorCode);
+    public InvalidValueException(AuthErrorCode authErrorCode) {
+        super(authErrorCode);
     }
 }
 

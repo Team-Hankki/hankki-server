@@ -1,13 +1,13 @@
 package org.hankki.hankkiserver.common.exception;
 
-import org.hankki.hankkiserver.common.code.ErrorCode;
+import org.hankki.hankkiserver.common.code.AuthErrorCode;
 
 public class EntityNotFoundException extends BusinessException {
     public EntityNotFoundException() {
-        super(ErrorCode.ENTITY_NOT_FOUND);
+        super(AuthErrorCode.ENTITY_NOT_FOUND);
     }
 
-    public EntityNotFoundException(ErrorCode errorCode) {
-        super(errorCode);
+    public EntityNotFoundException(AuthErrorCode authErrorCode) {
+        super(authErrorCode);
     }
 }

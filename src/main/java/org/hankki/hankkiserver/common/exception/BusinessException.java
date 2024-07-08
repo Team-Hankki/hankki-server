@@ -1,14 +1,14 @@
 package org.hankki.hankkiserver.common.exception;
 
-import org.hankki.hankkiserver.common.code.ErrorCode;
+import org.hankki.hankkiserver.common.code.AuthErrorCode;
 import lombok.Getter;
 
 @Getter
 public class BusinessException extends RuntimeException {
-    private final ErrorCode errorCode;
+    private final AuthErrorCode authErrorCode;
 
-    public BusinessException(ErrorCode errorCode) {
-        super(errorCode.getMessage());
-        this.errorCode = errorCode;
+    public BusinessException(AuthErrorCode authErrorCode) {
+        super(authErrorCode.getMessage());
+        this.authErrorCode = authErrorCode;
     }
 }

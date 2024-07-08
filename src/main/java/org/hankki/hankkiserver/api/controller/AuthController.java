@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.auth.UserId;
 import org.hankki.hankkiserver.common.ApiResponse;
 import org.hankki.hankkiserver.common.BaseResponse;
-import org.hankki.hankkiserver.common.dto.SuccessMessage;
+import org.hankki.hankkiserver.common.code.SuccessMessage;
 import org.hankki.hankkiserver.service.AuthService;
 import org.hankki.hankkiserver.service.dto.request.UserLoginRequest;
 import org.hankki.hankkiserver.service.dto.response.UserLoginResponse;

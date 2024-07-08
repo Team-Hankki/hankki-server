@@ -1,7 +1,7 @@
 package org.hankki.hankkiserver.common;
 
-import org.hankki.hankkiserver.common.dto.ErrorMessage;
-import org.hankki.hankkiserver.common.dto.SuccessMessage;
+import org.hankki.hankkiserver.common.code.ErrorMessage;
+import org.hankki.hankkiserver.common.code.SuccessMessage;
 import org.springframework.http.ResponseEntity;
 
 public interface ApiResponse {

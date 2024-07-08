@@ -2,7 +2,7 @@ package org.hankki.hankkiserver.domain.user.model;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.hankki.hankkiserver.common.dto.ErrorMessage;
+import org.hankki.hankkiserver.common.code.ErrorMessage;
 import org.hankki.hankkiserver.exception.InvalidValueException;
 
 import java.util.Arrays;

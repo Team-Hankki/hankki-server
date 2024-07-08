@@ -1,8 +1,8 @@
 package org.hankki.hankkiserver.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.hankki.hankkiserver.common.dto.ErrorMessage;
-import org.hankki.hankkiserver.common.dto.SuccessMessage;
+import org.hankki.hankkiserver.common.code.ErrorMessage;
+import org.hankki.hankkiserver.common.code.SuccessMessage;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

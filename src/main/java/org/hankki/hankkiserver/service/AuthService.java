@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.auth.jwt.JwtProvider;
 import org.hankki.hankkiserver.auth.jwt.JwtValidator;
 import org.hankki.hankkiserver.auth.jwt.Token;
-import org.hankki.hankkiserver.common.dto.ErrorMessage;
+import org.hankki.hankkiserver.common.code.ErrorMessage;
 import org.hankki.hankkiserver.domain.user.model.User;
 import org.hankki.hankkiserver.domain.user.model.UserInfo;
 import org.hankki.hankkiserver.domain.user.model.Platform;

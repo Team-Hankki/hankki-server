@@ -3,7 +3,7 @@ package org.hankki.hankkiserver.oauth.apple;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
-import org.hankki.hankkiserver.common.dto.ErrorMessage;
+import org.hankki.hankkiserver.common.code.ErrorMessage;
 import org.hankki.hankkiserver.exception.InvalidValueException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

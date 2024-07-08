@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.favorite.controller.request.FavoritePostRequest;
 import org.hankki.hankkiserver.api.favorite.service.FavoriteAdpater;
+import org.hankki.hankkiserver.auth.UserId;
 import org.hankki.hankkiserver.domain.favorite.model.Favorite;
 import org.hankki.hankkiserver.domain.favorite.repository.FavoriteRepository;
 import org.hankki.hankkiserver.api.favorite.service.command.FavoritePostCommand;
@@ -22,7 +23,8 @@ public class FavoriteCommandService {
   @Transactional
   public Long create(final FavoritePostCommand favoritePostCommand) {
 
-    User findUser = userRepository.findById(1L).get();
+    long userId = favoritePostCommand.memberId();
+    User findUser = userRepository.findById(userId).get();
 
     String title = favoritePostCommand.title();
     String details = String.join(" ", favoritePostCommand.details());

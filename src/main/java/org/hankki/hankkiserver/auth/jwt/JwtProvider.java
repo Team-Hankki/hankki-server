@@ -10,7 +10,7 @@ public class JwtProvider {
 
     private final JwtGenerator jwtGenerator;
 
-    public Token issueToken(Long userId) {
+    public Token issueTokens(Long userId) {
         return Token.of(jwtGenerator.generateToken(userId, true),
                 jwtGenerator.generateToken(userId, false));
     }

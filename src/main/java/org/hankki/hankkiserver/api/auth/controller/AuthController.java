@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1")
+@RequestMapping("/api/v1")
 public class AuthController {
 
     private final AuthService authService;
@@ -46,8 +46,8 @@ public class AuthController {
 
     @PostMapping("/auth/reissue")
     public ResponseEntity<BaseResponse<?>> reissue(
-            @RequestHeader(HttpHeaders.AUTHORIZATION) final String refreshtoken) {
-        final UserReissueResponse response = authService.reissue(refreshtoken);
+            @RequestHeader(HttpHeaders.AUTHORIZATION) final String refreshToken) {
+        final UserReissueResponse response = authService.reissue(refreshToken);
         return ApiResponse.success(SuccessCode.OK, response);
     }
 }

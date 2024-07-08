@@ -1,4 +1,4 @@
-package org.hankki.hankkiserver.service.dto.response;
+package org.hankki.hankkiserver.api.auth.service.response;
 
 import lombok.AccessLevel;
 import lombok.Builder;

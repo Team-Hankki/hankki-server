@@ -1,4 +1,4 @@
-package org.hankki.hankkiserver.service.dto.request;
+package org.hankki.hankkiserver.api.auth.controller.request;
 
 import jakarta.annotation.Nullable;
 

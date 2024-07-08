@@ -16,9 +16,9 @@ import org.hankki.hankkiserver.oauth.dto.SocialInfoDto;
 import org.hankki.hankkiserver.oauth.kakao.KakaoOAuthProvider;
 import org.hankki.hankkiserver.domain.user.repository.UserInfoRepository;
 import org.hankki.hankkiserver.domain.user.repository.UserRepository;
-import org.hankki.hankkiserver.service.dto.request.UserLoginRequest;
-import org.hankki.hankkiserver.service.dto.response.UserLoginResponse;
-import org.hankki.hankkiserver.service.dto.response.UserReissueResponse;
+import org.hankki.hankkiserver.api.auth.controller.request.UserLoginRequest;
+import org.hankki.hankkiserver.api.auth.service.response.UserLoginResponse;
+import org.hankki.hankkiserver.api.auth.service.response.UserReissueResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

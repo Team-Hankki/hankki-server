@@ -1,4 +1,4 @@
-package org.hankki.hankkiserver.api.controller.favorite.request;
+package org.hankki.hankkiserver.api.favorite.controller.request;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;

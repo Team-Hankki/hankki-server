@@ -1,7 +1,7 @@
-package org.hankki.hankkiserver.api.service.favorite.command;
+package org.hankki.hankkiserver.api.favorite.service.command;
 
 import java.util.List;
-import org.hankki.hankkiserver.api.controller.favorite.request.FavoritePostRequest;
+import org.hankki.hankkiserver.api.favorite.controller.request.FavoritePostRequest;
 
 public record FavoritePostCommand(
     long memberId,

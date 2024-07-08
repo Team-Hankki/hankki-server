@@ -4,7 +4,7 @@ import java.util.List;
 import org.hankki.hankkiserver.api.favorite.controller.request.FavoritePostRequest;
 
 public record FavoritePostCommand(
-    long memberId,
+    long userId,
     String title,
     List<String> details
 ) {

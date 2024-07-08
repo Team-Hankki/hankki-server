@@ -1,10 +1,11 @@
-package org.hankki.hankkiserver.domain.favorite.controller;
+package org.hankki.hankkiserver.api.controller.favorite;
 
+import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
-import org.hankki.hankkiserver.domain.favorite.service.FavoriteCommandService;
-import org.hankki.hankkiserver.domain.favorite.service.dto.command.FavoritePostCommandDto;
-import org.hankki.hankkiserver.domain.favorite.service.dto.request.FavoritePostDto;
+import org.hankki.hankkiserver.api.service.favorite.FavoriteCommandService;
+import org.hankki.hankkiserver.api.service.favorite.command.FavoritePostCommand;
+import org.hankki.hankkiserver.api.controller.favorite.request.FavoritePostRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,11 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class FavoriteController {
 
   private final FavoriteCommandService favoriteCommandService;
+
   @PostMapping
-  public ResponseEntity createTask(@RequestBody FavoritePostDto favoritePostDto) {
+  public ResponseEntity<?> createFavorite(@RequestBody @Valid FavoritePostRequest favoritePostRequest) {
 
     return ResponseEntity.created(
-        URI.create(favoriteCommandService.create(FavoritePostCommandDto.of(1L, favoritePostDto)))
-    ).body(HttpStatus.CREATED);
+        URI.create(favoriteCommandService.create(
+            FavoritePostCommand.of(1L, favoritePostRequest)).toString())
+    ).build();
   }
 }

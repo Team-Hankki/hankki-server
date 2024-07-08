@@ -8,8 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.auth.UserAuthentication;
 import org.hankki.hankkiserver.auth.jwt.JwtProvider;
 import org.hankki.hankkiserver.auth.jwt.JwtValidator;
-import org.hankki.hankkiserver.common.dto.ErrorMessage;
-import org.hankki.hankkiserver.exception.UnauthorizedException;
+import org.hankki.hankkiserver.common.code.ErrorCode;
+import org.hankki.hankkiserver.common.exception.UnauthorizedException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
@@ -44,7 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (StringUtils.hasText(accessToken) && accessToken.startsWith(BEARER)) {
             return accessToken.substring(BEARER.length());
         }
-        throw new UnauthorizedException(ErrorMessage.INVALID_ACCESS_TOKEN);
+        throw new UnauthorizedException(ErrorCode.INVALID_ACCESS_TOKEN);
     }
 
     private void doAuthentication(

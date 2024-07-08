@@ -3,7 +3,7 @@ package org.hankki.hankkiserver.auth.config;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.auth.filter.ExceptionHandlerFilter;
 import org.hankki.hankkiserver.auth.filter.JwtAuthenticationFilter;
-import org.hankki.hankkiserver.auth.jwt.JwtAuthenticationEntryPoint;
+import org.hankki.hankkiserver.auth.JwtAuthenticationEntryPoint;
 import org.hankki.hankkiserver.auth.jwt.JwtProvider;
 import org.hankki.hankkiserver.auth.jwt.JwtValidator;
 import org.springframework.context.annotation.Bean;

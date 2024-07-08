@@ -25,6 +25,7 @@ import static org.hankki.hankkiserver.domain.user.model.MemberStatus.ACTIVE;
 import static org.hankki.hankkiserver.domain.user.model.Platform.APPLE;
 import static org.hankki.hankkiserver.domain.user.model.Platform.KAKAO;
 import static org.hankki.hankkiserver.auth.filter.JwtAuthenticationFilter.BEARER;
+import static org.hankki.hankkiserver.domain.user.model.User.createUser;
 
 @Service
 @Transactional
@@ -98,20 +99,20 @@ public class AuthService {
         return appleOAuthProvider.getAppleUserInfo(providerToken, name);
     }
 
-    private User loadOrCreateUser(final Platform platform, final SocialInfoDto socialInfo){
-        Optional<User> existedUserOptional = userFinder.isExistedUser(platform, socialInfo.serialId());
-        if (existedUserOptional.isEmpty()) {
-            User newUser = User.createUser(
-                    socialInfo.name(),
-                    socialInfo.email(),
-                    socialInfo.serialId(),
-                    platform);
-            saveUser(newUser);
-            return newUser;
-        }
-        User existedUser = existedUserOptional.get();
-        return updateUserInfo(existedUser);
+    private User loadOrCreateUser(final Platform platform, final SocialInfoDto socialInfo) {
+        return userFinder.findUserByPlatFormAndSeralId(platform, socialInfo.serialId())
+                .map(this::updateUserInfo)
+                .orElseGet(() -> {
+                    User newUser = createUser(
+                            socialInfo.name(),
+                            socialInfo.email(),
+                            socialInfo.serialId(),
+                            platform);
+                    saveUserAndUserInfo(newUser);
+                    return newUser;
+                });
     }
+
 
     private User updateUserInfo(final User user) {
         user.updateStatus(ACTIVE);
@@ -124,7 +125,7 @@ public class AuthService {
                 .getRefreshToken();
     }
 
-    private void saveUser(final User user) {
+    private void saveUserAndUserInfo(final User user) {
         userSaver.saveUser(user);
         UserInfo userInfo = UserInfo.createMemberInfo(user, null);
         userInfoSaver.saveUserInfo(userInfo);

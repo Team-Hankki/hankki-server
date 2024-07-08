@@ -31,7 +31,7 @@ public class UserFinder {
                 ACTIVE);
     }
 
-    public Optional<User> isExistedUser(final Platform platform, final String serialId) {
+    public Optional<User> findUserByPlatFormAndSeralId(final Platform platform, final String serialId) {
         return userRepository.findByPlatformAndSerialId(platform, serialId);
     }
 }

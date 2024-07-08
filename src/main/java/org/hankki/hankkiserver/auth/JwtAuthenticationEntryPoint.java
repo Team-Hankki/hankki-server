@@ -1,4 +1,4 @@
-package org.hankki.hankkiserver.auth.jwt;
+package org.hankki.hankkiserver.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;

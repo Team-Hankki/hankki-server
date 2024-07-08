@@ -1,4 +1,4 @@
-package org.hankki.hankkiserver.common.response.code;
+package org.hankki.hankkiserver.common.code;
 
 import lombok.AccessLevel;
 import lombok.Getter;

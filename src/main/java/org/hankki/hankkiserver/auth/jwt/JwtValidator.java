@@ -3,7 +3,7 @@ package org.hankki.hankkiserver.auth.jwt;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtParser;
 import lombok.RequiredArgsConstructor;
-import org.hankki.hankkiserver.common.response.code.ErrorCode;
+import org.hankki.hankkiserver.common.code.ErrorCode;
 import org.hankki.hankkiserver.common.exception.UnauthorizedException;
 import org.springframework.stereotype.Component;
 

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class FavoriteAdpater {
+public class FavoriteFinder {
 
   private final FavoriteRepository favoriteRepository;
 

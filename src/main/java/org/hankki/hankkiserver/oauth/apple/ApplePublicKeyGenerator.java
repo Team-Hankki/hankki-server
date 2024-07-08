@@ -1,6 +1,6 @@
 package org.hankki.hankkiserver.oauth.apple;
 
-import org.hankki.hankkiserver.common.code.ErrorMessage;
+import org.hankki.hankkiserver.common.code.ErrorCode;
 import org.hankki.hankkiserver.exception.UnauthorizedException;
 import org.hankki.hankkiserver.oauth.apple.dto.ApplePublicKey;
 import org.hankki.hankkiserver.oauth.apple.dto.ApplePublicKeys;
@@ -38,11 +38,11 @@ public class ApplePublicKeyGenerator {
             KeyFactory keyFactory = KeyFactory.getInstance(applePublicKey.kty());
             return keyFactory.generatePublic(rsaPublicKeySpec);
         } catch (NoSuchAlgorithmException e) {
-            throw new UnauthorizedException(ErrorMessage.UNSUPPORTED_ALGORITHM);
+            throw new UnauthorizedException(ErrorCode.UNSUPPORTED_ALGORITHM);
         } catch (InvalidKeySpecException e) {
-            throw new UnauthorizedException(ErrorMessage.INVALID_KEY_SPEC);
+            throw new UnauthorizedException(ErrorCode.INVALID_KEY_SPEC);
         } catch (Exception e) {
-            throw new UnauthorizedException(ErrorMessage.INTERNAL_SERVER_ERROR);
+            throw new UnauthorizedException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 }

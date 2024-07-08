@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.hankki.hankkiserver.common.BaseResponse;
-import org.hankki.hankkiserver.common.code.ErrorMessage;
+import org.hankki.hankkiserver.common.code.ErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
@@ -28,17 +28,17 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     }
 
     private void handleException(HttpServletResponse response) throws IOException {
-        setResponse(response, HttpStatus.UNAUTHORIZED, ErrorMessage.UNAUTHORIZED);
+        setResponse(response, HttpStatus.UNAUTHORIZED, ErrorCode.UNAUTHORIZED);
     }
 
     private void setResponse(
             HttpServletResponse response,
             HttpStatus httpStatus,
-            ErrorMessage errorMessage) throws IOException {
+            ErrorCode errorCode) throws IOException {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("utf-8");
         response.setStatus(httpStatus.value());
         PrintWriter writer = response.getWriter();
-        writer.write(objectMapper.writeValueAsString(BaseResponse.of(errorMessage)));
+        writer.write(objectMapper.writeValueAsString(BaseResponse.of(errorCode)));
     }
 }

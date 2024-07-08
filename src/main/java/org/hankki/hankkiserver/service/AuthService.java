@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.auth.jwt.JwtProvider;
 import org.hankki.hankkiserver.auth.jwt.JwtValidator;
 import org.hankki.hankkiserver.auth.jwt.Token;
-import org.hankki.hankkiserver.common.code.ErrorMessage;
+import org.hankki.hankkiserver.common.code.ErrorCode;
 import org.hankki.hankkiserver.domain.user.model.User;
 import org.hankki.hankkiserver.domain.user.model.UserInfo;
 import org.hankki.hankkiserver.domain.user.model.Platform;
@@ -64,7 +64,7 @@ public class AuthService {
                 String refreshToken = appleOAuthProvider.getAppleToken(code);
                 appleOAuthProvider.requestRevoke(refreshToken);
             } catch (Exception e) {
-                throw new InvalidValueException(ErrorMessage.APPLE_REVOKE_FAILED);
+                throw new InvalidValueException(ErrorCode.APPLE_REVOKE_FAILED);
             }
         }
 
@@ -99,7 +99,7 @@ public class AuthService {
         } else if (APPLE == platform){
             return appleOAuthProvider.getAppleUserInfo(providerToken, name);
         }
-        throw new EntityNotFoundException(ErrorMessage.INVALID_PLATFORM_TYPE);
+        throw new EntityNotFoundException(ErrorCode.INVALID_PLATFORM_TYPE);
     }
 
     private boolean isRegisteredUser(Platform platform, SocialInfoDto socialInfo){
@@ -132,22 +132,22 @@ public class AuthService {
             final Platform platform,
             final String serialId) {
         return userRepository.findByPlatformAndSerialId(platform, serialId)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.USER_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
     }
 
     private User getUser(final Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.USER_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
     }
 
     private UserInfo getUserInfo(final Long memberId) {
         return userInfoRepository.findByUserId(memberId)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.USER_INFO_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_INFO_NOT_FOUND));
     }
 
     private String getRefreshToken(final Long userId) {
         return userInfoRepository.findByUserId(userId)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.REFRESH_TOKEN_NOT_FOUND))
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.REFRESH_TOKEN_NOT_FOUND))
                 .getRefreshToken();
     }
 

@@ -1,6 +1,6 @@
 package org.hankki.hankkiserver.oauth.apple.dto;
 
-import org.hankki.hankkiserver.common.code.ErrorMessage;
+import org.hankki.hankkiserver.common.code.ErrorCode;
 import org.hankki.hankkiserver.exception.UnauthorizedException;
 
 import java.util.List;
@@ -13,6 +13,6 @@ public record ApplePublicKeys(
         return this.applePublicKeys.stream()
                 .filter(key -> key.kid().equals(kid) && key.alg().equals(alg))
                 .findFirst()
-                .orElseThrow(() -> new UnauthorizedException(ErrorMessage.INVALID_APPLE_IDENTITY_TOKEN));
+                .orElseThrow(() -> new UnauthorizedException(ErrorCode.INVALID_APPLE_IDENTITY_TOKEN));
     }
 }

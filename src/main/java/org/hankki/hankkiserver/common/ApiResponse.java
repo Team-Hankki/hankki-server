@@ -1,23 +1,23 @@
 package org.hankki.hankkiserver.common;
 
-import org.hankki.hankkiserver.common.code.ErrorMessage;
-import org.hankki.hankkiserver.common.code.SuccessMessage;
+import org.hankki.hankkiserver.common.code.ErrorCode;
+import org.hankki.hankkiserver.common.code.SuccessCode;
 import org.springframework.http.ResponseEntity;
 
 public interface ApiResponse {
 
-    static ResponseEntity<BaseResponse<?>> success(SuccessMessage successMessage) {
-        return ResponseEntity.status(successMessage.getHttpStatus())
-                .body(BaseResponse.of(successMessage));
+    static ResponseEntity<BaseResponse<?>> success(SuccessCode successCode) {
+        return ResponseEntity.status(successCode.getHttpStatus())
+                .body(BaseResponse.of(successCode));
     }
 
-    static <T> ResponseEntity<BaseResponse<?>> success(SuccessMessage successMessage, T data) {
-        return org.springframework.http.ResponseEntity.status(successMessage.getHttpStatus())
-                .body(BaseResponse.of(successMessage, data));
+    static <T> ResponseEntity<BaseResponse<?>> success(SuccessCode successCode, T data) {
+        return org.springframework.http.ResponseEntity.status(successCode.getHttpStatus())
+                .body(BaseResponse.of(successCode, data));
     }
 
-    static ResponseEntity<BaseResponse<?>> failure(ErrorMessage errorMessage) {
-        return ResponseEntity.status(errorMessage.getHttpStatus())
-                .body(BaseResponse.of(errorMessage));
+    static ResponseEntity<BaseResponse<?>> failure(ErrorCode errorCode) {
+        return ResponseEntity.status(errorCode.getHttpStatus())
+                .body(BaseResponse.of(errorCode));
     }
 }

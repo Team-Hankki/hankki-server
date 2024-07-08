@@ -1,14 +1,14 @@
 package org.hankki.hankkiserver.exception;
 
-import org.hankki.hankkiserver.common.code.ErrorMessage;
+import org.hankki.hankkiserver.common.code.ErrorCode;
 
 public class UnauthorizedException extends BusinessException {
     public UnauthorizedException() {
-        super(ErrorMessage.UNAUTHORIZED);
+        super(ErrorCode.UNAUTHORIZED);
     }
 
-    public UnauthorizedException(ErrorMessage errorMessage) {
-        super(errorMessage);
+    public UnauthorizedException(ErrorCode errorCode) {
+        super(errorCode);
     }
 }
 

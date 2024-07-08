@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public enum SuccessMessage {
+public enum SuccessCode {
 
     OK(HttpStatus.OK, "요청이 성공했습니다."),
     NO_CONTENT(HttpStatus.NO_CONTENT, "요청이 성공했습니다."),

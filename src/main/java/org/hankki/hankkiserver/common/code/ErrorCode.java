@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public enum ErrorMessage {
+public enum ErrorCode {
 
     // reuqest error
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),

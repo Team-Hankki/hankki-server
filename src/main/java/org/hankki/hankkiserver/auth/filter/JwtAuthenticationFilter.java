@@ -9,7 +9,7 @@ import org.hankki.hankkiserver.auth.UserAuthentication;
 import org.hankki.hankkiserver.auth.jwt.JwtProvider;
 import org.hankki.hankkiserver.auth.jwt.JwtValidator;
 import org.hankki.hankkiserver.common.code.ErrorCode;
-import org.hankki.hankkiserver.exception.UnauthorizedException;
+import org.hankki.hankkiserver.common.exception.UnauthorizedException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;

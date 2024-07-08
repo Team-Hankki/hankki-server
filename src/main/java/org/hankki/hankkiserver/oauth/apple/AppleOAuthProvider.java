@@ -4,7 +4,7 @@ import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 
 import org.hankki.hankkiserver.common.code.ErrorCode;
-import org.hankki.hankkiserver.exception.InvalidValueException;
+import org.hankki.hankkiserver.common.exception.InvalidValueException;
 import org.hankki.hankkiserver.oauth.apple.dto.ApplePublicKeys;
 import org.hankki.hankkiserver.oauth.apple.dto.AppleRevokeRequest;
 import org.hankki.hankkiserver.oauth.apple.dto.AppleTokenRequest;

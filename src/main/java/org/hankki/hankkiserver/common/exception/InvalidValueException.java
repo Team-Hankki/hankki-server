@@ -1,4 +1,4 @@
-package org.hankki.hankkiserver.exception;
+package org.hankki.hankkiserver.common.exception;
 
 import org.hankki.hankkiserver.common.code.ErrorCode;
 

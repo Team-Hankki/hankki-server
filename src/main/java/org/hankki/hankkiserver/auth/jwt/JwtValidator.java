@@ -4,7 +4,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtParser;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.common.code.ErrorCode;
-import org.hankki.hankkiserver.exception.UnauthorizedException;
+import org.hankki.hankkiserver.common.exception.UnauthorizedException;
 import org.springframework.stereotype.Component;
 
 import static org.hankki.hankkiserver.auth.filter.JwtAuthenticationFilter.BEARER;

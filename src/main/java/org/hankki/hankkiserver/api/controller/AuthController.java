@@ -1,4 +1,4 @@
-package org.hankki.hankkiserver.controller;
+package org.hankki.hankkiserver.api.controller;
 
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;

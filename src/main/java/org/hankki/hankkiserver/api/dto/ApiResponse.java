@@ -1,4 +1,4 @@
-package org.hankki.hankkiserver.common.response;
+package org.hankki.hankkiserver.api.dto;
 
 import org.hankki.hankkiserver.common.code.ErrorCode;
 import org.hankki.hankkiserver.common.code.SuccessCode;

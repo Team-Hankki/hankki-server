@@ -14,6 +14,13 @@
 
 <br>
 
+# 🤼‍♀️Team Member
+
+| [👑박재연👑](https://github.com/Parkjyun) | [🌱김가연🌱](https://github.com/kgy1008) | [🌱박서진🌱](https://github.com/PicturePark1101)|
+|--------|------- |---------- |
+| <img width="600px" src= "https://github.com/Team-Hankki/hankki-server/assets/109809242/2276da80-d520-4548-8064-8011fb9e92a7"> | <img width="600px" src="https://github.com/Team-Hankki/hankki-server/assets/109809242/cb7addf0-a6ca-41f4-b2cc-7cb1a8a480d3">  | <img width="600px" src="https://github.com/Team-Hankki/hankki-server/assets/109809242/7d62d5c9-9b8d-4e43-a118-0ad4e69fb564"> |
+| ✔️CI/CD 구축<br>✔️DB 설계 <br>✔️홈화면 API <br>✔️제보 API  | ✔️소셜로그인(KAKAO, APPLE) <br> ✔️식당 API <br> ✔️Discord 알림 구현| ✔️마이페이지 API <br> ✔️족보 API |
+
 # ⚒️Stack 
 
 <div align = "center">
@@ -22,7 +29,7 @@
 
 <br><br>
 # 📍ERD
-![hankki](https://github.com/Team-Hankki/hankki-server/assets/109809242/36c645b6-68e6-42b8-a9e2-9ddf790a6f4f)
+![hankki (1)](https://github.com/Team-Hankki/hankki-server/assets/109809242/20ea9569-ac38-4c28-a62d-3b616384793b)
 
 <br><br>
 # 📜 Covention
@@ -34,8 +41,6 @@
 | `Variable`                | **camelCase**                                                                         |
 | `DB Table`           | **snake_case**                                                                        |
 | `ENUM`, `Contatant`          | **PascalCase**                                                                        |
-| `Collection`  | 리스트는 복수형, 다른 컬렉션은 접미사로 컬렉션. (Ex. **users**, userMap) |
-| `LocalDateTime`       | 접미사에 **Date 혹은 At**.                                                 |
 
 ## ♣️Git Convention
 ### prefix
@@ -67,17 +72,6 @@ close #<issue_num>
 
 ## To Reviewers
 ```
-<br>
-
-### Review
-| PN| what|
-|------|-----|
-|P1 | 꼭 반영해주세요 (Request changes) |
-|P2 | 적극적으로 고려해주세요 (Request changes) |
-| P3| 웬만하면 반영해 주세요 (Comment) |
-| P4 | 반영해도 좋고 넘어가도 좋습니다 (Approve) |
-|P5 | 그냥 사소한 의견입니다 (Approve) |
-
 <br><br>
 # 🗂️ Package
 ```
@@ -112,10 +106,3 @@ close #<issue_num>
 
 ```
 <br><br>
-# 🤼‍♀️Team Member
-
-| [👑박재연👑](https://github.com/Parkjyun) | [🌱김가연🌱](https://github.com/kgy1008) | [🌱박서진🌱](https://github.com/PicturePark1101)|
-|--------|------- |---------- |
-| <img width="600px" src= "https://github.com/Team-Hankki/hankki-server/assets/109809242/2276da80-d520-4548-8064-8011fb9e92a7"> | <img width="600px" src="https://github.com/Team-Hankki/hankki-server/assets/109809242/cb7addf0-a6ca-41f4-b2cc-7cb1a8a480d3">  | <img width="600px" src="https://github.com/Team-Hankki/hankki-server/assets/109809242/7d62d5c9-9b8d-4e43-a118-0ad4e69fb564"> |
-| ✔️CI/CD 구축<br> ✔️홈화면 AP<br>✔️DB 설계  | ✔️소셜로그인(KAKAO, APPLE) <br> ✔️식당 API| ✔️마이페이지 API <br> ✔️족보 API |
-

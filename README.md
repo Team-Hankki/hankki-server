@@ -3,7 +3,7 @@
 # 👋 ABOUT HANKKI
 
 <div align="center">
-  <img witdth= "200px" src="https://github.com/Team-Hankki/hankki-server/assets/109809242/85193579-b827-4b3a-a609-702430b910fa">
+  <img witdth= "200px" src="https://github.com/Team-Hankki/hankki-server/assets/109809242/08b7c67a-3fcc-4d58-8f49-501e68253d7f">
 <br><br>
  
  **`WHAT?`**  대학교를 중심으로 **8000원 이하의 메뉴를 가진 식당**을 제공하는 프로덕트 

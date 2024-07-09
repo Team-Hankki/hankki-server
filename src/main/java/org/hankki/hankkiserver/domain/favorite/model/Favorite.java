@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.hankki.hankkiserver.domain.common.BaseTimeEntity;
 import org.hankki.hankkiserver.domain.favoritestore.model.FavoriteStore;
 import org.hankki.hankkiserver.domain.user.model.User;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
 @Getter
@@ -34,6 +35,7 @@ public class Favorite extends BaseTimeEntity {
     private String image_url;
 
     @OneToMany(mappedBy = "favorite")
+    @BatchSize(size = 100)
     private List<FavoriteStore> favoriteStores = new ArrayList<>();
 
     public static Favorite create(User user, String name, String detail) {

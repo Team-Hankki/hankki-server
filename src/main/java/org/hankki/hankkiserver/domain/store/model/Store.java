@@ -1,14 +1,15 @@
 package org.hankki.hankkiserver.domain.store.model;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hankki.hankkiserver.domain.common.BaseTimeEntity;
 import org.hankki.hankkiserver.domain.common.Point;
 import org.hankki.hankkiserver.domain.heart.model.Heart;
-
-import java.util.List;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
 @Getter
@@ -44,6 +45,17 @@ public class Store extends BaseTimeEntity {
 
     @Column(nullable = false)
     private boolean isDeleted;
+
+    @OneToMany(mappedBy = "store")
+    @BatchSize(size = 100)
+    private List<StoreImage> storeImages = new ArrayList<>();
+
+    public String getImage() {
+        if (storeImages.isEmpty()) {
+            return "default.com";
+        }
+        return storeImages.get(0).getImageUrl();
+    }
 
     public void decreaseHeartCount() {
         this.heartCount--;

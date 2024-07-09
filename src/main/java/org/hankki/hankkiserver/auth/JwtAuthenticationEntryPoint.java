@@ -39,6 +39,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setCharacterEncoding("utf-8");
         response.setStatus(httpStatus.value());
         PrintWriter writer = response.getWriter();
-        writer.write(objectMapper.writeValueAsString(HankkiResponse.of(authErrorCode)));
+        writer.write(objectMapper.writeValueAsString(HankkiResponse.fail(authErrorCode)));
     }
 }

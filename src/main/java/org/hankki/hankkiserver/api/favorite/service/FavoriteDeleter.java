@@ -1,23 +1,22 @@
-package org.hankki.hankkiserver.api.favoritestore.service;
+package org.hankki.hankkiserver.api.favorite.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.common.code.BusinessErrorCode;
 import org.hankki.hankkiserver.common.exception.InternalServerException;
 import org.hankki.hankkiserver.domain.favorite.model.Favorite;
-import org.hankki.hankkiserver.domain.favoritestore.repository.FavoriteStoreRepository;
+import org.hankki.hankkiserver.domain.favorite.repository.FavoriteRepository;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class FavoriteStoreDeleter {
+public class FavoriteDeleter {
 
-  private final FavoriteStoreRepository favoriteStoreRepository;
-
-  public void deleteAllByFavorites(List<Favorite> favorites) {
+  private final FavoriteRepository favoriteRepository;
+  public void deleteAll(List<Favorite> favorites) {
 
     try {
-      favoriteStoreRepository.deleteAllByFavorites(favorites);
+      favoriteRepository.deleteAll(favorites);
     } catch (Exception e) {
       throw new InternalServerException(BusinessErrorCode.INTERNAL_SERVER_ERROR);
     }

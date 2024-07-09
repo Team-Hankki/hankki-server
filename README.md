@@ -2,15 +2,19 @@
 
 # 👋 ABOUT HANKKI
 
- <div align = "center">
-  <img witdth= "600px" src="https://github.com/Team-Hankki/hankki-server/assets/109809242/275fabbb-b1c1-4589-b9e0-ec6b870dc401">
-</div>
+<div align="center">
+  <img witdth= "200px" src="https://github.com/Team-Hankki/hankki-server/assets/109809242/85193579-b827-4b3a-a609-702430b910fa">
+<br><br>
  
-**`WHAT?`**  대학교를 중심으로 **8000원 이하의 메뉴를 가진 식당**을 제공하는 프로덕트 
+ **`WHAT?`**  대학교를 중심으로 **8000원 이하의 메뉴를 가진 식당**을 제공하는 프로덕트 
 
 **`HOW?`** 서울 내의 대학 묶음 9-10개를 중심으로 50개씩 약 500개의 식당을 모아 릴리즈하고, 추후 **유저참여형**으로 운영할 계획 
 
 **`WHY?`** 치솟는 물가에 밥 한끼 먹기도 부담되는 요즘, 저렴한 식당을 공유하며 **함께** **잘 먹고 잘 살기 위해서!**
+
+</div>
+
+
 
 <br>
 

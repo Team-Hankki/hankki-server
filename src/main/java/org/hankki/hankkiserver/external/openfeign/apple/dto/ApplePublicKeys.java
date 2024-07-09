@@ -1,6 +1,6 @@
 package org.hankki.hankkiserver.external.openfeign.apple.dto;
 
-import org.hankki.hankkiserver.common.code.ErrorCode;
+import org.hankki.hankkiserver.common.code.AuthErrorCode;
 import org.hankki.hankkiserver.common.exception.UnauthorizedException;
 
 import java.util.List;
@@ -13,6 +13,6 @@ public record ApplePublicKeys(
         return this.applePublicKeys.stream()
                 .filter(key -> key.kid().equals(kid) && key.alg().equals(alg))
                 .findFirst()
-                .orElseThrow(() -> new UnauthorizedException(ErrorCode.INVALID_APPLE_IDENTITY_TOKEN));
+                .orElseThrow(() -> new UnauthorizedException(AuthErrorCode.INVALID_APPLE_IDENTITY_TOKEN));
     }
 }

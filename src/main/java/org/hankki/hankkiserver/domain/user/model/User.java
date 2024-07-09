@@ -3,7 +3,7 @@ package org.hankki.hankkiserver.domain.user.model;
 import jakarta.persistence.*;
 
 import lombok.*;
-import org.hankki.hankkiserver.domain.BaseTimeEntity;
+import org.hankki.hankkiserver.domain.common.BaseTimeEntity;
 
 import java.time.LocalDateTime;
 

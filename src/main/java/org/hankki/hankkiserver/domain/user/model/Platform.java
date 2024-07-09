@@ -2,8 +2,8 @@ package org.hankki.hankkiserver.domain.user.model;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.hankki.hankkiserver.common.code.ErrorCode;
-import org.hankki.hankkiserver.common.exception.InvalidValueException;
+import org.hankki.hankkiserver.common.code.AuthErrorCode;
+import org.hankki.hankkiserver.common.exception.BadRequestException;
 
 import java.util.Arrays;
 
@@ -20,6 +20,6 @@ public enum Platform {
         return Arrays.stream(values())
                 .filter(platform -> platform.loginPlatform.equals(loginPlatform))
                 .findFirst()
-                .orElseThrow(() -> new InvalidValueException(ErrorCode.INVALID_PLATFORM_TYPE));
+                .orElseThrow(() -> new BadRequestException(AuthErrorCode.INVALID_PLATFORM_TYPE));
     }
 }

@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.auth.jwt.JwtProvider;
 import org.hankki.hankkiserver.auth.jwt.JwtValidator;
 import org.hankki.hankkiserver.auth.jwt.Token;
-import org.hankki.hankkiserver.common.code.ErrorCode;
+import org.hankki.hankkiserver.common.code.AuthErrorCode;
 import org.hankki.hankkiserver.domain.user.model.User;
 import org.hankki.hankkiserver.domain.user.model.UserInfo;
 import org.hankki.hankkiserver.domain.user.model.Platform;
-import org.hankki.hankkiserver.common.exception.InvalidValueException;
+import org.hankki.hankkiserver.common.exception.BadRequestException;
 import org.hankki.hankkiserver.common.exception.UnauthorizedException;
 import org.hankki.hankkiserver.external.openfeign.apple.AppleOAuthProvider;
 import org.hankki.hankkiserver.external.openfeign.dto.SocialInfoDto;
@@ -18,8 +18,6 @@ import org.hankki.hankkiserver.api.auth.service.response.UserReissueResponse;
 import org.hankki.hankkiserver.external.openfeign.kakao.KakaoOAuthProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 import static org.hankki.hankkiserver.domain.user.model.MemberStatus.ACTIVE;
 import static org.hankki.hankkiserver.domain.user.model.Platform.APPLE;
@@ -65,7 +63,7 @@ public class AuthService {
                 String refreshToken = appleOAuthProvider.getAppleToken(code);
                 appleOAuthProvider.requestRevoke(refreshToken);
             } catch (Exception e) {
-                throw new InvalidValueException(ErrorCode.APPLE_REVOKE_FAILED);
+                throw new BadRequestException(AuthErrorCode.APPLE_REVOKE_FAILED);
             }
         }
         user.softDelete();

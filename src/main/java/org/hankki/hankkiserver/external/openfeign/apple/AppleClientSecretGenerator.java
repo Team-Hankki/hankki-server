@@ -3,8 +3,8 @@ package org.hankki.hankkiserver.external.openfeign.apple;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
-import org.hankki.hankkiserver.common.code.ErrorCode;
-import org.hankki.hankkiserver.common.exception.InvalidValueException;
+import org.hankki.hankkiserver.common.code.AuthErrorCode;
+import org.hankki.hankkiserver.common.exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -41,7 +41,7 @@ public class AppleClientSecretGenerator {
                     .signWith(applePrivateKeyGenerator.getPrivateKey(), SignatureAlgorithm.ES256)
                     .compact();
         } catch (Exception e) {
-            throw new InvalidValueException(ErrorCode.FAILED_TO_LOAD_PRIVATE_KEY);
+            throw new BadRequestException(AuthErrorCode.FAILED_TO_LOAD_PRIVATE_KEY);
         }
     }
 }

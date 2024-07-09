@@ -3,8 +3,8 @@ package org.hankki.hankkiserver.external.openfeign.apple;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 
-import org.hankki.hankkiserver.common.code.ErrorCode;
-import org.hankki.hankkiserver.common.exception.InvalidValueException;
+import org.hankki.hankkiserver.common.code.AuthErrorCode;
+import org.hankki.hankkiserver.common.exception.BadRequestException;
 import org.hankki.hankkiserver.external.openfeign.apple.dto.ApplePublicKeys;
 import org.hankki.hankkiserver.external.openfeign.apple.dto.AppleTokenRequest;
 import org.hankki.hankkiserver.external.openfeign.dto.SocialInfoDto;
@@ -45,7 +45,7 @@ public class AppleOAuthProvider {
                      AppleTokenRequest.of(code, clientId, clientSecret));
             return appleTokenResponse.refreshToken();
         } catch (Exception e) {
-            throw new InvalidValueException(ErrorCode.FAILED_TO_LOAD_PRIVATE_KEY);
+            throw new BadRequestException(AuthErrorCode.FAILED_TO_LOAD_PRIVATE_KEY);
         }
     }
 

@@ -11,7 +11,7 @@ import org.hankki.hankkiserver.common.code.SuccessCode;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class HankkiResponse<T> {
 
-    private final int status;
+    private final int code;
     private final String message;
     @JsonInclude(value = JsonInclude.Include.NON_NULL)
     private T data;

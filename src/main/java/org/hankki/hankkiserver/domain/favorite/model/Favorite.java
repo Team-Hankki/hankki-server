@@ -1,11 +1,14 @@
 package org.hankki.hankkiserver.domain.favorite.model;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hankki.hankkiserver.domain.common.BaseTimeEntity;
+import org.hankki.hankkiserver.domain.favoritestore.model.FavoriteStore;
 import org.hankki.hankkiserver.domain.user.model.User;
 
 @Entity
@@ -26,6 +29,9 @@ public class Favorite extends BaseTimeEntity {
     private String name;
 
     private String detail;
+
+    @OneToMany(mappedBy = "favorite")
+    private List<FavoriteStore> favoriteStores = new ArrayList<>();
 
     public static Favorite create(User user, String name, String detail) {
         return Favorite.builder()

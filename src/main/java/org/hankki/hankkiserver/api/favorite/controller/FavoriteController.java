@@ -12,6 +12,10 @@ import org.hankki.hankkiserver.auth.UserId;
 import org.hankki.hankkiserver.common.code.CommonSuccessCode;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.hankki.hankkiserver.api.favorite.service.FavoriteQueryService;
+import org.hankki.hankkiserver.api.favorite.service.response.FavoriteFindResponse;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class FavoriteController {
 
   private final FavoriteCommandService favoriteCommandService;
+  private final FavoriteQueryService favoriteQueryService;
 
   @PostMapping("/favorites")
   public HankkiResponse<Void> createFavorite(@UserId final Long userId, @RequestBody @Valid final FavoritePostRequest request) {
@@ -34,5 +39,10 @@ public class FavoriteController {
 
     favoriteCommandService.deleteFavorites(FavoritesDeleteCommand.of(userId, request));
     return HankkiResponse.success(CommonSuccessCode.NO_CONTENT);
+  }
+
+  @GetMapping("/favorites/{favoriteId}")
+  public HankkiResponse<FavoriteFindResponse> getFavorite(@PathVariable(name = "favoriteId") long favoriteId) {
+    return HankkiResponse.success(CommonSuccessCode.OK, favoriteQueryService.findFavorite(favoriteId));
   }
 }

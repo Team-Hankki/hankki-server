@@ -31,6 +31,7 @@ public enum AuthErrorCode implements ErrorCode {
     INVALID_APPLE_IDENTITY_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 아이덴티티 토큰입니다."),
     EXPIRED_IDENTITY_TOKEN(HttpStatus.UNAUTHORIZED, "아이덴티티 토큰이 만료되었습니다."),
     INVALID_IDENTITY_TOKEN_VALUE(HttpStatus.UNAUTHORIZED, "애플 아이덴티티 토큰의 값이 올바르지 않습니다."),
+    MISSING_BEARER_PREFIX(HttpStatus.UNAUTHORIZED, "Bearer가 누락되었습니다."),
 
     /**
      * 500 Internal Server Error

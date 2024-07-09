@@ -52,6 +52,6 @@ public class JwtValidator {
         if (refreshToken.startsWith(BEARER)) {
             return refreshToken.substring(BEARER.length());
         }
-        throw new UnauthorizedException(AuthErrorCode.INVALID_ACCESS_TOKEN);
+        throw new UnauthorizedException(AuthErrorCode.MISSING_BEARER_PREFIX);
     }
 }

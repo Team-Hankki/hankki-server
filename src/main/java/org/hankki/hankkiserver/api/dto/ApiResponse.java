@@ -6,18 +6,18 @@ import org.springframework.http.ResponseEntity;
 
 public interface ApiResponse {
 
-    static ResponseEntity<BaseResponse<?>> success(CommonSuccessCode commonSuccessCode) {
+    static ResponseEntity<HankkiResponse<?>> success(CommonSuccessCode commonSuccessCode) {
         return ResponseEntity.status(commonSuccessCode.getHttpStatus())
-                .body(BaseResponse.of(commonSuccessCode));
+                .body(HankkiResponse.of(commonSuccessCode));
     }
 
-    static <T> ResponseEntity<BaseResponse<?>> success(CommonSuccessCode commonSuccessCode, T data) {
+    static <T> ResponseEntity<HankkiResponse<?>> success(CommonSuccessCode commonSuccessCode, T data) {
         return org.springframework.http.ResponseEntity.status(commonSuccessCode.getHttpStatus())
-                .body(BaseResponse.of(commonSuccessCode, data));
+                .body(HankkiResponse.of(commonSuccessCode, data));
     }
 
-    static ResponseEntity<BaseResponse<?>> failure(AuthErrorCode authErrorCode) {
+    static ResponseEntity<HankkiResponse<?>> failure(AuthErrorCode authErrorCode) {
         return ResponseEntity.status(authErrorCode.getHttpStatus())
-                .body(BaseResponse.of(authErrorCode));
+                .body(HankkiResponse.of(authErrorCode));
     }
 }

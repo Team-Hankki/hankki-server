@@ -4,7 +4,7 @@ import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.auth.UserId;
 import org.hankki.hankkiserver.api.dto.ApiResponse;
-import org.hankki.hankkiserver.api.dto.BaseResponse;
+import org.hankki.hankkiserver.api.dto.HankkiResponse;
 import org.hankki.hankkiserver.common.code.CommonSuccessCode;
 import org.hankki.hankkiserver.api.auth.service.AuthService;
 import org.hankki.hankkiserver.api.auth.controller.request.UserLoginRequest;
@@ -22,7 +22,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/auth/login")
-    public ResponseEntity<BaseResponse<?>> login(
+    public ResponseEntity<HankkiResponse<?>> login(
             @RequestHeader(HttpHeaders.AUTHORIZATION) final String token,
             @RequestBody final UserLoginRequest request) {
         final UserLoginResponse response = authService.login(token, request);
@@ -30,14 +30,14 @@ public class AuthController {
     }
 
     @PatchMapping("/auth/logout")
-    public ResponseEntity<BaseResponse<?>> signOut(
+    public ResponseEntity<HankkiResponse<?>> signOut(
             @UserId final Long userId) {
         authService.logOut(userId);
         return ApiResponse.success(CommonSuccessCode.OK);
     }
 
     @DeleteMapping("/auth/withdraw")
-    public ResponseEntity<BaseResponse<?>> withdraw(
+    public ResponseEntity<HankkiResponse<?>> withdraw(
             @UserId final Long userId,
             @Nullable @RequestHeader("X-Apple-Code") final String code){
         authService.withdraw(userId,code);
@@ -45,7 +45,7 @@ public class AuthController {
     }
 
     @PostMapping("/auth/reissue")
-    public ResponseEntity<BaseResponse<?>> reissue(
+    public ResponseEntity<HankkiResponse<?>> reissue(
             @RequestHeader(HttpHeaders.AUTHORIZATION) final String refreshToken) {
         final UserReissueResponse response = authService.reissue(refreshToken);
         return ApiResponse.success(CommonSuccessCode.OK, response);

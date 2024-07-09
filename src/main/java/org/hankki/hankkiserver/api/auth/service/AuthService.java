@@ -8,7 +8,7 @@ import org.hankki.hankkiserver.common.code.AuthErrorCode;
 import org.hankki.hankkiserver.domain.user.model.User;
 import org.hankki.hankkiserver.domain.user.model.UserInfo;
 import org.hankki.hankkiserver.domain.user.model.Platform;
-import org.hankki.hankkiserver.common.exception.InvalidValueException;
+import org.hankki.hankkiserver.common.exception.BadRequestException;
 import org.hankki.hankkiserver.common.exception.UnauthorizedException;
 import org.hankki.hankkiserver.external.openfeign.apple.AppleOAuthProvider;
 import org.hankki.hankkiserver.external.openfeign.dto.SocialInfoDto;
@@ -63,7 +63,7 @@ public class AuthService {
                 String refreshToken = appleOAuthProvider.getAppleToken(code);
                 appleOAuthProvider.requestRevoke(refreshToken);
             } catch (Exception e) {
-                throw new InvalidValueException(AuthErrorCode.APPLE_REVOKE_FAILED);
+                throw new BadRequestException(AuthErrorCode.APPLE_REVOKE_FAILED);
             }
         }
         user.softDelete();

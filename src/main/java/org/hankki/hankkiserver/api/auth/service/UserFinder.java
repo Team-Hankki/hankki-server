@@ -1,8 +1,8 @@
 package org.hankki.hankkiserver.api.auth.service;
 
 import lombok.RequiredArgsConstructor;
-import org.hankki.hankkiserver.common.code.AuthErrorCode;
-import org.hankki.hankkiserver.common.exception.EntityNotFoundException;
+import org.hankki.hankkiserver.common.code.UserErrorCode;
+import org.hankki.hankkiserver.common.exception.NotFoundException;
 import org.hankki.hankkiserver.domain.user.model.Platform;
 import org.hankki.hankkiserver.domain.user.model.User;
 import org.hankki.hankkiserver.domain.user.repository.UserRepository;
@@ -21,7 +21,7 @@ public class UserFinder {
 
     public User getUser(final long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException(AuthErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(UserErrorCode.USER_NOT_FOUND));
     }
 
     public boolean isRegisteredUser(final Platform platform, final SocialInfoDto socialInfo) {

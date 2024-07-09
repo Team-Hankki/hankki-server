@@ -4,8 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.hankki.hankkiserver.api.dto.BaseResponse;
+import org.hankki.hankkiserver.api.dto.HankkiResponse;
 import org.hankki.hankkiserver.common.code.AuthErrorCode;
+import org.hankki.hankkiserver.common.code.ErrorCode;
 import org.hankki.hankkiserver.common.exception.UnauthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -36,7 +37,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             Exception e) throws IOException {
         UnauthorizedException ue = (UnauthorizedException) e;
-        AuthErrorCode authErrorCode = ue.getAuthErrorCode();
+        ErrorCode authErrorCode = ue.getErrorCode();
         HttpStatus httpStatus = authErrorCode.getHttpStatus();
         setResponse(response, httpStatus, authErrorCode);
     }
@@ -50,11 +51,11 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
     private void setResponse(
             HttpServletResponse response,
             HttpStatus httpStatus,
-            AuthErrorCode authErrorCode) throws IOException {
+            ErrorCode authErrorCode) throws IOException {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("utf-8");
         response.setStatus(httpStatus.value());
         PrintWriter writer = response.getWriter();
-        writer.write(objectMapper.writeValueAsString(BaseResponse.of(authErrorCode)));
+        writer.write(objectMapper.writeValueAsString(HankkiResponse.of(authErrorCode)));
     }
 }

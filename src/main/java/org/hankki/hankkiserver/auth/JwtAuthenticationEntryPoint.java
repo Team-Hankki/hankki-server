@@ -3,7 +3,7 @@ package org.hankki.hankkiserver.auth;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.hankki.hankkiserver.api.dto.BaseResponse;
+import org.hankki.hankkiserver.api.dto.HankkiResponse;
 import org.hankki.hankkiserver.common.code.AuthErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -39,6 +39,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setCharacterEncoding("utf-8");
         response.setStatus(httpStatus.value());
         PrintWriter writer = response.getWriter();
-        writer.write(objectMapper.writeValueAsString(BaseResponse.of(authErrorCode)));
+        writer.write(objectMapper.writeValueAsString(HankkiResponse.of(authErrorCode)));
     }
 }

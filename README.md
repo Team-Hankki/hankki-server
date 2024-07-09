@@ -81,6 +81,7 @@ close #<issue_num>
 │   └── 🗂️ hankkiserver
 │       ├── 💽 HankkiserverApplication
 │       │   ├── 🗂️ api
+│       │   │   ├── 📂 advice
 │       │   │   ├── 📂 DomainA
 │       │   │   │   ├── controller
 │       │   │   │   │   └── request
@@ -92,6 +93,8 @@ close #<issue_num>
 │       │   │   ├── 📂 filter
 │       │   │   └── 📂 jwt
 │       │   ├── 🗂️ common
+│       │   │   ├── 📂 code
+│       │   │   ├── 📂 exception
 │       │   ├── 🗂️ domain
 │       │   │   ├── 📂 common
 │       │   │   ├── 📂 config
@@ -103,6 +106,5 @@ close #<issue_num>
 │       │       └── 📂 openfeign
 │       │            ├── apple
 │       │            └── kakao
-
 ```
 <br><br>

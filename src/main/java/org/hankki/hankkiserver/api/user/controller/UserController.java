@@ -18,11 +18,17 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserCommandService userCommandService;
+    private final UserQueryService userQueryService;
 
     @PostMapping("/users/me/university")
     public HankkiResponse<Void> postUserUniversity(@UserId final Long userId,
                                                 @Valid @RequestBody final UserUniversityPostRequest request) {
         userCommandService.saveUserUniversity(new UserUniversityPostCommand(userId, request));
         return HankkiResponse.success(CommonSuccessCode.CREATED);
+    }
+
+    @GetMapping("/users/me/university")
+    public HankkiResponse<UserUniversityFindResponse> findUserUniversity(@UserId final Long userId) {
+        return HankkiResponse.success(CommonSuccessCode.OK, userQueryService.findUserUniversity(userId));
     }
 }

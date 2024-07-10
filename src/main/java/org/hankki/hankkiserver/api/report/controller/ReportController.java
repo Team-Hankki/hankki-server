@@ -19,8 +19,8 @@ public class ReportController {
 
     @GetMapping("/reports/count")
     public HankkiResponse<ReportServiceResponse> getReportCounts() {
-        long reportCount = reportService.getMyReportSequence();
-        ReportServiceResponse response = new ReportServiceResponse(reportCount);
+        ReportServiceResponse response = new ReportServiceResponse(reportService.getMyReportSequence());
         return HankkiResponse.success(CommonSuccessCode.OK, response);
+
     }
 }

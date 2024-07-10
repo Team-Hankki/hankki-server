@@ -9,6 +9,7 @@ import org.hankki.hankkiserver.auth.UserAuthentication;
 import org.hankki.hankkiserver.auth.jwt.JwtProvider;
 import org.hankki.hankkiserver.auth.jwt.JwtValidator;
 import org.hankki.hankkiserver.common.code.AuthErrorCode;
+import org.hankki.hankkiserver.common.code.ErrorCode;
 import org.hankki.hankkiserver.common.exception.UnauthorizedException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,12 +30,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
 
     @Override
-    protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         final String accessToken = getAccessToken(request);
-        jwtValidator.validateAccessToken(accessToken);
+        jwtValidator.validateAccessToken(accessToken, request.getRequestURI());
         doAuthentication(request, jwtProvider.getSubject(accessToken));
         filterChain.doFilter(request, response);
     }

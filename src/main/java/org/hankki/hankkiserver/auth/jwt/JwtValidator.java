@@ -1,11 +1,13 @@
 package org.hankki.hankkiserver.auth.jwt;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtParser;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.common.code.AuthErrorCode;
 import org.hankki.hankkiserver.common.exception.UnauthorizedException;
 import org.springframework.stereotype.Component;
+
+import java.net.URI;
 
 import static org.hankki.hankkiserver.auth.filter.JwtAuthenticationFilter.BEARER;
 
@@ -15,9 +17,14 @@ public class JwtValidator {
 
     private final JwtGenerator jwtGenerator;
 
-    public void validateAccessToken(String accessToken) {
+    public void validateAccessToken(String accessToken, String requestURI) {
         try {
-            parseToken(accessToken);
+            String role = parseToken(accessToken).get(JwtGenerator.USER_ROLE_CLAIM_NAME, String.class);
+            if (role == null) {
+                if (!requestURI.equals("/api/v1/auth/reissue")) {
+                    throw new UnauthorizedException(AuthErrorCode.INVALID_ACCESS_TOKEN_VALUE);
+                }
+            }
         } catch (ExpiredJwtException e) {
             throw new UnauthorizedException(AuthErrorCode.EXPIRED_ACCESS_TOKEN);
         } catch (Exception e) {
@@ -27,6 +34,7 @@ public class JwtValidator {
 
     public void validateRefreshToken(final String refreshToken) {
         try {
+            System.out.println("refreshToken" + refreshToken);
             parseToken(getToken(refreshToken));
         } catch (ExpiredJwtException e) {
             throw new UnauthorizedException(AuthErrorCode.EXPIRED_REFRESH_TOKEN);
@@ -43,15 +51,14 @@ public class JwtValidator {
         }
     }
 
-    private void parseToken(String token) {
-        JwtParser jwtParser = jwtGenerator.getJwtParser();
-        jwtParser.parseClaimsJws(token);
-    }
-
     private String getToken(final String refreshToken) {
         if (refreshToken.startsWith(BEARER)) {
             return refreshToken.substring(BEARER.length());
         }
         throw new UnauthorizedException(AuthErrorCode.MISSING_BEARER_PREFIX);
+    }
+
+    private Claims parseToken(final String token) {
+        return jwtGenerator.getJwtParser().parseClaimsJws(token).getBody();
     }
 }

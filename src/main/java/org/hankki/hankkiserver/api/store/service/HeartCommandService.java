@@ -5,7 +5,6 @@ import org.hankki.hankkiserver.api.auth.service.UserFinder;
 import org.hankki.hankkiserver.api.store.service.command.StorePostCommand;
 import org.hankki.hankkiserver.api.store.service.response.CreateHeartResponse;
 import org.hankki.hankkiserver.common.code.HeartErrorCode;
-import org.hankki.hankkiserver.common.exception.BadRequestException;
 import org.hankki.hankkiserver.common.exception.ConflictException;
 import org.hankki.hankkiserver.domain.heart.model.Heart;
 import org.springframework.stereotype.Service;

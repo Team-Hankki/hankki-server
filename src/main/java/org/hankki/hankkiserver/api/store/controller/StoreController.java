@@ -10,6 +10,9 @@ import org.hankki.hankkiserver.api.store.service.response.StoreThumbnailResponse
 import org.hankki.hankkiserver.common.code.CommonSuccessCode;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.hankki.hankkiserver.api.store.service.StoreCommandService;
+import org.hankki.hankkiserver.auth.UserId;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class StoreController {
 
     private final StoreQueryService storeQueryService;
+    private final StoreCommandService storeCommandService;
 
     @GetMapping("/stores/{id}/thumbnail")
     public HankkiResponse<StoreThumbnailResponse> getStoreThumbnail(@PathVariable Long id) {
@@ -38,5 +42,11 @@ public class StoreController {
     @GetMapping("/stores/price-categories")
     public HankkiResponse<PriceCategoriesResponse> getPrices() {
         return HankkiResponse.success(CommonSuccessCode.OK, storeQueryService.getPriceCategories());
+    }
+
+    @PostMapping("/stores/{storeId}/heart")
+    public HankkiResponse<Void> heartStore(@UserId Long userId, @PathVariable Long storeId) {
+        storeCommandService.createHeart(userId, storeId);
+        return HankkiResponse.success(CommonSuccessCode.CREATED);
     }
 }

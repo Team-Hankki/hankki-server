@@ -7,6 +7,7 @@ import org.hankki.hankkiserver.api.favorite.controller.request.FavoriteDeleteReq
 import org.hankki.hankkiserver.api.favorite.service.FavoriteCommandService;
 import org.hankki.hankkiserver.api.favorite.service.command.FavoritePostCommand;
 import org.hankki.hankkiserver.api.favorite.controller.request.FavoritePostRequest;
+import org.hankki.hankkiserver.api.favorite.service.command.FavoritesDeleteCommand;
 import org.hankki.hankkiserver.auth.UserId;
 import org.hankki.hankkiserver.common.code.CommonSuccessCode;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,16 +23,16 @@ public class FavoriteController {
   private final FavoriteCommandService favoriteCommandService;
 
   @PostMapping("/favorites")
-  public HankkiResponse<Void> createFavorite(@UserId final Long userId, @RequestBody @Valid final FavoritePostRequest favoritePostRequest) {
+  public HankkiResponse<Void> createFavorite(@UserId final Long userId, @RequestBody @Valid final FavoritePostRequest request) {
 
-    favoriteCommandService.create(FavoritePostCommand.of(userId, favoritePostRequest));
+    favoriteCommandService.create(FavoritePostCommand.of(userId, request));
     return HankkiResponse.success(CommonSuccessCode.CREATED);
   }
 
   @PostMapping("/favorites/delete")
-  public HankkiResponse<Void> deleteFavorite(@RequestBody final FavoriteDeleteRequest favoriteDeleteRequest) {
+  public HankkiResponse<Void> deleteFavorite(@UserId final Long userId, @RequestBody final FavoriteDeleteRequest request) {
 
-    favoriteCommandService.deleteFavorites(favoriteDeleteRequest);
+    favoriteCommandService.deleteFavorites(FavoritesDeleteCommand.of(userId, request));
     return HankkiResponse.success(CommonSuccessCode.NO_CONTENT);
   }
 }

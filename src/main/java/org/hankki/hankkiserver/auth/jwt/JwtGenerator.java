@@ -1,7 +1,6 @@
 package org.hankki.hankkiserver.auth.jwt;
 
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -55,7 +54,8 @@ public class JwtGenerator {
     }
 
     private Key getSigningKey() {
-        return Keys.hmacShaKeyFor(encodeSecretKey().getBytes());
+        byte[] keyBytes = Base64.getDecoder().decode(JWT_SECRET);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
     private long calculateExpirationTime(boolean isAccessToken) {
@@ -64,10 +64,4 @@ public class JwtGenerator {
         }
         return REFRESH_TOKEN_EXPIRE_TIME;
     }
-
-    private String encodeSecretKey() {
-        return Base64.getEncoder()
-                .encodeToString(JWT_SECRET.getBytes());
-    }
 }
-

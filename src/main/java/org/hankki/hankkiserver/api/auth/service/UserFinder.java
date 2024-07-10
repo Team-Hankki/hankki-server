@@ -24,6 +24,10 @@ public class UserFinder {
                 .orElseThrow(() -> new NotFoundException(UserErrorCode.USER_NOT_FOUND));
     }
 
+    public User getUserReference(final long userId) {
+        return userRepository.getReferenceById(userId);
+    }
+
     public boolean isRegisteredUser(final Platform platform, final SocialInfoDto socialInfo) {
         return userRepository.existsByPlatformAndSerialIdAndMemberStatus(
                 platform,

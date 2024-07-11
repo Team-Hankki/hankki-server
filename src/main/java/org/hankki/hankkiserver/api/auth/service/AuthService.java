@@ -51,12 +51,12 @@ public class AuthService {
         return UserLoginResponse.of(issuedToken, isRegistered);
     }
 
-    public void logOut(final long userId) {
+    public void logOut(final Long userId) {
         UserInfo findUserInfo = userInfoFinder.getUserInfo(userId);
         findUserInfo.updateRefreshToken(null);
     }
 
-    public void withdraw(final long userId, final String code) {
+    public void withdraw(final Long userId, final String code) {
         User user = userFinder.getUser(userId);
         if (APPLE == user.getPlatform()){
             try {
@@ -72,19 +72,24 @@ public class AuthService {
 
     @Transactional(noRollbackFor = UnauthorizedException.class)
     public UserReissueResponse reissue(final String refreshToken) {
-        long userId = jwtProvider.getSubject(refreshToken.substring(BEARER.length()));
+        Long userId = jwtProvider.getSubject(refreshToken.substring(BEARER.length()));
         validateRefreshToken(refreshToken, userId);
         UserInfo findUserInfo = userInfoFinder.getUserInfo(userId);
-        Token issuedTokens = jwtProvider.issueTokens(userId);
+        Token issuedTokens = jwtProvider.issueTokens(userId, getUserRole(userId));
         findUserInfo.updateRefreshToken(issuedTokens.refreshToken());
         return UserReissueResponse.of(issuedTokens);
     }
 
-    private Token generateTokens(final long userId) {
-        Token issuedTokens = jwtProvider.issueTokens(userId);
+    private Token generateTokens(final Long userId) {
+        String role = userFinder.getUser(userId).getUserRole().getValue();
+        Token issuedTokens = jwtProvider.issueTokens(userId, getUserRole(userId));
         UserInfo findUserInfo = userInfoFinder.getUserInfo(userId);
         findUserInfo.updateRefreshToken(issuedTokens.refreshToken());
         return issuedTokens;
+    }
+
+    private String getUserRole(Long userId) {
+        return userFinder.getUser(userId).getUserRole().getValue();
     }
 
     private SocialInfoDto getSocialInfo(
@@ -119,8 +124,7 @@ public class AuthService {
     }
 
     private String getRefreshToken(final Long userId) {
-        return userInfoFinder.getUserInfo(userId)
-                .getRefreshToken();
+        return userInfoFinder.getUserInfo(userId).getRefreshToken();
     }
 
     private void saveUserAndUserInfo(final User user) {
@@ -129,7 +133,7 @@ public class AuthService {
         userInfoSaver.saveUserInfo(userInfo);
     }
 
-    private void validateRefreshToken(final String refreshToken, final long userId) {
+    private void validateRefreshToken(final String refreshToken, final Long userId) {
         try {
             jwtValidator.validateRefreshToken(refreshToken);
             String storedRefreshToken = getRefreshToken(userId);

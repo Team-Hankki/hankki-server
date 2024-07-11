@@ -12,7 +12,6 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
@@ -20,10 +19,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public void commence(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            AuthenticationException authException) throws IOException {
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         handleException(response);
     }
 
@@ -31,14 +27,10 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         setResponse(response, HttpStatus.UNAUTHORIZED, AuthErrorCode.UNAUTHORIZED);
     }
 
-    private void setResponse(
-            HttpServletResponse response,
-            HttpStatus httpStatus,
-            AuthErrorCode authErrorCode) throws IOException {
+    private void setResponse(HttpServletResponse response, HttpStatus httpStatus, AuthErrorCode authErrorCode) throws IOException {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("utf-8");
         response.setStatus(httpStatus.value());
-        PrintWriter writer = response.getWriter();
-        writer.write(objectMapper.writeValueAsString(HankkiResponse.fail(authErrorCode)));
+        response.getWriter().write(objectMapper.writeValueAsString(HankkiResponse.fail(authErrorCode)));
     }
 }

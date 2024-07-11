@@ -1,9 +1,6 @@
 package org.hankki.hankkiserver.auth.jwt;
 
-import io.jsonwebtoken.Header;
-import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -22,12 +19,20 @@ public class JwtGenerator {
     @Value("${jwt.refresh-token-expiration}")
     private long REFRESH_TOKEN_EXPIRE_TIME;
 
-    public String generateToken(Long userId, boolean isAccessToken) {
+    public static final String USER_ROLE_CLAIM_NAME = "role";
+
+    public String generateToken(Long userId, String role, boolean isAccessToken) {
         final Date now = generateNowDate();
         final Date expiration = generateExpirationDate(isAccessToken, now);
+
+        Claims claims = Jwts.claims().setSubject(String.valueOf(userId));
+        if (isAccessToken) {
+            claims.put(USER_ROLE_CLAIM_NAME, role);
+        }
+
         return Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-                .setSubject(String.valueOf(userId))
+                .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(expiration)
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -49,7 +54,8 @@ public class JwtGenerator {
     }
 
     private Key getSigningKey() {
-        return Keys.hmacShaKeyFor(encodeSecretKey().getBytes());
+        byte[] keyBytes = Base64.getDecoder().decode(JWT_SECRET);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
     private long calculateExpirationTime(boolean isAccessToken) {
@@ -58,10 +64,4 @@ public class JwtGenerator {
         }
         return REFRESH_TOKEN_EXPIRE_TIME;
     }
-
-    private String encodeSecretKey() {
-        return Base64.getEncoder()
-                .encodeToString(JWT_SECRET.getBytes());
-    }
 }
-

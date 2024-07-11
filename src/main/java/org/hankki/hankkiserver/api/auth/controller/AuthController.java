@@ -38,7 +38,7 @@ public class AuthController {
     public HankkiResponse<Void> withdraw(
             @UserId final Long userId,
             @Nullable @RequestHeader("X-Apple-Code") final String code){
-        authService.withdraw(userId,code);
+        authService.withdraw(userId, code);
         return HankkiResponse.success(CommonSuccessCode.NO_CONTENT);
     }
 

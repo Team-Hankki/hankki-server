@@ -13,6 +13,7 @@ import org.hibernate.annotations.BatchSize;
 
 @Entity
 @Getter
+@BatchSize(size = 100)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Store extends BaseTimeEntity {
 

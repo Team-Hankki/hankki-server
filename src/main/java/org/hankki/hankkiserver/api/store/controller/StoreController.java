@@ -10,15 +10,12 @@ import org.hankki.hankkiserver.api.store.service.response.StoreThumbnailResponse
 import org.hankki.hankkiserver.common.code.CommonSuccessCode;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.hankki.hankkiserver.api.store.service.StoreCommandService;
 import org.hankki.hankkiserver.auth.UserId;
 import org.hankki.hankkiserver.api.store.service.HeartCommandService;
 import org.hankki.hankkiserver.api.store.service.command.StoreDeleteCommand;
 import org.hankki.hankkiserver.api.store.service.command.StorePostCommand;
 import org.hankki.hankkiserver.api.store.service.response.HeartCreateResponse;
 import org.hankki.hankkiserver.api.store.service.response.HeartDeleteResponse;
-import org.hankki.hankkiserver.auth.UserId;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

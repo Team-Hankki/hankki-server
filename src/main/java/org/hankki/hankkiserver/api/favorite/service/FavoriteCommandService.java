@@ -28,12 +28,10 @@ public class FavoriteCommandService {
   public void create(final FavoritePostCommand command) {
 
     User findUser = userFinder.getUser(command.userId());
-
     String title = command.title();
     String details = String.join(" ", command.details());
 
     favoriteRepository.save(Favorite.create(findUser, title, details));
-
   }
 
   @Transactional
@@ -50,6 +48,5 @@ public class FavoriteCommandService {
 
     favoriteStoreDeleter.deleteAllByFavorites(favorites);
     favoriteDeleter.deleteAll(favorites);
-
   }
 }

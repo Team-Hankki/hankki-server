@@ -19,12 +19,12 @@ public class UserFinder {
 
     private final UserRepository userRepository;
 
-    public User getUser(final long userId) {
+    public User getUser(final Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(UserErrorCode.USER_NOT_FOUND));
     }
 
-    public User getUserReference(final long userId) {
+    public User getUserReference(final Long userId) {
         return userRepository.getReferenceById(userId);
     }
 

@@ -8,7 +8,8 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum HeartErrorCode implements ErrorCode {
 
-    ALREADY_EXISTED_HEART(HttpStatus.CONFLICT, "이미 좋아요 한 가게입니다.");
+    ALREADY_EXISTED_HEART(HttpStatus.CONFLICT, "이미 좋아요 한 가게입니다."),
+    ALREADY_DELETED_HEART(HttpStatus.CONFLICT, "이미 좋아요를 취소한 가게입니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

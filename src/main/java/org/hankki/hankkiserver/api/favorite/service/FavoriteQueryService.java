@@ -16,7 +16,7 @@ public class FavoriteQueryService {
   private final FavoriteFinder favoriteFinder;
 
   @Transactional(readOnly = true)
-  public FavoriteFindResponse findFavorite(final long id) {
+  public FavoriteFindResponse findFavorite(final Long id) {
 
     Favorite favorite = favoriteFinder.findById(id);
     List<Store> stores = favorite.getFavoriteStores().stream().map(FavoriteStore::getStore).toList();

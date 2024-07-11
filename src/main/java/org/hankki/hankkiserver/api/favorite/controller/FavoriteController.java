@@ -42,7 +42,7 @@ public class FavoriteController {
   }
 
   @GetMapping("/favorites/{favoriteId}")
-  public HankkiResponse<FavoriteFindResponse> getFavorite(@PathVariable(name = "favoriteId") long favoriteId) {
+  public HankkiResponse<FavoriteFindResponse> getFavorite(@PathVariable(name = "favoriteId") Long favoriteId) {
     return HankkiResponse.success(CommonSuccessCode.OK, favoriteQueryService.findFavorite(favoriteId));
   }
 }

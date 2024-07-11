@@ -39,14 +39,14 @@ public class FavoriteCommandService {
   @Transactional
   public void deleteFavorites(final FavoritesDeleteCommand command) {
 
-    List<Favorite> favorites = command.favoriteIds().stream()
-        .map( favoriteId -> {
-            Favorite favorite = favoriteFinder.findById(favoriteId);
-            if (!favorite.getUser().getId().equals(command.userId())) {
-              throw new UnauthorizedException(UserErrorCode.USER_FORBIDDEN);
-            }
-            return favorite;
-        }).toList();
+    List<Favorite> favorites = favoriteFinder.findByIds(command.favoriteIds());
+
+    Long userId = command.userId();
+    favorites.forEach(favorite -> {
+      if (!favorite.getUser().getId().equals(userId)) {
+        throw new UnauthorizedException(UserErrorCode.USER_FORBIDDEN);
+      }
+    });
 
     favoriteStoreDeleter.deleteAllByFavorites(favorites);
     favoriteDeleter.deleteAll(favorites);

@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.auth.service.UserFinder;
 import org.hankki.hankkiserver.api.store.service.command.StoreDeleteCommand;
 import org.hankki.hankkiserver.api.store.service.command.StorePostCommand;
-import org.hankki.hankkiserver.api.store.service.response.CreateHeartResponse;
-import org.hankki.hankkiserver.api.store.service.response.DeleteHeartResponse;
+import org.hankki.hankkiserver.api.store.service.response.HeartCreateResponse;
+import org.hankki.hankkiserver.api.store.service.response.HeartDeleteResponse;
 import org.hankki.hankkiserver.common.code.HeartErrorCode;
 import org.hankki.hankkiserver.common.exception.ConflictException;
 import org.hankki.hankkiserver.domain.heart.model.Heart;
@@ -24,7 +24,7 @@ public class HeartCommandService {
     private final UserFinder userFinder;
     private final StoreFinder storeFinder;
 
-    public CreateHeartResponse createHeart(final StorePostCommand storePostCommand) {
+    public HeartCreateResponse createHeart(final StorePostCommand storePostCommand) {
         Long userId = storePostCommand.userId();
         Long storeId = storePostCommand.storeId();
         heartFinder.findByUserIdAndStoreId(userId, storeId)
@@ -34,10 +34,10 @@ public class HeartCommandService {
         Store store = storeFinder.getStore(storeId);
         heartUpdater.saveHeart(Heart.createHeart(userFinder.getUserReference(userId), store));
         store.updateHearCount(false);
-        return CreateHeartResponse.of(storeId, true);
+        return HeartCreateResponse.of(storeId, true);
     }
 
-    public DeleteHeartResponse deleteHeart(final StoreDeleteCommand storeDeleteCommand) {
+    public HeartDeleteResponse deleteHeart(final StoreDeleteCommand storeDeleteCommand) {
         Long userId = storeDeleteCommand.userId();
         Long storeId = storeDeleteCommand.storeId();
 
@@ -45,6 +45,6 @@ public class HeartCommandService {
                 .orElseThrow(() -> new ConflictException(HeartErrorCode.ALREADY_DELETED_HEART));
         heartDeleter.deleteHeart(userId,storeId);
         storeFinder.getStore(storeId).updateHearCount(true);
-        return DeleteHeartResponse.of(storeId, false);
+        return HeartDeleteResponse.of(storeId, false);
     }
 }

@@ -13,7 +13,7 @@ public class HeartFinder {
 
     private final HeartRepository heartRepository;
 
-    public Optional<Heart> findByUserIdAndStoreId(Long userId, Long storeId) {
+    public Optional<Heart> findByUserIdAndStoreId(final Long userId, final Long storeId) {
         return heartRepository.findByUserIdAndStoreId(userId, storeId);
     }
 }

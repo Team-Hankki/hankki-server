@@ -11,7 +11,7 @@ public class HeartUpdater {
 
     private final HeartRepository heartRepository;
 
-    public void saveHeart(Heart heart) {
+    public void saveHeart(final Heart heart) {
         heartRepository.save(heart);
     }
 }

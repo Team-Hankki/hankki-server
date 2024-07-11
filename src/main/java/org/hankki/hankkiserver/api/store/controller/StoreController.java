@@ -50,12 +50,12 @@ public class StoreController {
         return HankkiResponse.success(CommonSuccessCode.OK, storeQueryService.getPriceCategories());
     }
 
-    @PostMapping("/stores/{storeId}/heart")
+    @PostMapping("/stores/{storeId}/hearts")
     public HankkiResponse<HeartCreateResponse> createHeartStore(@UserId Long userId, @PathVariable Long storeId) {
         return HankkiResponse.success(CommonSuccessCode.CREATED, heartCommandService.createHeart(StorePostCommand.of(userId, storeId)));
     }
 
-    @DeleteMapping("/stores/{storeId}/heart")
+    @DeleteMapping("/stores/{storeId}/hearts")
     public HankkiResponse<HeartDeleteResponse> deleteHeartStore(@UserId Long userId, @PathVariable Long storeId) {
         return HankkiResponse.success(CommonSuccessCode.NO_CONTENT, heartCommandService.deleteHeart(StoreDeleteCommand.of(userId, storeId)));
     }

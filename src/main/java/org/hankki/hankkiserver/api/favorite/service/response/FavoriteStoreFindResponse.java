@@ -7,8 +7,9 @@ public record FavoriteStoreFindResponse(
   Long id,
   String name,
   String imageUrl,
-  String storeCategory,
-  int lowestPrice
+  String category,
+  int lowestPrice,
+  int heartCount
 ) {
 
   public static FavoriteStoreFindResponse of(Store store) {
@@ -18,6 +19,7 @@ public record FavoriteStoreFindResponse(
         store.getName(),
         store.getImage(),
         store.getCategory().getName(),
-        store.getLowestPrice());
+        store.getLowestPrice(),
+        store.getHeartCount());
   }
 }

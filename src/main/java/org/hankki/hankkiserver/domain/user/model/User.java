@@ -63,4 +63,8 @@ public class User extends BaseTimeEntity {
     public void updateStatus(MemberStatus memberStatus) {
         this.memberStatus = memberStatus;
     }
+
+    public void updateDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
+    }
 }

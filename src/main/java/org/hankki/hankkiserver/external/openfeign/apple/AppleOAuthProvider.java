@@ -38,7 +38,7 @@ public class AppleOAuthProvider {
                 claims.get("email").toString());
     }
 
-    public String getAppleToken(final String code) {
+    public String getAppleRefreshToken(final String code) {
         try {
             String clientSecret = appleClientSecretGenerator.generateClientSecret();
             AppleTokenResponse appleTokenResponse = appleFeignClient.getAppleTokens(

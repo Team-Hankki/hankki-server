@@ -16,6 +16,8 @@ import org.hankki.hankkiserver.api.auth.controller.request.UserLoginRequest;
 import org.hankki.hankkiserver.api.auth.service.response.UserLoginResponse;
 import org.hankki.hankkiserver.api.auth.service.response.UserReissueResponse;
 import org.hankki.hankkiserver.external.openfeign.kakao.KakaoOAuthProvider;
+import org.hankki.hankkiserver.external.openfeign.kakao.dto.KakaoUnlinkRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +32,9 @@ import static org.hankki.hankkiserver.domain.user.model.User.createUser;
 @RequiredArgsConstructor
 public class AuthService {
 
+    @Value("${oauth.kakao.key}")
+    private String adminKey;
+
     private final UserFinder userFinder;
     private final UserSaver userSaver;
     private final UserInfoFinder userInfoFinder;
@@ -40,9 +45,7 @@ public class AuthService {
     private final KakaoOAuthProvider kakaoOAuthProvider;
     private final AppleOAuthProvider appleOAuthProvider;
 
-    public UserLoginResponse login(
-            final String token,
-            final UserLoginRequest request) {
+    public UserLoginResponse login(final String token, final UserLoginRequest request) {
         Platform platform = Platform.getEnumPlatformFromStringPlatform(request.platform());
         SocialInfoDto socialInfo = getSocialInfo(token, platform, request.name());
         boolean isRegistered = userFinder.isRegisteredUser(platform, socialInfo);
@@ -60,11 +63,14 @@ public class AuthService {
         User user = userFinder.getUser(userId);
         if (APPLE == user.getPlatform()){
             try {
-                String refreshToken = appleOAuthProvider.getAppleToken(code);
+                String refreshToken = appleOAuthProvider.getAppleRefreshToken(code);
                 appleOAuthProvider.requestRevoke(refreshToken);
             } catch (Exception e) {
                 throw new BadRequestException(AuthErrorCode.APPLE_REVOKE_FAILED);
             }
+        }
+        if (KAKAO == user.getPlatform()) {
+            kakaoOAuthProvider.unlinkKakaoServer(adminKey, KakaoUnlinkRequest.of(user.getSerialId()));
         }
         user.softDelete();
         userInfoDeleter.softDelete(userId);
@@ -88,14 +94,11 @@ public class AuthService {
         return issuedTokens;
     }
 
-    private String getUserRole(Long userId) {
+    private String getUserRole(final Long userId) {
         return userFinder.getUser(userId).getUserRole().getValue();
     }
 
-    private SocialInfoDto getSocialInfo(
-            final String providerToken,
-            final Platform platform,
-            final String name) {
+    private SocialInfoDto getSocialInfo(final String providerToken, final Platform platform, final String name) {
         if (KAKAO == platform){
             return kakaoOAuthProvider.getKakaoUserInfo(providerToken);
         }
@@ -116,9 +119,9 @@ public class AuthService {
                 });
     }
 
-
     private User updateUserInfo(final User user) {
         user.updateStatus(ACTIVE);
+        user.updateDeletedAt(null);
         userInfoFinder.getUserInfo(user.getId()).updateNickname(user.getName());
         return user;
     }

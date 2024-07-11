@@ -6,9 +6,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hankki.hankkiserver.domain.favorite.model.Favorite;
 import org.hankki.hankkiserver.domain.store.model.Store;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
 @Getter
+@BatchSize(size = 100)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FavoriteStore {
 

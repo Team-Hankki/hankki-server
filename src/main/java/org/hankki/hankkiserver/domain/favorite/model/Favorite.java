@@ -30,6 +30,9 @@ public class Favorite extends BaseTimeEntity {
 
     private String detail;
 
+    @Column(nullable = false)
+    private String favorite_image_url;
+
     @OneToMany(mappedBy = "favorite")
     private List<FavoriteStore> favoriteStores = new ArrayList<>();
 

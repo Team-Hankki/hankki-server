@@ -6,8 +6,10 @@ import org.hankki.hankkiserver.api.store.service.StoreQueryService;
 import org.hankki.hankkiserver.api.store.service.response.CategoriesResponse;
 import org.hankki.hankkiserver.api.store.service.response.PriceCategoriesResponse;
 import org.hankki.hankkiserver.api.store.service.response.SortOptionsResponse;
+import org.hankki.hankkiserver.api.store.service.response.StoreThumbnailResponse;
 import org.hankki.hankkiserver.common.code.CommonSuccessCode;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,6 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class StoreController {
 
     private final StoreQueryService storeQueryService;
+
+    @GetMapping("/stores/{id}/thumbnail")
+    public HankkiResponse<StoreThumbnailResponse> getStoreThumbnail(@PathVariable Long id) {
+        return HankkiResponse.success(CommonSuccessCode.OK, storeQueryService.getStoreThumbnail(id));
+    }
 
     @GetMapping("/stores/categories")
     public HankkiResponse<CategoriesResponse> getCategories() {

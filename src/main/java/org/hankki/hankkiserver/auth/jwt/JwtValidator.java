@@ -21,9 +21,7 @@ public class JwtValidator {
         try {
             String role = parseToken(accessToken).get(JwtGenerator.USER_ROLE_CLAIM_NAME, String.class);
             if (role == null) {
-                if (!requestURI.equals("/api/v1/auth/reissue")) {
-                    throw new UnauthorizedException(AuthErrorCode.INVALID_ACCESS_TOKEN_VALUE);
-                }
+                throw new UnauthorizedException(AuthErrorCode.INVALID_ACCESS_TOKEN_VALUE);
             }
         } catch (ExpiredJwtException e) {
             throw new UnauthorizedException(AuthErrorCode.EXPIRED_ACCESS_TOKEN);

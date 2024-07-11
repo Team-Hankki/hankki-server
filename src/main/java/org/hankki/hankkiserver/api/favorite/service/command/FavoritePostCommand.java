@@ -9,9 +9,9 @@ public record FavoritePostCommand(
     List<String> details
 ) {
 
-  public static FavoritePostCommand of(final Long memberId, final FavoritePostRequest favoritePostRequest) {
+  public static FavoritePostCommand of(final Long userId, final FavoritePostRequest favoritePostRequest) {
 
-    return new FavoritePostCommand(memberId, favoritePostRequest.title(), favoritePostRequest.details());
+    return new FavoritePostCommand(userId, favoritePostRequest.title(), favoritePostRequest.details());
 
   }
 }

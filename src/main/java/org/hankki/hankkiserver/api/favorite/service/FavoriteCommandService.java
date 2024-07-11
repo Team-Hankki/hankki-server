@@ -9,7 +9,6 @@ import org.hankki.hankkiserver.api.favoritestore.service.FavoriteStoreDeleter;
 import org.hankki.hankkiserver.common.code.UserErrorCode;
 import org.hankki.hankkiserver.common.exception.UnauthorizedException;
 import org.hankki.hankkiserver.domain.favorite.model.Favorite;
-import org.hankki.hankkiserver.domain.favorite.repository.FavoriteRepository;
 import org.hankki.hankkiserver.api.favorite.service.command.FavoritePostCommand;
 import org.hankki.hankkiserver.domain.user.model.User;
 import org.springframework.stereotype.Service;
@@ -18,30 +17,29 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class FavoriteCommandService {
 
-  private final FavoriteRepository favoriteRepository;
   private final UserFinder userFinder;
   private final FavoriteFinder favoriteFinder;
+  private final FavoriteUpdater favoriteUpdater;
   private final FavoriteStoreDeleter favoriteStoreDeleter;
   private final FavoriteDeleter favoriteDeleter;
 
   @Transactional
-  public void create(final FavoritePostCommand command) {
+  public Long create(final FavoritePostCommand command) {
 
     User findUser = userFinder.getUser(command.userId());
     String title = command.title();
     String details = String.join(" ", command.details());
 
-    favoriteRepository.save(Favorite.create(findUser, title, details));
+    return favoriteUpdater.save(Favorite.create(findUser, title, details));
   }
 
   @Transactional
   public void deleteFavorites(final FavoritesDeleteCommand command) {
 
-    List<Favorite> favorites = favoriteFinder.findByIds(command.favoriteIds());
+    List<Favorite> favorites = favoriteFinder.findAllByIds(command.favoriteIds());
 
-    Long userId = command.userId();
     favorites.forEach(favorite -> {
-      if (!favorite.getUser().getId().equals(userId)) {
+      if (!favorite.getUser().getId().equals(command.userId())) {
         throw new UnauthorizedException(UserErrorCode.USER_FORBIDDEN);
       }
     });

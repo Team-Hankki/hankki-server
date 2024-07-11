@@ -29,7 +29,7 @@ public class FavoriteController {
     return HankkiResponse.success(CommonSuccessCode.CREATED);
   }
 
-  @PostMapping("/favorites/delete")
+  @PostMapping("/favorites/batch-delete")
   public HankkiResponse<Void> deleteFavorite(@UserId final Long userId, @RequestBody final FavoriteDeleteRequest request) {
 
     favoriteCommandService.deleteFavorites(FavoritesDeleteCommand.of(userId, request));

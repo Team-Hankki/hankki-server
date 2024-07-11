@@ -18,7 +18,7 @@ public class FavoriteFinder {
     return favoriteRepository.findById(id).orElseThrow(() -> new NotFoundException(FavoriteErrorCode.FAVORITE_NOT_FOUND));
   }
 
-  public List<Favorite> findByIds(final List<Long> ids) {
-    return favoriteRepository.findByIds(ids);
+  public List<Favorite> findAllByIds(final List<Long> ids) {
+    return favoriteRepository.findAllByIds(ids);
   }
 }

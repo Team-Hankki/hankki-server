@@ -10,16 +10,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class FavoriteDeleter {
+public class FavoriteUpdater {
 
   private final FavoriteRepository favoriteRepository;
 
-  protected void deleteAll(List<Favorite> favorites) {
-
-    try {
-      favoriteRepository.deleteAll(favorites);
-    } catch (Exception e) {
-      throw new InternalServerException(BusinessErrorCode.INTERNAL_SERVER_ERROR);
-    }
+  protected Long save(Favorite favorite) {
+    return favoriteRepository.save(favorite).getId();
   }
 }

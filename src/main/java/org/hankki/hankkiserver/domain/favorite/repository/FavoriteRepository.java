@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
 public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
 
@@ -15,5 +14,5 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
   void deleteAll(@Param("favorites") List<Favorite> favorites);
 
   @Query("select f from Favorite f where f.id in :favoriteId")
-  List<Favorite> findByIds(@Param("favoriteId") List<Long> favoriteId);
+  List<Favorite> findAllByIds(@Param("favoriteId") List<Long> favoriteId);
 }

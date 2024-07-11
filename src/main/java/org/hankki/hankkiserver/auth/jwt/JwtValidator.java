@@ -17,7 +17,7 @@ public class JwtValidator {
 
     private final JwtGenerator jwtGenerator;
 
-    public void validateAccessToken(String accessToken, String requestURI) {
+    public void validateAccessToken(String accessToken) {
         try {
             String role = parseToken(accessToken).get(JwtGenerator.USER_ROLE_CLAIM_NAME, String.class);
             if (role == null) {

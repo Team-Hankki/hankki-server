@@ -12,14 +12,12 @@ public record StoreGetResponse(
         List<String> imageUrls,
         List<MenuResponse> menus
 ) {
-    public static StoreGetResponse of(Store store, boolean isLiked, List<MenuResponse> menus) {
+    public static StoreGetResponse of(Store store, boolean isLiked, List<String> imageUrls, List<MenuResponse> menus) {
         return new StoreGetResponse(store.getName(),
                 store.getCategory().getName(),
                 store.getHeartCount(),
                 isLiked,
-                store.getImages().stream()
-                        .map(storeImage -> storeImage.getImageUrl())
-                        .toList(),
+                imageUrls,
                 menus);
     }
 }

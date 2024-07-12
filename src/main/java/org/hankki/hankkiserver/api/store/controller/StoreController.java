@@ -49,14 +49,14 @@ public class StoreController {
         return HankkiResponse.success(CommonSuccessCode.OK, storeQueryService.getPriceCategories());
     }
 
-    @PostMapping("/stores/{storeId}/hearts")
-    public HankkiResponse<HeartCreateResponse> createHeartStore(@UserId Long userId, @PathVariable Long storeId) {
-        return HankkiResponse.success(CommonSuccessCode.CREATED, heartCommandService.createHeart(StorePostCommand.of(userId, storeId)));
+    @PostMapping("/stores/{id}/hearts")
+    public HankkiResponse<HeartCreateResponse> createHeartStore(@UserId Long userId, @PathVariable Long id) {
+        return HankkiResponse.success(CommonSuccessCode.CREATED, heartCommandService.createHeart(StorePostCommand.of(userId, id)));
     }
 
-    @DeleteMapping("/stores/{storeId}/hearts")
-    public HankkiResponse<Void> deleteHeartStore(@UserId Long userId, @PathVariable Long storeId) {
-        heartCommandService.deleteHeart(StoreDeleteCommand.of(userId, storeId));
+    @DeleteMapping("/stores/{id}/hearts")
+    public HankkiResponse<Void> deleteHeartStore(@UserId Long userId, @PathVariable Long id) {
+        heartCommandService.deleteHeart(StoreDeleteCommand.of(userId, id));
         return HankkiResponse.success(CommonSuccessCode.NO_CONTENT);
     }
 }

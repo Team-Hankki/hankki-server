@@ -36,12 +36,11 @@ public class Store extends BaseTimeEntity {
     @Column(nullable = false)
     private boolean isDeleted;
 
-    public void updateHeartCount(boolean isDeleted) {
-        if (isDeleted) {
-            heartCount--;
-        }
-        else {
-            heartCount++;
-        }
+    public void decreaseHeartCount() {
+        heartCount--;
+    }
+
+    public void increaseHeartCount() {
+        heartCount++;
     }
 }

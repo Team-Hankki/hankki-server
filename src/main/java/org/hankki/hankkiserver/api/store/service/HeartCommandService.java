@@ -59,10 +59,10 @@ public class HeartCommandService {
     }
 
     private void increaseStoreHeartCount(final Long storeId) {
-        storeFinder.getStore(storeId).updateHeartCount(false);
+        storeFinder.getStore(storeId).increaseHeartCount();
     }
 
     private void decreaseStoreHeartCount(final Long storeId) {
-        storeFinder.getStore(storeId).updateHeartCount(true);
+        storeFinder.getStore(storeId).decreaseHeartCount();
     }
 }

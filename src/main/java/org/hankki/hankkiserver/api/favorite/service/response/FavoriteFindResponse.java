@@ -15,7 +15,7 @@ public record FavoriteFindResponse(
   public static FavoriteFindResponse of(final Favorite favorite, final List<Store> stores) {
 
     List<String> details = new ArrayList<>();
-    if (favorite.getDetail() != null) {
+    if (!isDetailNull(favorite.getDetail())) {
       details = Arrays.asList(favorite.getDetail().split(" "));
     }
 
@@ -23,5 +23,9 @@ public record FavoriteFindResponse(
         favorite.getName(),
         details,
         stores.stream().map(FavoriteStoreFindResponse::of).toList());
+  }
+
+  public static boolean isDetailNull(String detail) {
+    return detail == null;
   }
 }

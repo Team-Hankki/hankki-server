@@ -10,7 +10,7 @@ public class UserInfoDeleter {
 
     private final UserInfoRepository userInfoRepository;
 
-    public void softDelete(final long userId) {
+    public void softDelete(final Long userId) {
         userInfoRepository.softDeleteByUserId(userId);
     }
 }

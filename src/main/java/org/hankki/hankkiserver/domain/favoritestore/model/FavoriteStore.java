@@ -19,11 +19,11 @@ public class FavoriteStore {
     @Column(name = "favorite_store_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     private Store store;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "favorite_id")
     private Favorite favorite;
 

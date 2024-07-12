@@ -36,9 +36,9 @@ public class AuthService {
     private String adminKey;
 
     private final UserFinder userFinder;
-    private final UserSaver userSaver;
+    private final UserUpdater userUpdater;
     private final UserInfoFinder userInfoFinder;
-    private final UserInfoSaver userInfoSaver;
+    private final UserInfoUpdater userInfoUpdater;
     private final UserInfoDeleter userInfoDeleter;
     private final JwtProvider jwtProvider;
     private final JwtValidator jwtValidator;
@@ -131,9 +131,9 @@ public class AuthService {
     }
 
     private void saveUserAndUserInfo(final User user) {
-        userSaver.saveUser(user);
+        userUpdater.saveUser(user);
         UserInfo userInfo = UserInfo.createMemberInfo(user, null);
-        userInfoSaver.saveUserInfo(userInfo);
+        userInfoUpdater.saveUserInfo(userInfo);
     }
 
     private void validateRefreshToken(final String refreshToken, final Long userId) {

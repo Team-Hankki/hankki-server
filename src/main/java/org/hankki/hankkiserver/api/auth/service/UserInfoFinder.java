@@ -13,7 +13,7 @@ public class UserInfoFinder {
 
     private final UserInfoRepository userInfoRepository;
 
-    public UserInfo getUserInfo(final long userId) {
+    public UserInfo getUserInfo(final Long userId) {
         return userInfoRepository.findByUserId(userId)
                 .orElseThrow(() -> new NotFoundException(UserErrorCode.USER_INFO_NOT_FOUND));
     }

@@ -19,9 +19,13 @@ public class UserFinder {
 
     private final UserRepository userRepository;
 
-    public User getUser(final long userId) {
-        return userRepository.findById(userId)
+    public User getUser(final Long id) {
+        return userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(UserErrorCode.USER_NOT_FOUND));
+    }
+
+    public User getUserReference(final Long id) {
+        return userRepository.getReferenceById(id);
     }
 
     public boolean isRegisteredUser(final Platform platform, final SocialInfoDto socialInfo) {

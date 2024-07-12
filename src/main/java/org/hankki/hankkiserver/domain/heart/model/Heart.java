@@ -2,6 +2,7 @@ package org.hankki.hankkiserver.domain.heart.model;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hankki.hankkiserver.domain.store.model.Store;
@@ -24,5 +25,18 @@ public class Heart {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     private Store store;
+
+    @Builder
+    private Heart(User user, Store store) {
+        this.user = user;
+        this.store = store;
+    }
+
+    public static final Heart createHeart(User user, Store store) {
+        return Heart.builder()
+                .user(user)
+                .store(store)
+                .build();
+    }
 
 }

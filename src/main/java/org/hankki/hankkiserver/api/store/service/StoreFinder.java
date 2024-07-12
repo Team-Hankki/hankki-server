@@ -17,4 +17,8 @@ public class StoreFinder {
         return storeRepository.findByIdAndIsDeletedIsFalse(id)
                 .orElseThrow(() -> new NotFoundException(StoreErrorCode.STORE_NOT_FOUND));
     }
+
+    public Store getStoreReference(final Long id) {
+        return storeRepository.getReferenceById(id);
+    }
 }

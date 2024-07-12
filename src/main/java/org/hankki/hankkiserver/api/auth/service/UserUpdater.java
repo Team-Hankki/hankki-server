@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class UserSaver {
+public class UserUpdater {
 
     private final UserRepository userRepository;
 

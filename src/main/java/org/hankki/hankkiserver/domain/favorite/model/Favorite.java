@@ -32,7 +32,7 @@ public class Favorite extends BaseTimeEntity {
     private String detail;
 
     @Column(nullable = false)
-    private String image_url;
+    private String imageUrl;
 
     @OneToMany(mappedBy = "favorite")
     @BatchSize(size = 100)
@@ -51,6 +51,6 @@ public class Favorite extends BaseTimeEntity {
         this.user = user;
         this.name = name;
         this.detail = detail;
-        this.image_url = "default.com";
+        this.imageUrl = "default.com";
     }
 }

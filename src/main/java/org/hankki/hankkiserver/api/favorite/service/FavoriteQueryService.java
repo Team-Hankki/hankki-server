@@ -17,18 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class FavoriteQueryService {
 
   private final FavoriteFinder favoriteFinder;
-  private final UserFinder userFinder;
 
   @Transactional(readOnly = true)
   public FavoriteFindResponse findFavorite(final FavoriteGetCommand command) {
     Favorite favorite = favoriteFinder.findById(command.favoriteId());
-    validateUserAuthorization(userFinder.getUser(command.userId()), favorite.getUser());
     return FavoriteFindResponse.of(favorite, favorite.getFavoriteStores().stream().map(FavoriteStore::getStore).toList());
-  }
-
-  private void validateUserAuthorization(User user, User commandUser) {
-    if (!user.equals(commandUser)) {
-      throw new UnauthorizedException(UserErrorCode.USER_FORBIDDEN);
-    }
   }
 }

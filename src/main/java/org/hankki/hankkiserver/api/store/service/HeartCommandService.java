@@ -28,7 +28,7 @@ public class HeartCommandService {
         Long storeId = storePostCommand.storeId();
         validateCreateStoreHeart(userId, storeId);
         saveStoreHeart(userId, storeId);
-        updateStoreHeartCount(storeId, false);
+        increaseStoreHeartCount(storeId);
         return HeartCreateResponse.of(storeId, true);
     }
 
@@ -37,7 +37,7 @@ public class HeartCommandService {
         Long storeId = storeDeleteCommand.storeId();
         validateDeleteStoreHeart(userId, storeId);
         heartDeleter.deleteHeart(userId,storeId);
-        updateStoreHeartCount(storeId, true);
+        decreaseStoreHeartCount(storeId);
         return HeartDeleteResponse.of(storeId, false);
     }
 
@@ -58,7 +58,11 @@ public class HeartCommandService {
         heartUpdater.saveHeart(heart);
     }
 
-    private void updateStoreHeartCount(final Long storeId, final boolean isDeleted) {
-        storeFinder.getStore(storeId).updateHearCount(isDeleted);
+    private void increaseStoreHeartCount(final Long storeId) {
+        storeFinder.getStore(storeId).updateHearCount(false);
+    }
+
+    private void decreaseStoreHeartCount(final Long storeId) {
+        storeFinder.getStore(storeId).updateHearCount(true);
     }
 }

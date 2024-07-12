@@ -39,9 +39,9 @@ public class Store extends BaseTimeEntity {
     public void updateHearCount(boolean isDeleted) {
         if (isDeleted) {
             heartCount--;
-        } else {
+        }
+        else {
             heartCount++;
         }
     }
-
 }

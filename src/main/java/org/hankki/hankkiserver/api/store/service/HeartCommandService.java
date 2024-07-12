@@ -8,7 +8,6 @@ import org.hankki.hankkiserver.api.store.service.response.HeartCreateResponse;
 import org.hankki.hankkiserver.common.code.HeartErrorCode;
 import org.hankki.hankkiserver.common.exception.ConflictException;
 import org.hankki.hankkiserver.domain.heart.model.Heart;
-import org.hankki.hankkiserver.domain.store.model.Store;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

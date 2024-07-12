@@ -18,12 +18,12 @@ public class StoreFinder {
                 .orElseThrow(() -> new NotFoundException(StoreErrorCode.STORE_NOT_FOUND));
     }
 
-    public Store getStore(final Long storeId) {
-        return storeRepository.findById(storeId)
+    public Store getStore(final Long id) {
+        return storeRepository.findById(id)
                 .orElseThrow(()-> new NotFoundException(StoreErrorCode.STORE_NOT_FOUND));
     }
 
-    public Store getStoreReference(Long storeId) {
-        return storeRepository.getReferenceById(storeId);
+    public Store getStoreReference(Long id) {
+        return storeRepository.getReferenceById(id);
     }
 }

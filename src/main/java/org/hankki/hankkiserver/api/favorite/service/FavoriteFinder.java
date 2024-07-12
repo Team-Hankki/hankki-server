@@ -21,4 +21,8 @@ public class FavoriteFinder {
   public List<Favorite> findAllByIds(final List<Long> ids) {
     return favoriteRepository.findAllByIds(ids);
   }
+
+  public List<Favorite> findAllByUserId(final Long userId) {
+    return favoriteRepository.findAllByUserId(userId);
+  }
 }

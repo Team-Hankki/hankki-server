@@ -15,4 +15,7 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
 
   @Query("select f from Favorite f where f.id in :favoriteId")
   List<Favorite> findAllByIds(@Param("favoriteId") List<Long> favoriteId);
+
+  @Query("select f from Favorite f where f.user.id = :userId order by f.createdAt desc")
+  List<Favorite> findAllByUserId(@Param("userId") Long userId);
 }

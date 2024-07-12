@@ -65,4 +65,5 @@ public class Store extends BaseTimeEntity {
     public void increaseHeartCount() {
         this.heartCount++;
     }
+
 }

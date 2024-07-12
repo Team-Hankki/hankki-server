@@ -46,12 +46,12 @@ public class StoreController {
     }
 
     @PostMapping("/stores/{id}/hearts")
-    public HankkiResponse<HeartCreateResponse> createHeartStore(@UserId Long userId, @PathVariable Long id) {
+    public HankkiResponse<HeartCreateResponse> createHeartStore(@UserId final Long userId, @PathVariable final Long id) {
         return HankkiResponse.success(CommonSuccessCode.CREATED, heartCommandService.createHeart(StorePostCommand.of(userId, id)));
     }
 
     @DeleteMapping("/stores/{id}/hearts")
-    public HankkiResponse<HeartDeleteResponse> deleteHeartStore(@UserId Long userId, @PathVariable Long id) {
+    public HankkiResponse<HeartDeleteResponse> deleteHeartStore(@UserId final Long userId, @PathVariable final Long id) {
         return HankkiResponse.success(CommonSuccessCode.OK, heartCommandService.deleteHeart(StoreDeleteCommand.of(userId, id)));
     }
 }

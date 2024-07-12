@@ -29,7 +29,7 @@ public class StoreQueryService {
     @Transactional(readOnly = true)
     public StoreGetResponse getStoreInformation(Long id) {
 
-        Store store = storeFinder.findStoreByIdWithHeart(id);
+        Store store = storeFinder.findByIdWithHeartAndIsDeletedFalse(id);
 
         return StoreGetResponse.of(store,
                 isLiked(id, store),

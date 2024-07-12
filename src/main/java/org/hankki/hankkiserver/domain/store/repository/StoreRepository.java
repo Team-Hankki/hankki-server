@@ -11,5 +11,5 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     Optional<Store> findByIdAndIsDeletedIsFalse(Long id);
 
     @Query("select s from Store s join fetch s.hearts where s.id = :id and s.isDeleted = false")
-    Optional<Store> findStoreByIdWithHeart(Long id);
+    Optional<Store> findByIdWithHeartAndIsDeletedFalse(Long id);
 }

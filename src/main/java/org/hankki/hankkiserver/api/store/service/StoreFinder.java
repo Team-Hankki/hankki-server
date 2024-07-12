@@ -22,8 +22,8 @@ public class StoreFinder {
                 .orElseThrow(() -> new NotFoundException(StoreErrorCode.STORE_NOT_FOUND));
     }
 
-    protected Store findStoreByIdWithHeart(Long id) {
-        return storeRepository.findStoreByIdWithHeart(id)
+    protected Store findByIdWithHeartAndIsDeletedFalse(Long id) {
+        return storeRepository.findByIdWithHeartAndIsDeletedFalse(id)
                 .orElseThrow(() -> new NotFoundException(StoreErrorCode.STORE_NOT_FOUND));
     }
 }

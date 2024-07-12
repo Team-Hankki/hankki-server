@@ -5,6 +5,7 @@ import org.hankki.hankkiserver.api.auth.service.UserFinder;
 import org.hankki.hankkiserver.api.store.service.command.StoreDeleteCommand;
 import org.hankki.hankkiserver.api.store.service.command.StorePostCommand;
 import org.hankki.hankkiserver.api.store.service.response.HeartCreateResponse;
+import org.hankki.hankkiserver.api.store.service.response.HeartDeleteResponse;
 import org.hankki.hankkiserver.common.code.HeartErrorCode;
 import org.hankki.hankkiserver.common.exception.ConflictException;
 import org.hankki.hankkiserver.domain.heart.model.Heart;
@@ -31,12 +32,13 @@ public class HeartCommandService {
         return HeartCreateResponse.of(storeId, true);
     }
 
-    public void deleteHeart(final StoreDeleteCommand storeDeleteCommand) {
+    public HeartDeleteResponse deleteHeart(final StoreDeleteCommand storeDeleteCommand) {
         Long userId = storeDeleteCommand.userId();
         Long storeId = storeDeleteCommand.storeId();
         validateDeleteStoreHeart(userId, storeId);
         heartDeleter.deleteHeart(userId,storeId);
         updateStoreHeartCount(storeId, true);
+        return HeartDeleteResponse.of(storeId, false);
     }
 
     private void validateCreateStoreHeart(final Long userId, final Long storeId) {

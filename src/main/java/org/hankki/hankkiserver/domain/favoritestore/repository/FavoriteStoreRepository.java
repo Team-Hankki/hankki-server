@@ -1,6 +1,7 @@
 package org.hankki.hankkiserver.domain.favoritestore.repository;
 
 import java.util.List;
+import java.util.Optional;
 import org.hankki.hankkiserver.domain.favorite.model.Favorite;
 import org.hankki.hankkiserver.domain.favoritestore.model.FavoriteStore;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,5 +13,11 @@ public interface FavoriteStoreRepository extends JpaRepository<FavoriteStore, Lo
 
   @Modifying
   @Query("delete from FavoriteStore fs where fs.favorite in :favorites")
-  void deleteAllByFavorites(@Param("favorites")List<Favorite> favorites);
+  void deleteAllByFavorites(@Param("favorites") List<Favorite> favorites);
+
+  @Query("select count(fs) from FavoriteStore fs where fs.favorite in :favorite")
+  int countByFavorite(@Param("favorite") Favorite favorite);
+
+  @Query("select fs from FavoriteStore fs where fs.favorite.id = :favoriteId and fs.store.id = :storeId")
+  Optional<FavoriteStore> findByFavoriteIdAndStoreId(@Param("favoriteId") Long favoriteId, @Param("storeId") Long storeId);
 }

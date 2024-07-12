@@ -7,12 +7,12 @@ import java.util.List;
 
 
 public record ApplePublicKeys(
-        List<ApplePublicKey> applePublicKeys
+        List<ApplePublicKey> keys
 ) {
     public ApplePublicKey getMatchedPublicKey(String kid, String alg) {
-        return this.applePublicKeys.stream()
-                .filter(key -> key.kid().equals(kid) && key.alg().equals(alg))
-                .findFirst()
+        return keys.stream()
+                .filter(applePublicKey -> applePublicKey.kid().equals(kid) && applePublicKey.alg().equals(alg))
+                .findAny()
                 .orElseThrow(() -> new UnauthorizedException(AuthErrorCode.INVALID_APPLE_IDENTITY_TOKEN));
     }
 }

@@ -19,15 +19,16 @@ import java.util.Map;
 @Component
 public class ApplePublicKeyGenerator {
 
-    private static final String SIGN_ALGORITHM_HEADER_KEY = "alg";
     private static final String KEY_ID_HEADER_KEY = "kid";
+    private static final String SIGN_ALGORITHM_HEADER_KEY = "alg";
 
-    public PublicKey generatePublicKey(
-            Map<String, String> headers,
-            ApplePublicKeys applePublicKeys
-    ) {
+    public PublicKey generatePublicKey(Map<String, String> headers, ApplePublicKeys applePublicKeys) {
         ApplePublicKey applePublicKey = applePublicKeys
                 .getMatchedPublicKey(headers.get(KEY_ID_HEADER_KEY), headers.get(SIGN_ALGORITHM_HEADER_KEY));
+        return getPublicKey(applePublicKey);
+    }
+
+    private PublicKey getPublicKey(ApplePublicKey applePublicKey) {
 
         byte[] nBytes = Base64.getUrlDecoder().decode(applePublicKey.n());
         byte[] eBytes = Base64.getUrlDecoder().decode(applePublicKey.e());

@@ -79,9 +79,7 @@ public class FavoriteCommandService {
 
     validateUserAuthorization(userFinder.getUser(command.userId()), favorite.getUser());
 
-    favoriteStoreDeleter.delete(favoriteStoreFinder.findByFavoriteIdAndStoreId(favorite.getId(), command.storeId())
-        .orElseThrow(() -> new NotFoundException(FavoriteStoreErrorCode.FAVORITE_STORE_NOT_FOUND)));
-
+    favoriteStoreDeleter.delete(favoriteStoreFinder.findByFavoriteIdAndStoreId(favorite.getId(), command.storeId()));
     favorite.updateImageByFavoriteStoreCount(favoriteStoreFinder.countByFavorite(favorite));
   }
 

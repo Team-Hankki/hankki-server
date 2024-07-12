@@ -20,12 +20,12 @@ public class FavoriteStoreFinder {
     return favoriteStoreRepository.countByFavorite(favorite);
   }
 
-//  public FavoriteStore findByFavoriteIdAndStoreId(final Long favoriteId, final Long storeId) {
-//    return favoriteStoreRepository.findByFavoriteIdAndStoreId(favoriteId, storeId)
-//        .orElseThrow(() -> new NotFoundException(FavoriteStoreErrorCode.FAVORITE_STORE_NOT_FOUND));
-//  }
+  public FavoriteStore findByFavoriteIdAndStoreId(final Long favoriteId, final Long storeId) {
+    return favoriteStoreRepository.findByFavoriteIdAndStoreId(favoriteId, storeId)
+        .orElseThrow(() -> new NotFoundException(FavoriteStoreErrorCode.FAVORITE_STORE_NOT_FOUND));
+  }
 
-  public Optional<FavoriteStore> findByFavoriteIdAndStoreId(final Long favoriteId, final Long storeId) {
-    return favoriteStoreRepository.findByFavoriteIdAndStoreId(favoriteId, storeId);
+  public boolean isExist(final Long favoriteId, final Long storeId) {
+    return favoriteStoreRepository.isExist(favoriteId, storeId);
   }
 }

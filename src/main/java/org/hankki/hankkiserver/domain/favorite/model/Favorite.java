@@ -38,6 +38,10 @@ public class Favorite extends BaseTimeEntity {
     @BatchSize(size = 100)
     private List<FavoriteStore> favoriteStores = new ArrayList<>();
 
+    public void updateImageByFavoriteStoreCount(int count) {
+        this.image_url = FavoriteImage.getUrl(count);
+    }
+
     public static Favorite create(User user, String name, String detail) {
         return Favorite.builder()
             .user(user)

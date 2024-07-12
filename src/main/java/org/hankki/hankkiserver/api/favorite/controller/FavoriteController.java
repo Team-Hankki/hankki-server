@@ -8,9 +8,14 @@ import org.hankki.hankkiserver.api.favorite.service.FavoriteCommandService;
 import org.hankki.hankkiserver.api.favorite.service.command.FavoriteGetCommand;
 import org.hankki.hankkiserver.api.favorite.service.command.FavoritePostCommand;
 import org.hankki.hankkiserver.api.favorite.controller.request.FavoritePostRequest;
+import org.hankki.hankkiserver.api.favorite.service.command.FavoriteStoreDeleteCommand;
+import org.hankki.hankkiserver.api.favorite.service.command.FavoriteStorePostCommand;
 import org.hankki.hankkiserver.api.favorite.service.command.FavoritesDeleteCommand;
 import org.hankki.hankkiserver.auth.UserId;
 import org.hankki.hankkiserver.common.code.CommonSuccessCode;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.Mapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.hankki.hankkiserver.api.favorite.service.FavoriteQueryService;
@@ -18,6 +23,7 @@ import org.hankki.hankkiserver.api.favorite.service.response.FavoriteFindRespons
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -44,6 +50,27 @@ public class FavoriteController {
 
   @GetMapping("/favorites/{favoriteId}")
   public HankkiResponse<FavoriteFindResponse> getFavorite(@UserId final Long userId, @PathVariable(name = "favoriteId") final Long favoriteId) {
-    return HankkiResponse.success(CommonSuccessCode.OK, favoriteQueryService.findFavorite(FavoriteGetCommand.of(userId, favoriteId)));
+    return HankkiResponse.success(CommonSuccessCode.OK,
+        favoriteQueryService.findFavorite(FavoriteGetCommand.of(userId, favoriteId)));
+  }
+
+  @PostMapping("/favorites/{favoriteId}/stores/{storeId}")
+  public HankkiResponse<Void> createFavoriteStore(
+      @UserId final Long userId,
+      @PathVariable("favoriteId") final Long favoriteId,
+      @PathVariable("storeId") final Long storeId
+  ) {
+    favoriteCommandService.createFavoriteStore(FavoriteStorePostCommand.of(userId, favoriteId, storeId));
+    return HankkiResponse.success(CommonSuccessCode.CREATED);
+  }
+
+  @DeleteMapping("/favorites/{favoriteId}/stores/{storeId}")
+  public HankkiResponse<Void> deleteFavoriteStore(
+      @UserId final Long userId,
+      @PathVariable("favoriteId") final Long favoriteId,
+      @PathVariable("storeId") final Long storeId
+  ) {
+    favoriteCommandService.deleteFavoriteStore(FavoriteStoreDeleteCommand.of(userId, favoriteId, storeId));
+    return HankkiResponse.success(CommonSuccessCode.NO_CONTENT);
   }
 }

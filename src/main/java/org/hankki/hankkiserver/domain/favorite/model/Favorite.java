@@ -39,7 +39,7 @@ public class Favorite extends BaseTimeEntity {
     private List<FavoriteStore> favoriteStores = new ArrayList<>();
 
     public void updateImageByFavoriteStoreCount(int count) {
-        this.image_url = FavoriteImage.getUrl(count);
+        this.imageUrl = FavoriteImage.getUrl(count);
     }
 
     public static Favorite create(User user, String name, String detail) {

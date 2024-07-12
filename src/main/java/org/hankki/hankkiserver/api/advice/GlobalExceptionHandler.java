@@ -8,6 +8,7 @@ import org.hankki.hankkiserver.common.exception.ConflictException;
 import org.hankki.hankkiserver.common.exception.NotFoundException;
 import org.hankki.hankkiserver.common.exception.UnauthorizedException;
 
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -37,6 +38,12 @@ public class GlobalExceptionHandler {
     public HankkiResponse<Void> handleConflictException(ConflictException e) {
         log.error("handleConflictException() in GlobalExceptionHandler throw ConflictException : {}", e.getMessage());
         return HankkiResponse.fail(e.getErrorCode());
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public HankkiResponse<Void> handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
+        log.error("handleMissingServletRequestParameterException() in GlobalExceptionHandler throw MissingServletRequestParameterException : {}", e.getMessage());
+        return HankkiResponse.fail(BusinessErrorCode.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)

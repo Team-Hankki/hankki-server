@@ -13,7 +13,7 @@ import org.hankki.hankkiserver.api.favoritestore.service.FavoriteStoreUpdater;
 import org.hankki.hankkiserver.api.store.service.StoreFinder;
 import org.hankki.hankkiserver.common.code.FavoriteStoreErrorCode;
 import org.hankki.hankkiserver.common.code.UserErrorCode;
-import org.hankki.hankkiserver.common.exception.NotFoundException;
+import org.hankki.hankkiserver.common.exception.ConflictException;
 import org.hankki.hankkiserver.common.exception.UnauthorizedException;
 import org.hankki.hankkiserver.domain.favorite.model.Favorite;
 import org.hankki.hankkiserver.api.favorite.service.command.FavoritePostCommand;
@@ -61,10 +61,11 @@ public class FavoriteCommandService {
   @Transactional
   public Long createFavoriteStore(final FavoriteStorePostCommand command) {
 
-    Favorite favorite = favoriteFinder.findById(command.favoriteId());
+    Favorite favorite = favoriteFinder.findByIdWithUser(command.favoriteId());
     Store store = storeFinder.findByIdWhereDeletedIsFalse(command.storeId());
 
     validateUserAuthorization(userFinder.getUser(command.userId()), favorite.getUser());
+    checkFavoriteStoreExists(favorite.getId(), store.getId());
 
     FavoriteStore favoriteStore = favoriteStoreUpdater.save(FavoriteStore.create(store, favorite));
     favorite.updateImageByFavoriteStoreCount(favoriteStoreFinder.countByFavorite(favorite));
@@ -75,17 +76,22 @@ public class FavoriteCommandService {
   @Transactional
   public void deleteFavoriteStore(final FavoriteStoreDeleteCommand command) {
 
-    Favorite favorite = favoriteFinder.findById(command.favoriteId());
-
+    Favorite favorite = favoriteFinder.findByIdWithUser(command.favoriteId());
     validateUserAuthorization(userFinder.getUser(command.userId()), favorite.getUser());
 
     favoriteStoreDeleter.delete(favoriteStoreFinder.findByFavoriteIdAndStoreId(favorite.getId(), command.storeId()));
     favorite.updateImageByFavoriteStoreCount(favoriteStoreFinder.countByFavorite(favorite));
   }
 
-  private void validateUserAuthorization(User user, User commandUser) {
+  private void validateUserAuthorization(final User user, final User commandUser) {
     if (!user.equals(commandUser)) {
       throw new UnauthorizedException(UserErrorCode.USER_FORBIDDEN);
+    }
+  }
+
+  private void checkFavoriteStoreExists(final Long favoriteId, final Long storeId) {
+    if (favoriteStoreFinder.isExist(favoriteId, storeId)){
+      throw new ConflictException(FavoriteStoreErrorCode.FAVORITE_STORE_ALREADY_EXISTED);
     }
   }
 }

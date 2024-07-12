@@ -3,10 +3,7 @@ package org.hankki.hankkiserver.api.store.controller;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.dto.HankkiResponse;
 import org.hankki.hankkiserver.api.store.service.StoreQueryService;
-import org.hankki.hankkiserver.api.store.service.response.CategoriesResponse;
-import org.hankki.hankkiserver.api.store.service.response.PriceCategoriesResponse;
-import org.hankki.hankkiserver.api.store.service.response.SortOptionsResponse;
-import org.hankki.hankkiserver.api.store.service.response.StoreThumbnailResponse;
+import org.hankki.hankkiserver.api.store.service.response.*;
 import org.hankki.hankkiserver.common.code.CommonSuccessCode;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,7 +11,6 @@ import org.hankki.hankkiserver.auth.UserId;
 import org.hankki.hankkiserver.api.store.service.HeartCommandService;
 import org.hankki.hankkiserver.api.store.service.command.StoreDeleteCommand;
 import org.hankki.hankkiserver.api.store.service.command.StorePostCommand;
-import org.hankki.hankkiserver.api.store.service.response.HeartCreateResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -55,8 +51,7 @@ public class StoreController {
     }
 
     @DeleteMapping("/stores/{id}/hearts")
-    public HankkiResponse<Void> deleteHeartStore(@UserId Long userId, @PathVariable Long id) {
-        heartCommandService.deleteHeart(StoreDeleteCommand.of(userId, id));
-        return HankkiResponse.success(CommonSuccessCode.NO_CONTENT);
+    public HankkiResponse<HeartDeleteResponse> deleteHeartStore(@UserId Long userId, @PathVariable Long id) {
+        return HankkiResponse.success(CommonSuccessCode.OK, heartCommandService.deleteHeart(StoreDeleteCommand.of(userId, id)));
     }
 }

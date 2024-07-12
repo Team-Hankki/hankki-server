@@ -5,7 +5,6 @@ import org.hankki.hankkiserver.api.auth.service.UserFinder;
 import org.hankki.hankkiserver.api.store.service.command.StoreDeleteCommand;
 import org.hankki.hankkiserver.api.store.service.command.StorePostCommand;
 import org.hankki.hankkiserver.api.store.service.response.HeartCreateResponse;
-import org.hankki.hankkiserver.api.store.service.response.HeartDeleteResponse;
 import org.hankki.hankkiserver.common.code.HeartErrorCode;
 import org.hankki.hankkiserver.common.exception.ConflictException;
 import org.hankki.hankkiserver.domain.heart.model.Heart;
@@ -27,24 +26,38 @@ public class HeartCommandService {
     public HeartCreateResponse createHeart(final StorePostCommand storePostCommand) {
         Long userId = storePostCommand.userId();
         Long storeId = storePostCommand.storeId();
+        validateCreateStoreHeart(userId, storeId);
+        saveStoreHeart(userId, storeId);
+        updateStoreHeartCount(storeId, false);
+        return HeartCreateResponse.of(storeId, true);
+    }
+
+    public void deleteHeart(final StoreDeleteCommand storeDeleteCommand) {
+        Long userId = storeDeleteCommand.userId();
+        Long storeId = storeDeleteCommand.storeId();
+        validateDeleteStoreHeart(userId, storeId);
+        heartDeleter.deleteHeart(userId,storeId);
+        updateStoreHeartCount(storeId, true);
+    }
+
+    private void validateCreateStoreHeart(final Long userId, final Long storeId) {
         heartFinder.findByUserIdAndStoreId(userId, storeId)
                 .ifPresent(heart -> {
                     throw new ConflictException(HeartErrorCode.ALREADY_EXISTED_HEART);
                 });
-        Store store = storeFinder.getStore(storeId);
-        heartUpdater.saveHeart(Heart.createHeart(userFinder.getUserReference(userId), store));
-        store.updateHearCount(false);
-        return HeartCreateResponse.of(storeId, true);
     }
 
-    public HeartDeleteResponse deleteHeart(final StoreDeleteCommand storeDeleteCommand) {
-        Long userId = storeDeleteCommand.userId();
-        Long storeId = storeDeleteCommand.storeId();
-
+    private void validateDeleteStoreHeart(final Long userId, final Long storeId) {
         heartFinder.findByUserIdAndStoreId(userId, storeId)
                 .orElseThrow(() -> new ConflictException(HeartErrorCode.ALREADY_DELETED_HEART));
-        heartDeleter.deleteHeart(userId,storeId);
-        storeFinder.getStore(storeId).updateHearCount(true);
-        return HeartDeleteResponse.of(storeId, false);
+    }
+
+    private void saveStoreHeart(final Long userId, final Long storeId) {
+        Heart heart = Heart.createHeart(userFinder.getUserReference(userId), storeFinder.getStoreReference(storeId));
+        heartUpdater.saveHeart(heart);
+    }
+
+    private void updateStoreHeartCount(final Long storeId, final boolean isDeleted) {
+        storeFinder.getStore(storeId).updateHearCount(isDeleted);
     }
 }

@@ -22,4 +22,8 @@ public class StoreFinder {
         return storeRepository.findById(storeId)
                 .orElseThrow(()-> new NotFoundException(StoreErrorCode.STORE_NOT_FOUND));
     }
+
+    public Store getStoreReference(Long storeId) {
+        return storeRepository.getReferenceById(storeId);
+    }
 }

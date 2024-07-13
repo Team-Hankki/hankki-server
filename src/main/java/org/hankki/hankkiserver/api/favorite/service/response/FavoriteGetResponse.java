@@ -6,23 +6,23 @@ import java.util.List;
 import org.hankki.hankkiserver.domain.favorite.model.Favorite;
 import org.hankki.hankkiserver.domain.store.model.Store;
 
-public record FavoriteFindResponse(
+public record FavoriteGetResponse(
     String title,
     List<String> details,
-    List<FavoriteStoreFindResponse> stores
+    List<FavoriteStoreResponse> stores
 ) {
 
-  public static FavoriteFindResponse of(final Favorite favorite, final List<Store> stores) {
+  public static FavoriteGetResponse of(final Favorite favorite, final List<Store> stores) {
 
     List<String> details = new ArrayList<>();
     if (!isDetailNull(favorite.getDetail())) {
       details = Arrays.asList(favorite.getDetail().split(" "));
     }
 
-    return new FavoriteFindResponse(
+    return new FavoriteGetResponse(
         favorite.getName(),
         details,
-        stores.stream().map(FavoriteStoreFindResponse::of).toList());
+        stores.stream().map(FavoriteStoreResponse::of).toList());
   }
 
   public static boolean isDetailNull(String detail) {

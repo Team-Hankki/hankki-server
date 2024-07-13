@@ -1,9 +1,8 @@
 package org.hankki.hankkiserver.api.favorite.service.response;
 
 import java.util.List;
-import org.hankki.hankkiserver.domain.favorite.model.Favorite;
 
-public record FavoritesGetResponse(
+public record FavoriteWithStatusGetResponse(
     List<FavoriteResponse> favorites
 ) {
 }

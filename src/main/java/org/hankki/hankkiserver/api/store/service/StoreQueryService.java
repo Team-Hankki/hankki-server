@@ -6,6 +6,7 @@ import org.hankki.hankkiserver.api.menu.service.MenuFinder;
 import org.hankki.hankkiserver.api.store.parameter.PriceCategory;
 import org.hankki.hankkiserver.api.store.parameter.SortOption;
 import org.hankki.hankkiserver.api.store.service.response.*;
+import org.hankki.hankkiserver.domain.heart.model.Heart;
 import org.hankki.hankkiserver.domain.store.model.Store;
 import org.hankki.hankkiserver.domain.store.model.StoreCategory;
 import org.hankki.hankkiserver.domain.store.model.StoreImage;
@@ -67,6 +68,10 @@ public class StoreQueryService {
     }
 
     private boolean isLiked(final Long id, final Store store) {
-        return store.getHearts().stream().anyMatch(heart -> heart.getUser().getId().equals(id));
+        return store.getHearts().stream().anyMatch(heart -> isLiked(id, heart));
+    }
+
+    private static boolean isLiked(final Long id, final Heart heart) {
+        return heart.getUser().getId().equals(id);
     }
 }

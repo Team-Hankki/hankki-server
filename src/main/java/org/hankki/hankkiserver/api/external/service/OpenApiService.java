@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class ExternalService {
+public class OpenApiService {
 
     @Value("${naver.clientId}")
     private String clientId;
@@ -20,7 +20,7 @@ public class ExternalService {
 
     private final NaverFeignClient naverFeignClient;
 
-    public LocationsResponse getLocations(String query) {
+    public LocationsResponse getLocations(final String query) {
         NaverLocationsDto locationsDto = naverFeignClient.getLocationInfo(clientId, clientSecret, query, DEFAULT_SEARCH_SIZE);
         return LocationsResponse.of(locationsDto.items().stream()
                 .map(LocationResponse::of)

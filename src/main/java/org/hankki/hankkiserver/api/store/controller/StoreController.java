@@ -26,12 +26,12 @@ public class StoreController {
     private final HeartCommandService heartCommandService;
 
     @GetMapping("/stores/{id}")
-    public HankkiResponse<StoreGetResponse> getStore(@PathVariable Long id) {
+    public HankkiResponse<StoreGetResponse> getStore(@PathVariable final Long id) {
         return HankkiResponse.success(CommonSuccessCode.OK, storeQueryService.getStoreInformation(id));
     }
 
     @GetMapping("/stores/{id}/thumbnail")
-    public HankkiResponse<StoreThumbnailResponse> getStoreThumbnail(@PathVariable Long id) {
+    public HankkiResponse<StoreThumbnailResponse> getStoreThumbnail(@PathVariable final Long id) {
         return HankkiResponse.success(CommonSuccessCode.OK, storeQueryService.getStoreThumbnail(id));
     }
 

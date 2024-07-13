@@ -8,6 +8,7 @@ import org.hankki.hankkiserver.api.store.parameter.SortOption;
 import org.hankki.hankkiserver.api.store.service.response.*;
 import org.hankki.hankkiserver.domain.store.model.Store;
 import org.hankki.hankkiserver.domain.store.model.StoreCategory;
+import org.hankki.hankkiserver.domain.store.model.StoreImage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,12 +23,12 @@ public class StoreQueryService {
     private final MenuFinder menuFinder;
 
     @Transactional(readOnly = true)
-    public StoreThumbnailResponse getStoreThumbnail(Long id) {
+    public StoreThumbnailResponse getStoreThumbnail(final Long id) {
         return StoreThumbnailResponse.of(storeFinder.findByIdWhereDeletedIsFalse(id));
     }
 
     @Transactional(readOnly = true)
-    public StoreGetResponse getStoreInformation(Long id) {
+    public StoreGetResponse getStoreInformation(final Long id) {
 
         Store store = storeFinder.findByIdWithHeartAndIsDeletedFalse(id);
 
@@ -55,17 +56,17 @@ public class StoreQueryService {
                 .toList());
     }
 
-    private List<String> getImageUrlsFromStore(Store store) {
+    private List<String> getImageUrlsFromStore(final Store store) {
         return store.getImages().stream()
-                .map(storeImage -> storeImage.getImageUrl())
+                .map(StoreImage::getImageUrl)
                 .toList();
     }
 
-    private List<MenuResponse> getMenus(Store store) {
+    private List<MenuResponse> getMenus(final Store store) {
         return menuFinder.findAllByStore(store).stream().map(MenuResponse::of).toList();
     }
 
-    private boolean isLiked(Long id, Store store) {
+    private boolean isLiked(final Long id, final Store store) {
         return store.getHearts().stream().anyMatch(heart -> heart.getUser().getId().equals(id));
     }
 }

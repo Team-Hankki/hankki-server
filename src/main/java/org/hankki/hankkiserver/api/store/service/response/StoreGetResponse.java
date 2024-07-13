@@ -12,7 +12,7 @@ public record StoreGetResponse(
         List<String> imageUrls,
         List<MenuResponse> menus
 ) {
-    public static StoreGetResponse of(Store store, boolean isLiked, List<String> imageUrls, List<MenuResponse> menus) {
+    public static StoreGetResponse of(final Store store, final boolean isLiked, final List<String> imageUrls, final List<MenuResponse> menus) {
         return new StoreGetResponse(store.getName(),
                 store.getCategory().getName(),
                 store.getHeartCount(),

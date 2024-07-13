@@ -17,12 +17,12 @@ public class StoreFinder {
         return storeRepository.getReferenceById(id);
     }
 
-    protected Store findByIdWhereDeletedIsFalse(Long id) {
+    protected Store findByIdWhereDeletedIsFalse(final Long id) {
         return storeRepository.findByIdAndIsDeletedIsFalse(id)
                 .orElseThrow(() -> new NotFoundException(StoreErrorCode.STORE_NOT_FOUND));
     }
 
-    protected Store findByIdWithHeartAndIsDeletedFalse(Long id) {
+    protected Store findByIdWithHeartAndIsDeletedFalse(final Long id) {
         return storeRepository.findByIdWithHeartAndIsDeletedFalse(id)
                 .orElseThrow(() -> new NotFoundException(StoreErrorCode.STORE_NOT_FOUND));
     }

@@ -8,8 +8,6 @@ import org.hankki.hankkiserver.external.openfeign.naver.NaverFeignClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 public class ExternalService {
@@ -26,6 +24,6 @@ public class ExternalService {
         NaverLocationsDto locationsDto = naverFeignClient.getLocationInfo(clientId, clientSecret, query, DEFAULT_SEARCH_SIZE);
         return LocationsResponse.of(locationsDto.items().stream()
                 .map(LocationResponse::of)
-                .collect(Collectors.toList()));
+                .toList());
     }
 }

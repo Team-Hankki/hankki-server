@@ -9,7 +9,7 @@ public record StoreThumbnailResponse(
         int lowestPrice,
         int heartCount
 ) {
-    public static StoreThumbnailResponse of(Store store) {
+    public static StoreThumbnailResponse of(final Store store) {
         return new StoreThumbnailResponse(
                 store.getId(),
                 store.getName(),

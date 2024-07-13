@@ -21,6 +21,6 @@ public class StoreImage extends BaseCreatedAtEntity {
     private Store store;
 
     @Column(nullable = false)
-    private String image_url;
+    private String imageUrl;
 
 }

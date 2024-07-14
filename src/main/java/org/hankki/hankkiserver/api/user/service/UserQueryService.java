@@ -7,9 +7,12 @@ import org.hankki.hankkiserver.api.store.service.HeartFinder;
 import org.hankki.hankkiserver.api.user.service.response.UserFavoritesGetResponse;
 import org.hankki.hankkiserver.api.user.service.response.UserHeartedStoreListResponse;
 import org.hankki.hankkiserver.api.user.service.response.UserProfileAndNicknameResponse;
+import org.hankki.hankkiserver.api.report.service.ReportFinder;
+import org.hankki.hankkiserver.api.user.service.response.UserStoresReportedGetResponse;
 import org.hankki.hankkiserver.api.user.service.response.UserUniversityFindResponse;
 import org.hankki.hankkiserver.common.code.UserUniversityErrorCode;
 import org.hankki.hankkiserver.common.exception.NotFoundException;
+import org.hankki.hankkiserver.domain.report.model.Report;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +24,7 @@ public class UserQueryService {
     private final FavoriteFinder favoriteFinder;
     private final UserInfoFinder userInfoFinder;
     private final HeartFinder heartFinder;
+    private final ReportFinder reportFinder;
 
     @Transactional(readOnly = true)
     public UserUniversityFindResponse findUserUniversity(Long userId) {
@@ -41,5 +45,9 @@ public class UserQueryService {
     @Transactional(readOnly = true)
     public UserHeartedStoreListResponse findUserHeartedStoresView(final Long userId) {
         return UserHeartedStoreListResponse.of(heartFinder.findHeartedStoresByUserId(userId));
+    }
+
+    public UserStoresReportedGetResponse findUserStoreReported(final Long userId) {
+        return UserStoresReportedGetResponse.of(reportFinder.findAllByUserId(userId).stream().map(Report::getStore).toList());
     }
 }

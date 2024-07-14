@@ -64,8 +64,9 @@ public class FavoriteCommandService {
     Favorite favorite = favoriteFinder.findByIdWithUser(command.favoriteId());
     Store store = storeFinder.findByIdWhereDeletedIsFalse(command.storeId());
 
-    validateUserAuthorization(userFinder.getUser(command.userId()), favorite.getUser());
-    checkFavoriteStoreExists(favorite.getId(), store.getId());
+    if (isAlreadyExistsFavoriteStore(favorite.getId(), store.getId())){
+      throw new ConflictException(FavoriteStoreErrorCode.FAVORITE_STORE_ALREADY_EXISTED);
+    };
 
     FavoriteStore favoriteStore = favoriteStoreUpdater.save(FavoriteStore.create(store, favorite));
     favorite.updateImageByFavoriteStoreCount(favoriteStoreFinder.countByFavorite(favorite));
@@ -77,9 +78,8 @@ public class FavoriteCommandService {
   public void deleteFavoriteStore(final FavoriteStoreDeleteCommand command) {
 
     Favorite favorite = favoriteFinder.findByIdWithUser(command.favoriteId());
-    validateUserAuthorization(userFinder.getUser(command.userId()), favorite.getUser());
-
     favoriteStoreDeleter.delete(favoriteStoreFinder.findByFavoriteIdAndStoreId(favorite.getId(), command.storeId()));
+
     favorite.updateImageByFavoriteStoreCount(favoriteStoreFinder.countByFavorite(favorite));
   }
 
@@ -89,9 +89,7 @@ public class FavoriteCommandService {
     }
   }
 
-  private void checkFavoriteStoreExists(final Long favoriteId, final Long storeId) {
-    if (favoriteStoreFinder.isExist(favoriteId, storeId)){
-      throw new ConflictException(FavoriteStoreErrorCode.FAVORITE_STORE_ALREADY_EXISTED);
-    }
+  private boolean isAlreadyExistsFavoriteStore(final Long favoriteId, final Long storeId){
+    return favoriteStoreFinder.isExist(favoriteId, storeId);
   }
 }

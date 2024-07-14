@@ -8,21 +8,19 @@ import org.springframework.security.core.parameters.P;
 @RequiredArgsConstructor
 public enum FavoriteImage {
 
-  BASE_IMAGE("default.com"),
-  ONE_TO_FIVE_IMAGE("1.com"),
-  SIX_TO_TEN_IMAGE("2.com"),
-  ELEVEN_AND_ABOVE_IMAGE("3.com");
+  BASE_IMAGE,
+  ONE_TO_FIVE_IMAGE,
+  SIX_TO_TEN_IMAGE,
+  ELEVEN_AND_ABOVE_IMAGE;
 
-  private final String url;
-
-  public static String getUrl(final int countFavoriteStore) {
+  public static FavoriteImage getType(final int countFavoriteStore) {
     if (countFavoriteStore == 0) {
-      return BASE_IMAGE.getUrl();
+      return BASE_IMAGE;
     } else if (countFavoriteStore >= 1 && countFavoriteStore <= 5) {
-      return ONE_TO_FIVE_IMAGE.getUrl();
+      return ONE_TO_FIVE_IMAGE;
     } else if (countFavoriteStore >= 6 && countFavoriteStore <= 10) {
-      return SIX_TO_TEN_IMAGE.getUrl();
+      return SIX_TO_TEN_IMAGE;
     }
-    return ELEVEN_AND_ABOVE_IMAGE.getUrl();
+    return ELEVEN_AND_ABOVE_IMAGE;
   }
 }

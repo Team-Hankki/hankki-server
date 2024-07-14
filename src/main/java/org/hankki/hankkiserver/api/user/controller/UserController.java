@@ -7,7 +7,7 @@ import org.hankki.hankkiserver.api.user.controller.request.UserUniversityPostReq
 import org.hankki.hankkiserver.api.user.service.UserCommandService;
 import org.hankki.hankkiserver.api.user.service.UserQueryService;
 import org.hankki.hankkiserver.api.user.service.command.UserUniversityPostCommand;
-import org.hankki.hankkiserver.api.user.service.response.UserProfileAndNicknmaeResponse;
+import org.hankki.hankkiserver.api.user.service.response.UserProfileAndNicknameResponse;
 import org.hankki.hankkiserver.api.user.service.response.UserUniversityFindResponse;
 import org.hankki.hankkiserver.auth.UserId;
 import org.hankki.hankkiserver.common.code.CommonSuccessCode;
@@ -34,7 +34,7 @@ public class UserController {
     }
 
     @GetMapping("/users/me")
-    public HankkiResponse<UserProfileAndNicknmaeResponse> getUserProfileAndNickname(@UserId final Long userId) {
+    public HankkiResponse<UserProfileAndNicknameResponse> getUserProfileAndNickname(@UserId final Long userId) {
         return HankkiResponse.success(CommonSuccessCode.OK, userQueryService.getUserProfileAndNickname(userId));
     }
 }

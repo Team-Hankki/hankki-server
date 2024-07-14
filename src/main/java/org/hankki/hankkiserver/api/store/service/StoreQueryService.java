@@ -3,6 +3,7 @@ package org.hankki.hankkiserver.api.store.service;
 
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.menu.service.MenuFinder;
+import org.hankki.hankkiserver.api.store.controller.request.StoreDuplicateValidationRequest;
 import org.hankki.hankkiserver.api.store.parameter.PriceCategory;
 import org.hankki.hankkiserver.api.store.parameter.SortOption;
 import org.hankki.hankkiserver.api.store.service.response.*;
@@ -73,5 +74,12 @@ public class StoreQueryService {
 
     private static boolean isLiked(final Long id, final Heart heart) {
         return heart.getUser().getId().equals(id);
+    }
+
+    public StoreDuplicateValidationResponse validateDuplicatedStore(final StoreDuplicateValidationRequest request) {
+        Long storeId = storeFinder.findStoreWithLatitudeAndLongitude(request.latitude(), request.longitude())
+                .map(Store::getId)
+                .orElse(null);
+        return new StoreDuplicateValidationResponse(storeId);
     }
 }

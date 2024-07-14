@@ -1,9 +1,7 @@
 package org.hankki.hankkiserver.api.favorite.service.response;
 
-import static org.hankki.hankkiserver.api.favorite.service.response.FavoriteResponseUtils.getDetail;
+import static org.hankki.hankkiserver.api.favorite.service.response.util.FavoriteResponseUtil.getDetail;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.hankki.hankkiserver.domain.favorite.model.Favorite;
 import org.hankki.hankkiserver.domain.store.model.Store;

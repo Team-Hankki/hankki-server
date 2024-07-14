@@ -1,10 +1,10 @@
-package org.hankki.hankkiserver.api.favorite.service.response;
+package org.hankki.hankkiserver.api.favorite.service.response.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class FavoriteResponseUtils {
+public class FavoriteResponseUtil {
 
   public static List<String> getDetail(String detail) {
     List<String> details = new ArrayList<>();

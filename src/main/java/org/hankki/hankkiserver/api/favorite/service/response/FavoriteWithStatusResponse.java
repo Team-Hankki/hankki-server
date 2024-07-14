@@ -1,6 +1,7 @@
 package org.hankki.hankkiserver.api.favorite.service.response;
 
 import java.util.List;
+import org.hankki.hankkiserver.api.favorite.service.response.util.FavoriteResponseUtil;
 import org.hankki.hankkiserver.domain.favorite.model.Favorite;
 
 public record FavoriteWithStatusResponse(
@@ -15,7 +16,7 @@ public record FavoriteWithStatusResponse(
         favorite.getId(),
         favorite.getName(),
         favorite.getImage_url(),
-        FavoriteResponseUtils.getDetail(favorite.getDetail()),
+        FavoriteResponseUtil.getDetail(favorite.getDetail()),
         isReported);
   }
 }

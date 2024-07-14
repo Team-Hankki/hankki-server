@@ -1,6 +1,5 @@
 package org.hankki.hankkiserver.api.store.service;
 
-
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.menu.service.MenuFinder;
 import org.hankki.hankkiserver.api.store.controller.request.StoreDuplicateValidationRequest;
@@ -11,7 +10,6 @@ import org.hankki.hankkiserver.domain.heart.model.Heart;
 import org.hankki.hankkiserver.domain.store.model.Store;
 import org.hankki.hankkiserver.domain.store.model.StoreCategory;
 import org.hankki.hankkiserver.domain.store.model.StoreImage;
-import org.hankki.hankkiserver.domain.universitystore.model.UniversityStore;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

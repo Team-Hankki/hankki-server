@@ -19,6 +19,10 @@ public class FavoriteFinder {
   }
 
   public List<Favorite> findAllByIds(final List<Long> ids) {
-    return favoriteRepository.findAllByIds(ids);
+    return favoriteRepository.findByIdIn(ids);
+  }
+
+  public List<Favorite> findAllByUserId(final Long userId) {
+    return favoriteRepository.findByUserIdOrderByCreatedAtDesc(userId);
   }
 }

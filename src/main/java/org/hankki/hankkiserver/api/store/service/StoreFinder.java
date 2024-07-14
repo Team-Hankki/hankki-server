@@ -19,7 +19,6 @@ public class StoreFinder {
         return storeRepository.getReferenceById(id);
     }
 
-
     public Store findByIdWhereDeletedIsFalse(final Long id) {
         return storeRepository.findByIdAndIsDeletedIsFalse(id)
                 .orElseThrow(() -> new NotFoundException(StoreErrorCode.STORE_NOT_FOUND));

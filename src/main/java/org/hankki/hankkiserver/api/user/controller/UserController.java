@@ -33,7 +33,7 @@ public class UserController {
         return HankkiResponse.success(CommonSuccessCode.OK, userQueryService.findUserUniversity(userId));
     }
 
-    @GetMapping("users/me")
+    @GetMapping("/users/me")
     public HankkiResponse<UserProfileAndNicknmaeResponse> getUserProfileAndNickname(@UserId final Long userId) {
         return HankkiResponse.success(CommonSuccessCode.OK, userQueryService.getUserProfileAndNickname(userId));
     }

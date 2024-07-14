@@ -13,9 +13,7 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
   @Query("delete from Favorite f where f in :favorites")
   void deleteAll(@Param("favorites") List<Favorite> favorites);
 
-  @Query("select f from Favorite f where f.id in :favoriteId")
-  List<Favorite> findAllByIds(@Param("favoriteId") List<Long> favoriteId);
+  List<Favorite> findByIdIn(@Param("favoriteId") List<Long> favoriteId);
 
-  @Query("select f from Favorite f where f.user.id = :userId order by f.createdAt desc")
-  List<Favorite> findAllByUserId(@Param("userId") Long userId);
+  List<Favorite> findByUserIdOrderByCreatedAtDesc(Long userId);
 }

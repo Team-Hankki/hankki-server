@@ -24,6 +24,7 @@ public class UserQueryService {
                 .orElseThrow(() -> new NotFoundException(UserUniversityErrorCode.USER_UNIVERSITY_NOT_FOUND)));
     }
 
+    @Transactional(readOnly = true)
     public UserProfileAndNicknmaeResponse getUserProfileAndNickname(final Long userId) {
         UserInfo userInfo = userInfoFinder.getUserInfo(userId);
         return UserProfileAndNicknmaeResponse.of(userInfo.getNickname(), userInfo.getProfileImageUrl());

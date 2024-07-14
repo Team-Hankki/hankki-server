@@ -1,14 +1,17 @@
 package org.hankki.hankkiserver.api.favorite.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.hankki.hankkiserver.api.auth.service.UserFinder;
-import org.hankki.hankkiserver.api.favorite.service.command.FavoriteGetCommand;
-import org.hankki.hankkiserver.api.favorite.service.response.FavoriteFindResponse;
-import org.hankki.hankkiserver.common.code.UserErrorCode;
-import org.hankki.hankkiserver.common.exception.UnauthorizedException;
+import java.util.LinkedHashMap;
+import org.hankki.hankkiserver.api.favorite.service.command.FavoritesGetCommand;
+import org.hankki.hankkiserver.api.favorite.service.command.FavoritesWithStatusGetCommand;
+import org.hankki.hankkiserver.api.favorite.service.response.FavoriteGetResponse;
+import org.hankki.hankkiserver.api.favorite.service.response.FavoritesWithStatusGetResponse;
+import org.hankki.hankkiserver.api.store.service.StoreFinder;
 import org.hankki.hankkiserver.domain.favorite.model.Favorite;
 import org.hankki.hankkiserver.domain.favoritestore.model.FavoriteStore;
-import org.hankki.hankkiserver.domain.user.model.User;
+import org.hankki.hankkiserver.domain.store.model.Store;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,10 +20,27 @@ import org.springframework.transaction.annotation.Transactional;
 public class FavoriteQueryService {
 
   private final FavoriteFinder favoriteFinder;
+  private final StoreFinder storeFinder;
 
   @Transactional(readOnly = true)
-  public FavoriteFindResponse findFavorite(final FavoriteGetCommand command) {
+  public FavoriteGetResponse findFavorite(final FavoritesGetCommand command) {
     Favorite favorite = favoriteFinder.findById(command.favoriteId());
-    return FavoriteFindResponse.of(favorite, favorite.getFavoriteStores().stream().map(FavoriteStore::getStore).toList());
+    return FavoriteGetResponse.of(favorite, favorite.getFavoriteStores().stream().map(FavoriteStore::getStore).toList());
+  }
+
+  @Transactional(readOnly = true)
+  public FavoritesWithStatusGetResponse findFavoritesWithStatus(final FavoritesWithStatusGetCommand command) {
+    return FavoritesWithStatusGetResponse.of(
+        favoriteFinder.findAllByUserId(command.userId()).stream()
+            .collect(Collectors.toMap(
+                favorite -> favorite,
+                favorite -> isStoreAlreadyAdded(favorite.getFavoriteStores(),  command.storeId()),
+                (oldValue, newValue) -> oldValue,
+                LinkedHashMap::new)));
+  }
+
+  private boolean isStoreAlreadyAdded(final List<FavoriteStore> favoriteStore, final Long commandStoreId) {
+    return favoriteStore.stream()
+        .anyMatch(f -> f.getStore().getId().equals(commandStoreId));
   }
 }

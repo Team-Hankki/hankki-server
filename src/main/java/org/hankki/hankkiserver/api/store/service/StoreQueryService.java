@@ -11,6 +11,7 @@ import org.hankki.hankkiserver.domain.heart.model.Heart;
 import org.hankki.hankkiserver.domain.store.model.Store;
 import org.hankki.hankkiserver.domain.store.model.StoreCategory;
 import org.hankki.hankkiserver.domain.store.model.StoreImage;
+import org.hankki.hankkiserver.domain.universitystore.model.UniversityStore;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ import java.util.List;
 public class StoreQueryService {
 
     private final StoreFinder storeFinder;
+    private final UniversityStoreFinder universityStoreFinder;
     private final MenuFinder menuFinder;
 
     @Transactional(readOnly = true)
@@ -78,8 +80,8 @@ public class StoreQueryService {
 
     @Transactional(readOnly = true)
     public StoreDuplicateValidationResponse validateDuplicatedStore(final StoreDuplicateValidationRequest request) {
-        Long storeId = storeFinder.findStoreWithLatitudeAndLongitude(request.latitude(), request.longitude())
-                .map(Store::getId)
+        Long storeId = universityStoreFinder.findUniversityStoreWithLatitudeAndLongitude(request.id(), request.latitude(), request.longitude())
+                .map(UniversityStore->UniversityStore.getStore().getId())
                 .orElse(null);
         return new StoreDuplicateValidationResponse(storeId);
     }

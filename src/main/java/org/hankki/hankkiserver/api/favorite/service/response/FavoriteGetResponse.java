@@ -1,5 +1,7 @@
 package org.hankki.hankkiserver.api.favorite.service.response;
 
+import static org.hankki.hankkiserver.api.favorite.service.response.FavoriteResponseUtils.getDetail;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,19 +15,9 @@ public record FavoriteGetResponse(
 ) {
 
   public static FavoriteGetResponse of(final Favorite favorite, final List<Store> stores) {
-
-    List<String> details = new ArrayList<>();
-    if (!isDetailNull(favorite.getDetail())) {
-      details = Arrays.asList(favorite.getDetail().split(" "));
-    }
-
     return new FavoriteGetResponse(
         favorite.getName(),
-        details,
+        getDetail(favorite.getDetail()),
         stores.stream().map(FavoriteStoreResponse::of).toList());
-  }
-
-  public static boolean isDetailNull(String detail) {
-    return detail == null;
   }
 }

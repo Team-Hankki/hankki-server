@@ -76,6 +76,7 @@ public class StoreQueryService {
         return heart.getUser().getId().equals(id);
     }
 
+    @Transactional(readOnly = true)
     public StoreDuplicateValidationResponse validateDuplicatedStore(final StoreDuplicateValidationRequest request) {
         Long storeId = storeFinder.findStoreWithLatitudeAndLongitude(request.latitude(), request.longitude())
                 .map(Store::getId)

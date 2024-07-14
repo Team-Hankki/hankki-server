@@ -12,6 +12,4 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
     @Query("select s from Store s join fetch s.hearts where s.id = :id and s.isDeleted = false")
     Optional<Store> findByIdWithHeartAndIsDeletedFalse(Long id);
-
-    Optional<Store> findByPoint_LatitudeAndPoint_Longitude(Double latitude, Double longitude);
 }

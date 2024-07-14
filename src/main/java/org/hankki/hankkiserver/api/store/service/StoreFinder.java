@@ -7,8 +7,6 @@ import org.hankki.hankkiserver.domain.store.model.Store;
 import org.hankki.hankkiserver.domain.store.repository.StoreRepository;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-
 @Component
 @RequiredArgsConstructor
 public class StoreFinder {
@@ -28,9 +26,5 @@ public class StoreFinder {
     protected Store findByIdWithHeartAndIsDeletedFalse(final Long id) {
         return storeRepository.findByIdWithHeartAndIsDeletedFalse(id)
                 .orElseThrow(() -> new NotFoundException(StoreErrorCode.STORE_NOT_FOUND));
-    }
-
-    public Optional<Store> findStoreWithLatitudeAndLongitude(Double latitude, Double longitude) {
-        return storeRepository.findByPoint_LatitudeAndPoint_Longitude(latitude, longitude);
     }
 }

@@ -10,6 +10,7 @@ import org.hankki.hankkiserver.api.user.service.command.UserUniversityPostComman
 import org.hankki.hankkiserver.api.user.service.response.UserFavoritesGetResponse;
 import org.hankki.hankkiserver.api.user.service.response.UserHeartedStoreListResponse;
 import org.hankki.hankkiserver.api.user.service.response.UserProfileAndNicknameResponse;
+import org.hankki.hankkiserver.api.user.service.response.UserStoresReportedGetResponse;
 import org.hankki.hankkiserver.api.user.service.response.UserUniversityFindResponse;
 import org.hankki.hankkiserver.auth.UserId;
 import org.hankki.hankkiserver.common.code.CommonSuccessCode;
@@ -48,5 +49,10 @@ public class UserController {
     @GetMapping("/users/me/stores/hearts")
     public HankkiResponse<UserHeartedStoreListResponse> getUserHeartedStores(@UserId final Long userId) {
         return HankkiResponse.success(CommonSuccessCode.OK, userQueryService.findUserHeartedStoresView(userId));
+    }
+
+    @GetMapping("/users/me/stores/reports")
+    public HankkiResponse<UserStoresReportedGetResponse> findUserStoreReported(@UserId final Long userId) {
+        return HankkiResponse.success(CommonSuccessCode.OK, userQueryService.findUserStoreReported(userId));
     }
 }

@@ -37,6 +37,9 @@ public class Store extends BaseTimeEntity {
     private StoreCategory category;
 
     @Column(nullable = false)
+    private String address;
+
+    @Column(nullable = false)
     private int heartCount;
 
     @Column(nullable = false)

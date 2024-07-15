@@ -46,13 +46,13 @@ public class Store extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "store")
     @BatchSize(size = 100)
-    private List<StoreImage> storeImages = new ArrayList<>();
+    private List<StoreImage> images = new ArrayList<>();
 
     public String getImage() {
-        if (storeImages.isEmpty()) {
+        if (images.isEmpty()) {
             return "default.com";
         }
-        return storeImages.get(0).getImageUrl();
+        return images.get(0).getImageUrl();
     }
 
     public void decreaseHeartCount() {

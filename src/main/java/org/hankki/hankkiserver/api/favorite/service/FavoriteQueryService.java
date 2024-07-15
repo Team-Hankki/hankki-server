@@ -20,12 +20,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class FavoriteQueryService {
 
   private final FavoriteFinder favoriteFinder;
-  private final StoreFinder storeFinder;
 
   @Transactional(readOnly = true)
   public FavoriteGetResponse findFavorite(final FavoritesGetCommand command) {
     Favorite favorite = favoriteFinder.findById(command.favoriteId());
-    return FavoriteGetResponse.of(favorite, favorite.getFavoriteStores().stream().map(FavoriteStore::getStore).toList());
+    return FavoriteGetResponse.of(favorite);
   }
 
   @Transactional(readOnly = true)

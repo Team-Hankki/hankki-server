@@ -4,7 +4,6 @@ import static org.hankki.hankkiserver.api.favorite.service.response.util.Favorit
 
 import java.util.List;
 import org.hankki.hankkiserver.domain.favorite.model.Favorite;
-import org.hankki.hankkiserver.domain.store.model.Store;
 
 public record FavoriteGetResponse(
     String title,
@@ -12,10 +11,10 @@ public record FavoriteGetResponse(
     List<FavoriteStoreResponse> stores
 ) {
 
-  public static FavoriteGetResponse of(final Favorite favorite, final List<Store> stores) {
+  public static FavoriteGetResponse of(final Favorite favorite) {
     return new FavoriteGetResponse(
         favorite.getName(),
         getDetail(favorite.getDetail()),
-        stores.stream().map(FavoriteStoreResponse::of).toList());
+        favorite.getFavoriteStores().stream().map(favoriteStore -> FavoriteStoreResponse.of(favoriteStore.getStore())).toList());
   }
 }

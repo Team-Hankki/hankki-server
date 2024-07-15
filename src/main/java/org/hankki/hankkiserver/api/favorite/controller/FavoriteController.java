@@ -80,6 +80,6 @@ public class FavoriteController {
 
   @GetMapping("/favorites")
   public HankkiResponse<FavoritesWithStatusGetResponse> getFavoritesWithStatus(@UserId Long id, @RequestBody final FavoritesGetRequest request) {
-    return HankkiResponse.success(CommonSuccessCode.OK, favoriteQueryService.findFavoritesWithStatus(FavoritesWithStatusGetCommand.of(id, request.storeId())));
+    return HankkiResponse.success(CommonSuccessCode.OK, favoriteQueryService.findFavoritesWithStatus(FavoritesWithStatusGetCommand.of(id, request)));
   }
 }

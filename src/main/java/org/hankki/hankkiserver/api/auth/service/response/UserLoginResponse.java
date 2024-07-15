@@ -8,21 +8,14 @@ import org.hankki.hankkiserver.auth.jwt.Token;
 public record UserLoginResponse(
         String accessToken,
         String refreshToken,
-        boolean isRegisterd
+        boolean isRegistered
 
 ) {
-    public static UserLoginResponse of(Token token, boolean isRegisterd) {
+    public static UserLoginResponse of(Token token, boolean isRegistered) {
         return UserLoginResponse.builder()
                 .accessToken(token.accessToken())
                 .refreshToken(token.refreshToken())
-                . isRegisterd(isRegisterd)
-                .build();
-    }
-
-    public static UserLoginResponse of(Token token) {
-        return UserLoginResponse.builder()
-                .accessToken(token.accessToken())
-                .refreshToken(token.refreshToken())
+                . isRegistered(isRegistered)
                 .build();
     }
 }

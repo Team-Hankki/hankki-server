@@ -6,11 +6,15 @@ import org.hankki.hankkiserver.api.favorite.service.FavoriteFinder;
 import org.hankki.hankkiserver.api.store.service.HeartFinder;
 import org.hankki.hankkiserver.api.user.service.response.UserFavoritesGetResponse;
 import org.hankki.hankkiserver.api.user.service.response.UserProfileAndNicknameResponse;
+import org.hankki.hankkiserver.api.user.service.response.UserHeartedStoreListResponse;
 import org.hankki.hankkiserver.api.user.service.response.UserUniversityFindResponse;
 import org.hankki.hankkiserver.common.code.UserUniversityErrorCode;
 import org.hankki.hankkiserver.common.exception.NotFoundException;
+import org.hankki.hankkiserver.domain.heart.model.Heart;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -35,5 +39,11 @@ public class UserQueryService {
     @Transactional(readOnly = true)
     public UserProfileAndNicknameResponse getUserProfileAndNickname(final Long userId) {
         return UserProfileAndNicknameResponse.of(userInfoFinder.getUserInfo(userId));
+    }
+
+    @Transactional(readOnly = true)
+    public UserHeartedStoreListResponse findUserHeartedStoresView(final Long userId) {
+        List<Heart> hearts = heartFinder.findHeartedStoresByUserId(userId);
+        return UserHeartedStoreListResponse.of(hearts);
     }
 }

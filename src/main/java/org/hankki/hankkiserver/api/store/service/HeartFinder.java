@@ -15,4 +15,8 @@ public class HeartFinder {
     public boolean existsByUserAndStore(final User user, final Store store) {
         return heartRepository.existsByUserAndStore(user, store);
     }
+
+    public List<Heart> findHeartedStoresByUserId(final Long userId) {
+        return heartRepository.findHeartedStoresByUserId(userId);
+    }
 }

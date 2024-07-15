@@ -25,9 +25,6 @@ public class Store extends BaseTimeEntity {
     @OneToMany(mappedBy = "store")
     private List<Heart> hearts;
 
-    @OneToMany(mappedBy = "store")
-    private List<StoreImage> images;
-
     @Embedded
     private Point point;
 
@@ -65,5 +62,4 @@ public class Store extends BaseTimeEntity {
     public void increaseHeartCount() {
         this.heartCount++;
     }
-
 }

@@ -13,9 +13,7 @@ public interface HeartRepository extends JpaRepository<Heart, Long> {
     boolean existsByUserAndStore(User user, Store store);
     void deleteByUserAndStore(User user, Store store);
 
-    @Query("SELECT h FROM Heart h " +
-            "JOIN FETCH h.store s " +
-            "JOIN FETCH s.images " +
-            "WHERE h.user.id = :userId AND s.isDeleted = false")
+    @Query("select h from Heart h join fetch h.store s join fetch s.storeImages " +
+            "where h.user.id = :userId and s.isDeleted = false order by h.id desc")
     List<Heart> findHeartedStoresByUserId(Long userId);
 }

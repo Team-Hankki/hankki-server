@@ -1,6 +1,7 @@
 package org.hankki.hankkiserver.api.auth.controller;
 
 import jakarta.annotation.Nullable;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.auth.UserId;
 import org.hankki.hankkiserver.api.dto.HankkiResponse;
@@ -22,7 +23,7 @@ public class AuthController {
     @PostMapping("/auth/login")
     public HankkiResponse<UserLoginResponse> login(
             @RequestHeader(HttpHeaders.AUTHORIZATION) final String token,
-            @RequestBody final UserLoginRequest request) {
+            @Valid @RequestBody final UserLoginRequest request) {
         final UserLoginResponse response = authService.login(token, request);
         return HankkiResponse.success(CommonSuccessCode.OK, response);
     }

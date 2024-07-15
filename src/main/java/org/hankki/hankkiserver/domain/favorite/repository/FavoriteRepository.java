@@ -1,6 +1,7 @@
 package org.hankki.hankkiserver.domain.favorite.repository;
 
 import java.util.List;
+import java.util.Optional;
 import org.hankki.hankkiserver.domain.favorite.model.Favorite;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -16,4 +17,7 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
   List<Favorite> findByIdIn(@Param("favoriteId") List<Long> favoriteId);
 
   List<Favorite> findByUserIdOrderByCreatedAtDesc(Long userId);
+
+  @Query("select f from Favorite f join fetch f.user where f.id = :favoriteId")
+  Optional<Favorite> findByIdWithUser(@Param("favoriteId") Long favoriteId);
 }

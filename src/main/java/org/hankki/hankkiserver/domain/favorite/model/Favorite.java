@@ -31,12 +31,17 @@ public class Favorite extends BaseTimeEntity {
 
     private String detail;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String imageUrl;
+    private FavoriteImage imageType;
 
     @OneToMany(mappedBy = "favorite")
     @BatchSize(size = 100)
     private List<FavoriteStore> favoriteStores = new ArrayList<>();
+
+    public void updateImageByFavoriteStoreCount(int count) {
+        this.imageType = FavoriteImage.getType(count);
+    }
 
     public static Favorite create(User user, String name, String detail) {
         return Favorite.builder()
@@ -51,6 +56,6 @@ public class Favorite extends BaseTimeEntity {
         this.user = user;
         this.name = name;
         this.detail = detail;
-        this.imageUrl = "default.com";
+        this.imageType = FavoriteImage.BASE_IMAGE;
     }
 }

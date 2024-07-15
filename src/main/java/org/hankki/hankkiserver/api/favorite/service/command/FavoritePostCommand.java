@@ -10,8 +10,6 @@ public record FavoritePostCommand(
 ) {
 
   public static FavoritePostCommand of(final Long userId, final FavoritePostRequest favoritePostRequest) {
-
     return new FavoritePostCommand(userId, favoritePostRequest.title(), favoritePostRequest.details());
-
   }
 }

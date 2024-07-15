@@ -25,4 +25,8 @@ public class FavoriteFinder {
   public List<Favorite> findAllByUserId(final Long userId) {
     return favoriteRepository.findByUserIdOrderByCreatedAtDesc(userId);
   }
+
+  protected Favorite findByIdWithUser(final Long id) {
+    return favoriteRepository.findByIdWithUser(id).orElseThrow(() -> new NotFoundException(FavoriteErrorCode.FAVORITE_NOT_FOUND));
+  }
 }

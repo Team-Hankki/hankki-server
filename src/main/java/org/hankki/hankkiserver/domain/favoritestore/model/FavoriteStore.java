@@ -2,6 +2,7 @@ package org.hankki.hankkiserver.domain.favoritestore.model;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hankki.hankkiserver.domain.favorite.model.Favorite;
@@ -26,5 +27,18 @@ public class FavoriteStore {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "favorite_id")
     private Favorite favorite;
+
+    public static FavoriteStore create(Store store, Favorite favorite) {
+        return FavoriteStore.builder()
+            .store(store)
+            .favorite(favorite)
+            .build();
+    }
+
+    @Builder
+    private FavoriteStore(Store store, Favorite favorite) {
+        this.store = store;
+        this.favorite = favorite;
+    }
 
 }

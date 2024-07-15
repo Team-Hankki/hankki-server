@@ -2,8 +2,8 @@ package org.hankki.hankkiserver.api.store.service;
 
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.auth.service.UserFinder;
-import org.hankki.hankkiserver.api.store.service.command.StoreDeleteCommand;
-import org.hankki.hankkiserver.api.store.service.command.StorePostCommand;
+import org.hankki.hankkiserver.api.store.service.command.HeartDeleteCommand;
+import org.hankki.hankkiserver.api.store.service.command.HeartPostCommand;
 import org.hankki.hankkiserver.api.store.service.response.HeartCreateResponse;
 import org.hankki.hankkiserver.api.store.service.response.HeartDeleteResponse;
 import org.hankki.hankkiserver.common.code.HeartErrorCode;
@@ -25,18 +25,18 @@ public class HeartCommandService {
     private final UserFinder userFinder;
     private final StoreFinder storeFinder;
 
-    public HeartCreateResponse createHeart(final StorePostCommand storePostCommand) {
-        User user = userFinder.getUserReference(storePostCommand.userId());
-        Store store = storeFinder.getStoreReference(storePostCommand.storeId());
+    public HeartCreateResponse createHeart(final HeartPostCommand heartPostCommand) {
+        User user = userFinder.getUserReference(heartPostCommand.userId());
+        Store store = storeFinder.getStoreReference(heartPostCommand.storeId());
         validateStoreHeartCreation(user, store);
         saveStoreHeart(user, store);
         increaseStoreHeartCount(store);
         return HeartCreateResponse.of(store);
     }
 
-    public HeartDeleteResponse deleteHeart(final StoreDeleteCommand storeDeleteCommand) {
-        User user = userFinder.getUserReference(storeDeleteCommand.userId());
-        Store store = storeFinder.getStoreReference(storeDeleteCommand.storeId());
+    public HeartDeleteResponse deleteHeart(final HeartDeleteCommand heartDeleteCommand) {
+        User user = userFinder.getUserReference(heartDeleteCommand.userId());
+        Store store = storeFinder.getStoreReference(heartDeleteCommand.storeId());
         validateStoreHeartRemoval(user, store);
         heartDeleter.deleteHeart(user,store);
         decreaseStoreHeartCount(store);

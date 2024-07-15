@@ -51,7 +51,7 @@ public class FavoriteCommandService {
     List<Favorite> favorites = favoriteFinder.findAllByIds(command.favoriteIds());
 
     favorites.forEach(favorite -> {
-      validateUserAuthorization(userFinder.getUser(command.userId()), favorite.getUser());
+      validateUserAuthorization(favorite.getUser(), userFinder.getUser(command.userId()));
     });
 
     favoriteStoreDeleter.deleteAllByFavorites(favorites);
@@ -83,8 +83,8 @@ public class FavoriteCommandService {
     favorite.updateImageByFavoriteStoreCount(favoriteStoreFinder.countByFavorite(favorite));
   }
 
-  private void validateUserAuthorization(final User user, final User commandUser) {
-    if (!user.equals(commandUser)) {
+  private void validateUserAuthorization(final User findUser, final User commandUser) {
+    if (!findUser.equals(commandUser)) {
       throw new UnauthorizedException(UserErrorCode.USER_FORBIDDEN);
     }
   }

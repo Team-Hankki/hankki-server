@@ -5,7 +5,7 @@ import org.hankki.hankkiserver.domain.heart.model.Heart;
 public record UserHeartedStoreViewResponse(
         Long id,
         String name,
-        String imageURL,
+        String imageUrl,
         String category,
         int lowestPrice,
         int heartCount

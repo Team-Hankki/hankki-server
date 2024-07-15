@@ -38,5 +38,4 @@ public class Heart {
                 .store(store)
                 .build();
     }
-
 }

@@ -8,6 +8,7 @@ import org.hankki.hankkiserver.api.user.service.UserCommandService;
 import org.hankki.hankkiserver.api.user.service.UserQueryService;
 import org.hankki.hankkiserver.api.user.service.command.UserUniversityPostCommand;
 import org.hankki.hankkiserver.api.user.service.response.UserFavoritesGetResponse;
+import org.hankki.hankkiserver.api.user.service.response.UserHeartedStoreListResponse;
 import org.hankki.hankkiserver.api.user.service.response.UserProfileAndNicknameResponse;
 import org.hankki.hankkiserver.api.user.service.response.UserUniversityFindResponse;
 import org.hankki.hankkiserver.auth.UserId;
@@ -24,7 +25,7 @@ public class UserController {
 
     @PostMapping("/users/me/university")
     public HankkiResponse<Void> postUserUniversity(@UserId final Long userId,
-                                                @Valid @RequestBody final UserUniversityPostRequest request) {
+                                                   @Valid @RequestBody final UserUniversityPostRequest request) {
         userCommandService.saveUserUniversity(new UserUniversityPostCommand(userId, request));
         return HankkiResponse.success(CommonSuccessCode.CREATED);
     }
@@ -36,11 +37,16 @@ public class UserController {
 
     @GetMapping("/users/me")
     public HankkiResponse<UserProfileAndNicknameResponse> getUserProfileAndNickname(@UserId final Long userId) {
-      return HankkiResponse.success(CommonSuccessCode.OK, userQueryService.getUserProfileAndNickname(userId));
+        return HankkiResponse.success(CommonSuccessCode.OK, userQueryService.getUserProfileAndNickname(userId));
     }
 
     @GetMapping("/users/me/favorites")
     public HankkiResponse<UserFavoritesGetResponse> findUserFavorites(@UserId final Long userId) {
-      return HankkiResponse.success(CommonSuccessCode.OK,userQueryService.findUserFavorites(userId));
+        return HankkiResponse.success(CommonSuccessCode.OK, userQueryService.findUserFavorites(userId));
+    }
+
+    @GetMapping("/users/me/stores/hearts")
+    public HankkiResponse<UserHeartedStoreListResponse> getUserHeartedStores(@UserId final Long userId) {
+        return HankkiResponse.success(CommonSuccessCode.OK, userQueryService.findUserHeartedStoresView(userId));
     }
 }

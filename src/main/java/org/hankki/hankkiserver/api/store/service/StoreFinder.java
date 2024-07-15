@@ -3,9 +3,12 @@ package org.hankki.hankkiserver.api.store.service;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.common.code.StoreErrorCode;
 import org.hankki.hankkiserver.common.exception.NotFoundException;
+import org.hankki.hankkiserver.domain.heart.repository.HeartRepository;
 import org.hankki.hankkiserver.domain.store.model.Store;
 import org.hankki.hankkiserver.domain.store.repository.StoreRepository;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor

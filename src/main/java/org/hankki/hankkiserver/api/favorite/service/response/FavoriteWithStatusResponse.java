@@ -15,7 +15,7 @@ public record FavoriteWithStatusResponse(
     return new FavoriteWithStatusResponse(
         favorite.getId(),
         favorite.getName(),
-        favorite.getImage_url(),
+        favorite.getImageUrl(),
         FavoriteResponseUtil.getDetail(favorite.getDetail()),
         isReported);
   }

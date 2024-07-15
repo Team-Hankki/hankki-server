@@ -5,12 +5,16 @@ import org.hankki.hankkiserver.api.dto.HankkiResponse;
 import org.hankki.hankkiserver.api.store.controller.request.StoreDuplicateValidationRequest;
 import org.hankki.hankkiserver.api.store.service.HeartCommandService;
 import org.hankki.hankkiserver.api.store.service.StoreQueryService;
-import org.hankki.hankkiserver.api.store.service.command.StoreDeleteCommand;
 import org.hankki.hankkiserver.api.store.service.command.StorePostCommand;
 import org.hankki.hankkiserver.api.store.service.command.StoreValidationCommand;
 import org.hankki.hankkiserver.api.store.service.response.*;
 import org.hankki.hankkiserver.auth.UserId;
 import org.hankki.hankkiserver.common.code.CommonSuccessCode;
+import org.hankki.hankkiserver.api.store.service.command.HeartDeleteCommand;
+import org.hankki.hankkiserver.api.store.service.command.HeartPostCommand;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -49,12 +53,12 @@ public class StoreController {
 
     @PostMapping("/stores/{id}/hearts")
     public HankkiResponse<HeartCreateResponse> createHeartStore(@UserId final Long userId, @PathVariable final Long id) {
-        return HankkiResponse.success(CommonSuccessCode.CREATED, heartCommandService.createHeart(StorePostCommand.of(userId, id)));
+        return HankkiResponse.success(CommonSuccessCode.CREATED, heartCommandService.createHeart(HeartPostCommand.of(userId, id)));
     }
 
     @DeleteMapping("/stores/{id}/hearts")
     public HankkiResponse<HeartDeleteResponse> deleteHeartStore(@UserId final Long userId, @PathVariable final Long id) {
-        return HankkiResponse.success(CommonSuccessCode.OK, heartCommandService.deleteHeart(StoreDeleteCommand.of(userId, id)));
+        return HankkiResponse.success(CommonSuccessCode.OK, heartCommandService.deleteHeart(HeartDeleteCommand.of(userId, id)));
     }
 
     @PostMapping("/stores/validate")

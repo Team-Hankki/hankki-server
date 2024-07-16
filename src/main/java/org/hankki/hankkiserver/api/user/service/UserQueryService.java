@@ -48,6 +48,6 @@ public class UserQueryService {
     }
 
     public UserStoresReportedGetResponse findUserStoreReported(final Long userId) {
-        return UserStoresReportedGetResponse.of(reportFinder.findAllByUserId(userId).stream().map(Report::getStore).toList());
+        return UserStoresReportedGetResponse.of(reportFinder.findAllByUserId(userId).stream().map(Report::getStore).distinct().toList());
     }
 }

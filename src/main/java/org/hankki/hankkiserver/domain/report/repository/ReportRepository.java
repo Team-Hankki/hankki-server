@@ -8,6 +8,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface ReportRepository extends JpaRepository<Report, Long> {
 
-  @Query("select r from Report r join fetch r.store join fetch r.store.images where r.user.id = :userId and r.store.isDeleted = false")
-  List<Report> findAllByUserIdWithStore(@Param("userId") Long userId);
+  @Query("select r from Report r join fetch r.store join fetch r.store.images where r.user.id = :userId and r.store.isDeleted = false order by r.createdAt desc")
+  List<Report> findAllByUserIdWithStoreAndStoreImage(@Param("userId") Long userId);
 }

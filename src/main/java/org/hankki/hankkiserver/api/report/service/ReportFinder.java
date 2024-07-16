@@ -17,6 +17,6 @@ public class ReportFinder {
     }
 
     public List<Report> findAllByUserId(final Long userId) {
-        return reportRepository.findAllByUserIdWithStore(userId);
+        return reportRepository.findAllByUserIdWithStoreAndStoreImage(userId);
     }
 }

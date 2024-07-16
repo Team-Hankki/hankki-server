@@ -52,13 +52,6 @@ public class Store extends BaseTimeEntity {
     @OneToMany(mappedBy = "store")
     private List<UniversityStore> universityStores = new ArrayList<>();
 
-    public String getImage() {
-        if (images.isEmpty()) {
-            return "default.com";
-        }
-        return images.get(0).getImageUrl();
-    }
-
     public void decreaseHeartCount() {
         this.heartCount--;
     }

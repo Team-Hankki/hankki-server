@@ -2,6 +2,8 @@ package org.hankki.hankkiserver.api.store.service.command;
 
 import org.hankki.hankkiserver.api.store.controller.request.MenuPostRequest;
 import org.hankki.hankkiserver.api.store.controller.request.StorePostRequest;
+import org.hankki.hankkiserver.domain.common.Point;
+import org.hankki.hankkiserver.domain.store.model.Store;
 import org.hankki.hankkiserver.domain.store.model.StoreCategory;
 import org.springframework.web.multipart.MultipartFile;
 

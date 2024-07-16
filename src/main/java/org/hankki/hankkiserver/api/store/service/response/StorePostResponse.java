@@ -6,7 +6,7 @@ public record StorePostResponse (
         long id,
         String name
 ) {
-    public static StorePostResponse of(Store store) {
+    public static StorePostResponse of(final Store store) {
         return new StorePostResponse(store.getId(), store.getName());
     }
 }

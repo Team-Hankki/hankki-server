@@ -6,7 +6,7 @@ import java.util.List;
 
 public class FavoriteResponseUtil {
 
-  public static List<String> getDetail(String detail) {
+  public static List<String> transformDetail(String detail) {
     List<String> details = new ArrayList<>();
     if (!isDetailNull(detail)) {
       details = Arrays.asList(detail.split(" "));

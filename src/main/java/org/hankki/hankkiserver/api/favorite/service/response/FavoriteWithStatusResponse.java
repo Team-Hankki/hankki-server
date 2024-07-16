@@ -17,7 +17,7 @@ public record FavoriteWithStatusResponse(
         favorite.getId(),
         favorite.getName(),
         favorite.getImageType(),
-        FavoriteResponseUtil.getDetail(favorite.getDetail()),
+        FavoriteResponseUtil.transformDetail(favorite.getDetail()),
         isReported);
   }
 }

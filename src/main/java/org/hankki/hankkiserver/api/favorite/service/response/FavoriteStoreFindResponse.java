@@ -5,7 +5,7 @@ import org.hankki.hankkiserver.domain.store.model.Store;
 public record FavoriteStoreFindResponse(
   Long id,
   String name,
-  String imageType,
+  String imageUrl,
   String category,
   int lowestPrice,
   int heartCount

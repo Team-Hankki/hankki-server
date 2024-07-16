@@ -8,11 +8,7 @@ import org.hankki.hankkiserver.common.exception.BadRequestException;
 import org.hankki.hankkiserver.common.exception.ConflictException;
 import org.hankki.hankkiserver.common.exception.NotFoundException;
 import org.hankki.hankkiserver.common.exception.UnauthorizedException;
-<<<<<<< HEAD
-=======
-
 import org.springframework.web.bind.MethodArgumentNotValidException;
->>>>>>> 9dbf784 ([feat] add exceptions in GlobalExceptionHandler.java)
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

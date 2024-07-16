@@ -1,8 +1,18 @@
 package org.hankki.hankkiserver.api.store.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.dto.HankkiResponse;
 import org.hankki.hankkiserver.api.store.controller.request.StoreDuplicateValidationRequest;
+import org.hankki.hankkiserver.api.store.controller.request.StorePostRequest;
+import org.hankki.hankkiserver.api.store.service.StoreCommandService;
+import org.hankki.hankkiserver.api.store.service.StoreQueryService;
+import org.hankki.hankkiserver.api.store.service.command.StorePostCommand;
+import org.hankki.hankkiserver.api.store.service.response.*;
+import org.hankki.hankkiserver.common.code.CommonSuccessCode;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.hankki.hankkiserver.auth.UserId;
 import org.hankki.hankkiserver.api.store.service.HeartCommandService;
 import org.hankki.hankkiserver.api.store.service.StoreQueryService;
 import org.hankki.hankkiserver.api.store.service.command.StorePostCommand;
@@ -16,12 +26,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
 public class StoreController {
 
+    private final StoreCommandService storeCommandService;
     private final StoreQueryService storeQueryService;
     private final HeartCommandService heartCommandService;
 
@@ -65,5 +77,11 @@ public class StoreController {
     public HankkiResponse<Void> validateDuplicatedStore(@RequestBody final StoreDuplicateValidationRequest request) {
         storeQueryService.validateDuplicatedStore(StoreValidationCommand.of(request));
         return HankkiResponse.success(CommonSuccessCode.OK);
+    }
+    @PostMapping("/stores")
+    public HankkiResponse<StorePostResponse> createStore(@RequestPart(required = false) final MultipartFile image,
+                                                           @Valid @RequestPart final StorePostRequest request,
+                                                         @UserId final Long userId) {
+        return HankkiResponse.success(CommonSuccessCode.CREATED, storeCommandService.createStore(StorePostCommand.of(image, request, userId)));
     }
 }

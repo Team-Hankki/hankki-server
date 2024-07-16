@@ -84,11 +84,12 @@ public class StoreQueryService {
     public void validateDuplicatedStore(final StoreValidationCommand command) {
         storeFinder.findByLatitudeAndLongitude(command.latitude(), command.longitude())
                 .ifPresent(store -> findUniversityStore(command.universityId(), store));
+
     }
 
     private void findUniversityStore(final Long universityId, final Store store) {
         if (universityStoreFinder.findByUniversityIdAndStore(universityId, store)) {
-            throw new ConflictException(StoreErrorCode.STORE_ALREADY_REGISTERED, new StoreDuplicateValidationResponse(store.getId()));
+            throw new ConflictException(StoreErrorCode.STORE_ALREADY_REGISTERED, new StoreDuplicateErrorResponse(store.getId()));
         }
     }
 }

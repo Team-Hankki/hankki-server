@@ -1,6 +1,6 @@
 package org.hankki.hankkiserver.api.store.service.response;
 
-public record StoreDuplicateValidationResponse(
+public record StoreDuplicateErrorResponse(
         Long storeId
 ) {
 }

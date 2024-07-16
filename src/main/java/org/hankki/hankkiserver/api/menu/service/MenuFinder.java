@@ -14,7 +14,7 @@ public class MenuFinder {
 
     private final MenuRepository menuRepository;
 
-    public List<Menu> findAllByStore(Store store) {
+    public List<Menu> findAllByStore(final Store store) {
         return menuRepository.findAllByStore(store);
     }
 }

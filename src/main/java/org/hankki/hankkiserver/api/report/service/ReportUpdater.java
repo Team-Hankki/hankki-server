@@ -11,7 +11,7 @@ public class ReportUpdater {
 
     private final ReportRepository repository;
 
-    public void save(Report report) {
+    public void save(final Report report) {
         repository.save(report);
     }
 }

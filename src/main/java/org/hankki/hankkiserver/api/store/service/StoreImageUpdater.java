@@ -11,7 +11,7 @@ public class StoreImageUpdater {
 
     private final StoreImageRepository storeImageRepository;
 
-    public void saveImage(StoreImage image) {
+    public void saveImage(final StoreImage image) {
         storeImageRepository.save(image);
     }
 }

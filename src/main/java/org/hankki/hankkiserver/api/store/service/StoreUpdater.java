@@ -11,7 +11,7 @@ public class StoreUpdater {
 
     private final StoreRepository storeRepository;
 
-    public Store save(Store store) {
+    public Store save(final Store store) {
         return storeRepository.save(store);
     }
 }

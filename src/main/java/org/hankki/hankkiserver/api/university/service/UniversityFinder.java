@@ -15,7 +15,7 @@ public class UniversityFinder {
 
     private final UniversityRepository universityRepository;
 
-    public University findById(Long id) {
+    public University findById(final Long id) {
         return universityRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(UniversityErrorCode.UNIVERSITY_NOT_FOUND));
     }

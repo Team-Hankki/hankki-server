@@ -56,7 +56,7 @@ public class StoreController {
         return HankkiResponse.success(CommonSuccessCode.OK, heartCommandService.deleteHeart(StoreDeleteCommand.of(userId, id)));
     }
 
-    @GetMapping("/stores/validate")
+    @PostMapping("/stores/validate")
     public HankkiResponse<Void> validateDuplicatedStore(@RequestBody final StoreDuplicateValidationRequest request) {
         storeQueryService.validateDuplicatedStore(StoreValidationCommand.of(request));
         return HankkiResponse.success(CommonSuccessCode.OK);

@@ -1,6 +1,6 @@
 package org.hankki.hankkiserver.api.user.service.response;
 
-import org.hankki.hankkiserver.domain.heart.model.Heart;
+import org.hankki.hankkiserver.domain.store.model.Store;
 
 public record UserHeartedStoreViewResponse(
         Long id,
@@ -10,14 +10,14 @@ public record UserHeartedStoreViewResponse(
         int lowestPrice,
         int heartCount
 ) {
-    public static UserHeartedStoreViewResponse of(Heart heart) {
+    public static UserHeartedStoreViewResponse of(Store store) {
         return new UserHeartedStoreViewResponse(
-                heart.getStore().getId(),
-                heart.getStore().getName(),
-                heart.getStore().getImage(),
-                heart.getStore().getCategory().getName(),
-                heart.getStore().getLowestPrice(),
-                heart.getStore().getHeartCount()
+                store.getId(),
+                store.getName(),
+                store.getImage(),
+                store.getCategory().getName(),
+                store.getLowestPrice(),
+                store.getHeartCount()
         );
     }
 }

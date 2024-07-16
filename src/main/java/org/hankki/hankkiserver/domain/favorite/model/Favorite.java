@@ -56,6 +56,6 @@ public class Favorite extends BaseTimeEntity {
         this.user = user;
         this.name = name;
         this.detail = detail;
-        this.imageType = FavoriteImage.SHORT;
+        this.imageType = FavoriteImage.TYPE_ONE;
     }
 }

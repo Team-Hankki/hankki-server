@@ -3,12 +3,11 @@ package org.hankki.hankkiserver.api.store.service;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.common.code.StoreErrorCode;
 import org.hankki.hankkiserver.common.exception.NotFoundException;
-import org.hankki.hankkiserver.domain.heart.repository.HeartRepository;
 import org.hankki.hankkiserver.domain.store.model.Store;
 import org.hankki.hankkiserver.domain.store.repository.StoreRepository;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -29,5 +28,9 @@ public class StoreFinder {
     protected Store findByIdWithHeartAndIsDeletedFalse(final Long id) {
         return storeRepository.findByIdWithHeartAndIsDeletedFalse(id)
                 .orElseThrow(() -> new NotFoundException(StoreErrorCode.STORE_NOT_FOUND));
+    }
+
+    protected Optional<Store> findByLatitudeAndLongitude(final double latitude, final double longitude) {
+        return storeRepository.findByPoint_LatitudeAndPoint_Longitude(latitude, longitude);
     }
 }

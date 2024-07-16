@@ -47,6 +47,7 @@ public class UserQueryService {
         return UserHeartedStoreListResponse.of(heartFinder.findHeartedStoresByUserId(userId));
     }
 
+    @Transactional(readOnly = true)
     public UserStoresReportedGetResponse findUserStoreReported(final Long userId) {
         return UserStoresReportedGetResponse.of(reportFinder.findAllByUserId(userId).stream().map(Report::getStore).distinct().toList());
     }

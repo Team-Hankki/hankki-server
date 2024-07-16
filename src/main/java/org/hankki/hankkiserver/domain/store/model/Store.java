@@ -67,18 +67,6 @@ public class Store extends BaseTimeEntity {
         this.isDeleted = isDeleted;
     }
 
-    public static Store create(final StorePostCommand command) {
-        return Store.builder()
-                .name(command.name())
-                .point(new Point(command.latitude(), command.longitude()))
-                .address(command.address())
-                .category(command.category())
-                .lowestPrice(command.menus().stream().mapToInt(menu -> menu.price()).min().orElse(0))
-                .heartCount(0)
-                .isDeleted(false)
-                .build();
-    }
-
     public String getImage() {
         if (images.isEmpty()) {
             return "default.com";

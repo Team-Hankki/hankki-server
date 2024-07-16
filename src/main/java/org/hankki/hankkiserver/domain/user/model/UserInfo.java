@@ -2,10 +2,7 @@ package org.hankki.hankkiserver.domain.user.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.Random;
-
-import static org.hankki.hankkiserver.domain.ImageInjector.*;
+import org.hankki.hankkiserver.domain.user.ImageSelector;
 
 @Entity
 @Getter
@@ -34,7 +31,7 @@ public class UserInfo {
         return UserInfo.builder()
                 .user(user)
                 .refreshToken(refreshToken)
-                .profileImageUrl(setRandomDefaultImageUrl())
+                .profileImageUrl(ImageSelector.setRandomDefaultImageUrl())
                 .nickname(user.getName())
                 .build();
     }
@@ -45,9 +42,5 @@ public class UserInfo {
 
     public void updateNickname(final String nickname) {
         this.nickname = nickname;
-    }
-
-    private static String setRandomDefaultImageUrl() {
-        return imageUrls.get(new Random().nextInt(9) + 1);
     }
 }

@@ -1,4 +1,4 @@
-package org.hankki.hankkiserver.domain;
+package org.hankki.hankkiserver.domain.user;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
@@ -6,9 +6,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 @Component
-public class ImageInjector {
+public class ImageSelector {
     public static final Map<Integer, String> imageUrls = new HashMap<>();
 
     @Value("${profile.image.one}")
@@ -49,5 +50,9 @@ public class ImageInjector {
         imageUrls.put(7, imageUrlSeven);
         imageUrls.put(8, imageUrlEight);
         imageUrls.put(9, imageUrlNine);
+    }
+
+    public static String setRandomDefaultImageUrl() {
+        return ImageSelector.imageUrls.get(new Random().nextInt(9) + 1);
     }
 }

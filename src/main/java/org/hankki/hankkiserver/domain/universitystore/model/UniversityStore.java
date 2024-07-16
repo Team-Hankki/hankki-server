@@ -2,6 +2,7 @@ package org.hankki.hankkiserver.domain.universitystore.model;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hankki.hankkiserver.domain.store.model.Store;
@@ -24,4 +25,17 @@ public class UniversityStore {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     private Store store;
+
+    @Builder
+    private UniversityStore(University university, Store store) {
+        this.university = university;
+        this.store = store;
+    }
+
+    public static UniversityStore create(final Store store, final University university) {
+        return UniversityStore.builder()
+                .store(store)
+                .university(university)
+                .build();
+    }
 }

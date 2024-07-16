@@ -2,6 +2,7 @@ package org.hankki.hankkiserver.domain.store.model;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hankki.hankkiserver.domain.common.BaseCreatedAtEntity;
@@ -23,4 +24,16 @@ public class StoreImage extends BaseCreatedAtEntity {
     @Column(nullable = false)
     private String imageUrl;
 
+    @Builder
+    public StoreImage (Store store, String imageUrl) {
+        this.store = store;
+        this.imageUrl = imageUrl;
+    }
+
+    public static StoreImage createImage(Store store, String imageUrl) {
+        return StoreImage.builder()
+                .store(store)
+                .imageUrl(imageUrl)
+                .build();
+    }
 }

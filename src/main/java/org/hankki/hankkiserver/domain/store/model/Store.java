@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hankki.hankkiserver.domain.common.BaseTimeEntity;
@@ -26,6 +27,13 @@ public class Store extends BaseTimeEntity {
     @OneToMany(mappedBy = "store")
     private List<Heart> hearts = new ArrayList<>();
 
+    @OneToMany(mappedBy = "store")
+    @BatchSize(size = 100)
+    private List<StoreImage> images = new ArrayList<>();
+
+    @OneToMany(mappedBy = "store")
+    private List<UniversityStore> universityStores = new ArrayList<>();
+
     @Embedded
     private Point point;
 
@@ -37,6 +45,9 @@ public class Store extends BaseTimeEntity {
     private StoreCategory category;
 
     @Column(nullable = false)
+    private String address;
+
+    @Column(nullable = false)
     private int heartCount;
 
     @Column(nullable = false)
@@ -45,12 +56,23 @@ public class Store extends BaseTimeEntity {
     @Column(nullable = false)
     private boolean isDeleted;
 
-    @OneToMany(mappedBy = "store")
-    @BatchSize(size = 100)
-    private List<StoreImage> images = new ArrayList<>();
+    @Builder
+    private Store (String name, Point point, String address, StoreCategory category, int lowestPrice, int heartCount, boolean isDeleted) {
+        this.name = name;
+        this.point = point;
+        this.address = address;
+        this.category = category;
+        this.lowestPrice = lowestPrice;
+        this.heartCount = heartCount;
+        this.isDeleted = isDeleted;
+    }
 
-    @OneToMany(mappedBy = "store")
-    private List<UniversityStore> universityStores = new ArrayList<>();
+    public String getImage() {
+        if (images.isEmpty()) {
+            return "default.com";
+        }
+        return images.get(0).getImageUrl();
+    }
 
     public void decreaseHeartCount() {
         this.heartCount--;

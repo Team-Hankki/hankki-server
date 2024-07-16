@@ -17,4 +17,6 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     Optional<Store> findByPoint_LatitudeAndPoint_Longitude(double latitude, double longitude);
 
     Optional<Store> findByName(String name);
+
+    boolean existsByPoint_LatitudeAndPoint_Longitude(double latitude, double longitude);
 }

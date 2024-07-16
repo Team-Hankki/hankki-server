@@ -17,6 +17,6 @@ public class HeartFinder {
     }
 
     public List<Heart> findHeartedStoresByUserId(final Long userId) {
-        return heartRepository.findHeartedStoresByUserId(userId);
+        return heartRepository.findAllWithStoreByUserId(userId);
     }
 }

@@ -15,5 +15,5 @@ public interface HeartRepository extends JpaRepository<Heart, Long> {
 
     @Query("select h from Heart h join fetch h.store s join fetch s.images " +
             "where h.user.id = :userId and s.isDeleted = false order by h.id desc")
-    List<Heart> findHeartedStoresByUserId(Long userId);
+    List<Heart> findAllWithStoreByUserId(Long userId);
 }

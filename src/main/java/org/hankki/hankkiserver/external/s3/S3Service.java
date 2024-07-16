@@ -16,6 +16,8 @@ import java.util.UUID;
 @Component
 public class S3Service {
 
+    @Value("${aws-property.s3-endpoint}")
+    private String bucketUrl;
     private final String bucketName;
     private final AwsConfig awsConfig;
     private static final List<String> IMAGE_EXTENSIONS = Arrays.asList("image/jpeg", "image/png", "image/jpg", "image/webp");
@@ -43,7 +45,7 @@ public class S3Service {
 
         RequestBody requestBody = RequestBody.fromBytes(image.getBytes());
         s3Client.putObject(request, requestBody);
-        return key;
+        return bucketUrl + key;
     }
 
     public void deleteImage(String key) throws IOException {

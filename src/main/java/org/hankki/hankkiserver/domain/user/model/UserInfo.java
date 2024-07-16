@@ -2,6 +2,7 @@ package org.hankki.hankkiserver.domain.user.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hankki.hankkiserver.domain.user.ImageSelector;
 
 @Entity
 @Getter
@@ -26,12 +27,11 @@ public class UserInfo {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public static UserInfo createMemberInfo(
-            final User user,
-            final String refreshToken) {
+    public static UserInfo createMemberInfo(final User user, final String refreshToken) {
         return UserInfo.builder()
                 .user(user)
                 .refreshToken(refreshToken)
+                .profileImageUrl(ImageSelector.setRandomDefaultImageUrl())
                 .nickname(user.getName())
                 .build();
     }

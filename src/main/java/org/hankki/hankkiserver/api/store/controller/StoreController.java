@@ -2,20 +2,16 @@ package org.hankki.hankkiserver.api.store.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.dto.HankkiResponse;
-import org.hankki.hankkiserver.api.store.service.StoreQueryService;
-import org.hankki.hankkiserver.api.store.service.response.*;
-import org.hankki.hankkiserver.common.code.CommonSuccessCode;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.hankki.hankkiserver.auth.UserId;
+import org.hankki.hankkiserver.api.store.controller.request.StoreDuplicateValidationRequest;
 import org.hankki.hankkiserver.api.store.service.HeartCommandService;
+import org.hankki.hankkiserver.api.store.service.StoreQueryService;
 import org.hankki.hankkiserver.api.store.service.command.StoreDeleteCommand;
 import org.hankki.hankkiserver.api.store.service.command.StorePostCommand;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.hankki.hankkiserver.api.store.service.command.StoreValidationCommand;
+import org.hankki.hankkiserver.api.store.service.response.*;
+import org.hankki.hankkiserver.auth.UserId;
+import org.hankki.hankkiserver.common.code.CommonSuccessCode;
 import org.springframework.web.bind.annotation.*;
-
 
 @RestController
 @RequiredArgsConstructor
@@ -58,5 +54,11 @@ public class StoreController {
     @DeleteMapping("/stores/{id}/hearts")
     public HankkiResponse<HeartDeleteResponse> deleteHeartStore(@UserId final Long userId, @PathVariable final Long id) {
         return HankkiResponse.success(CommonSuccessCode.OK, heartCommandService.deleteHeart(StoreDeleteCommand.of(userId, id)));
+    }
+
+    @GetMapping("/stores/validate")
+    public HankkiResponse<Void> validateDuplicatedStore(@RequestBody final StoreDuplicateValidationRequest request) {
+        storeQueryService.validateDuplicatedStore(StoreValidationCommand.of(request));
+        return HankkiResponse.success(CommonSuccessCode.OK);
     }
 }

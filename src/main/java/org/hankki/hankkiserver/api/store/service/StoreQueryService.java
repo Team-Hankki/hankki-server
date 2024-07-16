@@ -1,11 +1,14 @@
 package org.hankki.hankkiserver.api.store.service;
 
-
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hankki.hankkiserver.api.menu.service.MenuFinder;
 import org.hankki.hankkiserver.api.store.parameter.PriceCategory;
 import org.hankki.hankkiserver.api.store.parameter.SortOption;
+import org.hankki.hankkiserver.api.store.service.command.StoreValidationCommand;
 import org.hankki.hankkiserver.api.store.service.response.*;
+import org.hankki.hankkiserver.common.code.StoreErrorCode;
+import org.hankki.hankkiserver.common.exception.ConflictException;
 import org.hankki.hankkiserver.domain.heart.model.Heart;
 import org.hankki.hankkiserver.domain.store.model.Store;
 import org.hankki.hankkiserver.domain.store.model.StoreCategory;
@@ -18,9 +21,11 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class StoreQueryService {
 
     private final StoreFinder storeFinder;
+    private final UniversityStoreFinder universityStoreFinder;
     private final MenuFinder menuFinder;
 
     @Transactional(readOnly = true)
@@ -73,5 +78,22 @@ public class StoreQueryService {
 
     private static boolean isLiked(final Long id, final Heart heart) {
         return heart.getUser().getId().equals(id);
+    }
+
+    @Transactional(readOnly = true)
+    public void validateDuplicatedStore(final StoreValidationCommand command) {
+        storeFinder.findByLatitudeAndLongitude(command.latitude(), command.longitude())
+                .ifPresent(store -> findUniversityStore(command.universityId(), store));
+
+    }
+
+    private void findUniversityStore(final Long universityId, final Store store) {
+        if (isExistedUniversityStore(universityId, store)) {
+            throw new ConflictException(StoreErrorCode.STORE_ALREADY_REGISTERED);
+        }
+    }
+
+    private boolean isExistedUniversityStore(final Long universityId, final Store store) {
+        return universityStoreFinder.existsByUniversityIdAndStore(universityId, store);
     }
 }

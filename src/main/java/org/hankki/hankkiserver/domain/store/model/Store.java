@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.hankki.hankkiserver.domain.common.BaseTimeEntity;
 import org.hankki.hankkiserver.domain.common.Point;
 import org.hankki.hankkiserver.domain.heart.model.Heart;
+import org.hankki.hankkiserver.domain.universitystore.model.UniversityStore;
 import org.hibernate.annotations.BatchSize;
 
 @Entity
@@ -47,6 +48,9 @@ public class Store extends BaseTimeEntity {
     @OneToMany(mappedBy = "store")
     @BatchSize(size = 100)
     private List<StoreImage> images = new ArrayList<>();
+
+    @OneToMany(mappedBy = "store")
+    private List<UniversityStore> universityStores = new ArrayList<>();
 
     public String getImage() {
         if (images.isEmpty()) {

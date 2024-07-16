@@ -1,6 +1,5 @@
 package org.hankki.hankkiserver.domain.user.model;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 

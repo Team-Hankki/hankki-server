@@ -3,6 +3,7 @@ package org.hankki.hankkiserver.api.user.service;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.auth.service.UserInfoFinder;
 import org.hankki.hankkiserver.api.favorite.service.FavoriteFinder;
+import org.hankki.hankkiserver.api.store.service.HeartFinder;
 import org.hankki.hankkiserver.api.user.service.response.UserFavoritesGetResponse;
 import org.hankki.hankkiserver.api.user.service.response.UserProfileAndNicknameResponse;
 import org.hankki.hankkiserver.api.user.service.response.UserUniversityFindResponse;
@@ -18,6 +19,7 @@ public class UserQueryService {
     private final UserUniversityFinder userUniversityFinder;
     private final FavoriteFinder favoriteFinder;
     private final UserInfoFinder userInfoFinder;
+    private final HeartFinder heartFinder;
 
     @Transactional(readOnly = true)
     public UserUniversityFindResponse findUserUniversity(Long userId) {
@@ -27,11 +29,11 @@ public class UserQueryService {
 
     @Transactional(readOnly = true)
     public UserFavoritesGetResponse findUserFavorites(final Long userId) {
-      return UserFavoritesGetResponse.of(favoriteFinder.findAllByUserId(userId));
+        return UserFavoritesGetResponse.of(favoriteFinder.findAllByUserId(userId));
     }
 
     @Transactional(readOnly = true)
     public UserProfileAndNicknameResponse getUserProfileAndNickname(final Long userId) {
-      return UserProfileAndNicknameResponse.of(userInfoFinder.getUserInfo(userId));
+        return UserProfileAndNicknameResponse.of(userInfoFinder.getUserInfo(userId));
     }
 }

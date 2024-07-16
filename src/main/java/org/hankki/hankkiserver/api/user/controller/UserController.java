@@ -24,7 +24,7 @@ public class UserController {
 
     @PostMapping("/users/me/university")
     public HankkiResponse<Void> postUserUniversity(@UserId final Long userId,
-                                                @Valid @RequestBody final UserUniversityPostRequest request) {
+                                                   @Valid @RequestBody final UserUniversityPostRequest request) {
         userCommandService.saveUserUniversity(new UserUniversityPostCommand(userId, request));
         return HankkiResponse.success(CommonSuccessCode.CREATED);
     }
@@ -36,11 +36,11 @@ public class UserController {
 
     @GetMapping("/users/me")
     public HankkiResponse<UserProfileAndNicknameResponse> getUserProfileAndNickname(@UserId final Long userId) {
-      return HankkiResponse.success(CommonSuccessCode.OK, userQueryService.getUserProfileAndNickname(userId));
+        return HankkiResponse.success(CommonSuccessCode.OK, userQueryService.getUserProfileAndNickname(userId));
     }
 
     @GetMapping("/users/me/favorites")
     public HankkiResponse<UserFavoritesGetResponse> findUserFavorites(@UserId final Long userId) {
-      return HankkiResponse.success(CommonSuccessCode.OK,userQueryService.findUserFavorites(userId));
+        return HankkiResponse.success(CommonSuccessCode.OK, userQueryService.findUserFavorites(userId));
     }
 }

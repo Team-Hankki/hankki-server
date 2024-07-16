@@ -1,9 +1,7 @@
 package org.hankki.hankkiserver.domain.store.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 
 @Getter
 @RequiredArgsConstructor

@@ -5,8 +5,6 @@ import org.hankki.hankkiserver.domain.store.model.Store;
 import org.hankki.hankkiserver.domain.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
-
 public interface HeartRepository extends JpaRepository<Heart, Long> {
 
     boolean existsByUserAndStore(User user, Store store);

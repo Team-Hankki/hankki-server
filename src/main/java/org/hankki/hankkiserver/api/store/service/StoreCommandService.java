@@ -49,7 +49,7 @@ public class StoreCommandService {
             throw new BadRequestException(StoreErrorCode.BAD_STORE_INFO);
         }
 
-        Store store = storeUpdater.save(Store.create(command));
+        Store store = storeUpdater.save(command.toEntity());
         saveImages(command, store);
         menuUpdater.saveAll(getMenus(command, store));
 

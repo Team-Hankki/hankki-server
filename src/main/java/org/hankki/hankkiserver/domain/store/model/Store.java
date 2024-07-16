@@ -32,6 +32,9 @@ public class Store extends BaseTimeEntity {
     @BatchSize(size = 100)
     private List<StoreImage> images = new ArrayList<>();
 
+    @OneToMany(mappedBy = "store")
+    private List<UniversityStore> universityStores = new ArrayList<>();
+
     @Embedded
     private Point point;
 
@@ -77,8 +80,12 @@ public class Store extends BaseTimeEntity {
                 .build();
     }
 
-    @OneToMany(mappedBy = "store")
-    private List<UniversityStore> universityStores = new ArrayList<>();
+    public String getImage() {
+        if (images.isEmpty()) {
+            return "default.com";
+        }
+        return images.get(0).getImageUrl();
+    }
 
     public void decreaseHeartCount() {
         this.heartCount--;

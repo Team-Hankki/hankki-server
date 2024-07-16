@@ -29,4 +29,16 @@ public record StorePostCommand (
                 userId,
                 request.menus());
     }
+
+    public Store toEntity() {
+        return Store.builder()
+                .name(name())
+                .point(new Point(latitude(), longitude()))
+                .address(address())
+                .category(category())
+                .lowestPrice(menus().stream().mapToInt(menu -> menu.price()).min().orElse(0))
+                .heartCount(0)
+                .isDeleted(false)
+                .build();
+    }
 }

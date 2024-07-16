@@ -7,19 +7,19 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum FavoriteImage {
 
-  BASE_IMAGE,
-  ONE_TO_FIVE,
-  SIX_TO_TEN,
-  ELEVEN_AND_ABOVE;
+  TYPE_ONE,
+  TYPE_TWO,
+  TYPE_THREE,
+  TYPE_FOUR;
 
   public static FavoriteImage getType(final int countFavoriteStore) {
     if (countFavoriteStore == 0) {
-      return BASE_IMAGE;
+      return TYPE_ONE;
     } else if (countFavoriteStore >= 1 && countFavoriteStore <= 5) {
-      return ONE_TO_FIVE;
+      return TYPE_TWO;
     } else if (countFavoriteStore >= 6 && countFavoriteStore <= 10) {
-      return SIX_TO_TEN;
+      return TYPE_THREE;
     }
-    return ELEVEN_AND_ABOVE;
+    return TYPE_FOUR;
   }
 }

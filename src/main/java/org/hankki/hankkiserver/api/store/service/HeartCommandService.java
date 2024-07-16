@@ -31,7 +31,7 @@ public class HeartCommandService {
         validateStoreHeartCreation(user, store);
         saveStoreHeart(user, store);
         increaseStoreHeartCount(store);
-        return HeartCreateResponse.of(store.getId(), true);
+        return HeartCreateResponse.of(store);
     }
 
     public HeartDeleteResponse deleteHeart(final StoreDeleteCommand storeDeleteCommand) {
@@ -40,7 +40,7 @@ public class HeartCommandService {
         validateStoreHeartRemoval(user, store);
         heartDeleter.deleteHeart(user,store);
         decreaseStoreHeartCount(store);
-        return HeartDeleteResponse.of(store.getId(), false);
+        return HeartDeleteResponse.of(store);
     }
 
     private void validateStoreHeartCreation(final User user, final Store store) {

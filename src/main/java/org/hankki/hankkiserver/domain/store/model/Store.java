@@ -24,7 +24,7 @@ public class Store extends BaseTimeEntity {
     private Long id;
 
     @OneToMany(mappedBy = "store")
-    private List<Heart> hearts;
+    private List<Heart> hearts = new ArrayList<>();
 
     @Embedded
     private Point point;

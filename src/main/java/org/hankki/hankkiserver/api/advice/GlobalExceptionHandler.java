@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public HankkiResponse<Void> handleException(Exception e) {
-        log.error("handleException() in GlobalExceptionHandler throw Exception : {}", e.getMessage());
+        log.error("handleException() in GlobalExceptionHandler throw [{}] : {}, {}", e.getClass(), e.getMessage(), e.getStackTrace());
         return HankkiResponse.fail(BusinessErrorCode.INTERNAL_SERVER_ERROR);
 
     }

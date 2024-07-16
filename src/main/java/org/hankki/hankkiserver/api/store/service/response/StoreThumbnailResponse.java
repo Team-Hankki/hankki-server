@@ -13,7 +13,7 @@ public record StoreThumbnailResponse(
         return new StoreThumbnailResponse(
                 store.getId(),
                 store.getName(),
-                store.getCategory().name(),
+                store.getCategory().getName(),
                 store.getLowestPrice(),
                 store.getHeartCount()
         );

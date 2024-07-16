@@ -5,7 +5,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hankki.hankkiserver.api.store.controller.request.MenuPostRequest;
 import org.hankki.hankkiserver.domain.common.BaseTimeEntity;
 import org.hankki.hankkiserver.domain.store.model.Store;
 
@@ -36,11 +35,11 @@ public class Menu extends BaseTimeEntity {
         this.price = price;
     }
 
-    public static Menu create(MenuPostRequest menuPostRequest, Store store) {
+    public static Menu create(final Store store, final String name, final int price) {
         return Menu.builder()
                 .store(store)
-                .name(menuPostRequest.name())
-                .price(menuPostRequest.price())
+                .name(name)
+                .price(price)
                 .build();
     }
 }

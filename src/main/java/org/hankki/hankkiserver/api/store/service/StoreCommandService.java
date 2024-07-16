@@ -84,7 +84,7 @@ public class StoreCommandService {
 
     private List<Menu> getMenus(final StorePostCommand command, final Store store) {
         return command.menus().stream()//메뉴를 엔티티로 저장한다.
-                .map(menuPostRequest -> Menu.create(menuPostRequest, store))
+                .map(menuPostRequest -> Menu.create(store, menuPostRequest.name(), menuPostRequest.price()))
                 .toList();
     }
 }

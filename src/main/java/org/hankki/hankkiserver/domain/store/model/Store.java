@@ -4,8 +4,10 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hankki.hankkiserver.api.store.service.command.StorePostCommand;
 import org.hankki.hankkiserver.domain.common.BaseTimeEntity;
 import org.hankki.hankkiserver.domain.common.Point;
 import org.hankki.hankkiserver.domain.heart.model.Heart;
@@ -25,6 +27,10 @@ public class Store extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "store")
     private List<Heart> hearts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "store")
+    @BatchSize(size = 100)
+    private List<StoreImage> images = new ArrayList<>();
 
     @Embedded
     private Point point;
@@ -48,9 +54,28 @@ public class Store extends BaseTimeEntity {
     @Column(nullable = false)
     private boolean isDeleted;
 
-    @OneToMany(mappedBy = "store")
-    @BatchSize(size = 100)
-    private List<StoreImage> images = new ArrayList<>();
+    @Builder
+    private Store (String name, Point point, String address, StoreCategory category, int lowestPrice, int heartCount, boolean isDeleted) {
+        this.name = name;
+        this.point = point;
+        this.address = address;
+        this.category = category;
+        this.lowestPrice = lowestPrice;
+        this.heartCount = heartCount;
+        this.isDeleted = isDeleted;
+    }
+
+    public static Store create(final StorePostCommand command) {
+        return Store.builder()
+                .name(command.name())
+                .point(new Point(command.latitude(), command.longitude()))
+                .address(command.address())
+                .category(command.category())
+                .lowestPrice(command.menus().stream().mapToInt(menu -> menu.price()).min().orElse(0))
+                .heartCount(0)
+                .isDeleted(false)
+                .build();
+    }
 
     @OneToMany(mappedBy = "store")
     private List<UniversityStore> universityStores = new ArrayList<>();

@@ -2,6 +2,7 @@ package org.hankki.hankkiserver.domain.report.model;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hankki.hankkiserver.domain.common.BaseCreatedAtEntity;
@@ -31,4 +32,18 @@ public class Report extends BaseCreatedAtEntity {
     @JoinColumn(name = "university_id")
     private University university;
 
+    @Builder
+    private Report (User user, Store store, University university) {
+        this.user = user;
+        this.store = store;
+        this.university = university;
+    }
+
+    public static Report create(final User user, final Store store, final University university) {
+        return Report.builder()
+                .user(user)
+                .store(store)
+                .university(university)
+                .build();
+    }
 }

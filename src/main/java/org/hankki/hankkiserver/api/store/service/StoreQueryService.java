@@ -87,9 +87,8 @@ public class StoreQueryService {
     }
 
     private void findUniversityStore(final Long universityId, final Store store) {
-        universityStoreFinder.findByUniversityIdAndStore(universityId, store)
-                .ifPresent(universityStore -> {
-                    throw new ConflictException(StoreErrorCode.STORE_ALREADY_REGISTERED, new StoreDuplicateValidationResponse(store.getId()));
-                });
+        if (universityStoreFinder.findByUniversityIdAndStore(universityId, store)) {
+            throw new ConflictException(StoreErrorCode.STORE_ALREADY_REGISTERED, new StoreDuplicateValidationResponse(store.getId()));
+        }
     }
 }

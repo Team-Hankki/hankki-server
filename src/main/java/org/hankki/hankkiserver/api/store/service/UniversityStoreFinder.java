@@ -11,7 +11,7 @@ public class UniversityStoreFinder {
 
     private final UniversityStoreRepository universityStoreRepository;
 
-    protected boolean findByUniversityIdAndStore(final Long universityId, final Store store) {
+    protected boolean existsByUniversityIdAndStore(final Long universityId, final Store store) {
         return universityStoreRepository.existsByUniversityIdAndStore(universityId, store);
     }
 }

@@ -88,8 +88,12 @@ public class StoreQueryService {
     }
 
     private void findUniversityStore(final Long universityId, final Store store) {
-        if (universityStoreFinder.findByUniversityIdAndStore(universityId, store)) {
+        if (isExistedUniversityStore(universityId, store)) {
             throw new ConflictException(StoreErrorCode.STORE_ALREADY_REGISTERED);
         }
+    }
+
+    private boolean isExistedUniversityStore(final Long universityId, final Store store) {
+        return universityStoreFinder.existsByUniversityIdAndStore(universityId, store);
     }
 }

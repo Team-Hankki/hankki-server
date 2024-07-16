@@ -34,12 +34,12 @@ public class StoreQueryService {
     }
 
     @Transactional(readOnly = true)
-    public StoreGetResponse getStoreInformation(final Long id) {
+    public StoreGetResponse getStoreInformation(final Long storeId, final Long userId) {
 
-        Store store = storeFinder.findByIdWithHeartAndIsDeletedFalse(id);
+        Store store = storeFinder.findByIdWithHeartAndIsDeletedFalse(storeId);
 
         return StoreGetResponse.of(store,
-                isLiked(id, store),
+                isLiked(userId, store),
                 getImageUrlsFromStore(store),
                 getMenus(store));
     }
@@ -72,11 +72,11 @@ public class StoreQueryService {
         return menuFinder.findAllByStore(store).stream().map(MenuResponse::of).toList();
     }
 
-    private boolean isLiked(final Long id, final Store store) {
-        return store.getHearts().stream().anyMatch(heart -> isLiked(id, heart));
+    private boolean isLiked(final Long userId, final Store store) {
+        return store.getHearts().stream().anyMatch(heart -> hasSameUserId(userId, heart));
     }
 
-    private static boolean isLiked(final Long id, final Heart heart) {
+    private boolean hasSameUserId(final Long id, final Heart heart) {
         return heart.getUser().getId().equals(id);
     }
 

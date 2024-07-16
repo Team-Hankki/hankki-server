@@ -14,7 +14,7 @@ public record UserHeartedStoreViewResponse(
         return new UserHeartedStoreViewResponse(
                 store.getId(),
                 store.getName(),
-                store.getImage(),
+                store.getImages().get(0).getImageUrl(),
                 store.getCategory().getName(),
                 store.getLowestPrice(),
                 store.getHeartCount()

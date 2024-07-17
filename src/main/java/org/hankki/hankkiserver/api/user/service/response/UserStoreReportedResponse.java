@@ -15,7 +15,7 @@ public record UserStoreReportedResponse(
         store.getId(),
         store.getName(),
         store.getCategory().getName(),
-        store.getImage(),
+        store.getImages().get(0).getImageUrl(),
         store.getLowestPrice(),
         store.getHeartCount());
   }

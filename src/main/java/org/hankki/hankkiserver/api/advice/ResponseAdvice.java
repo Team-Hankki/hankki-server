@@ -25,5 +25,4 @@ public class ResponseAdvice implements ResponseBodyAdvice<Object> {
         }
         return body;
     }
-
 }

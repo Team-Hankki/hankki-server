@@ -4,30 +4,16 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.dto.HankkiResponse;
 import org.hankki.hankkiserver.api.favorite.controller.request.FavoriteDeleteRequest;
+import org.hankki.hankkiserver.api.favorite.controller.request.FavoritePostRequest;
 import org.hankki.hankkiserver.api.favorite.controller.request.FavoritesGetRequest;
 import org.hankki.hankkiserver.api.favorite.service.FavoriteCommandService;
-import org.hankki.hankkiserver.api.favorite.service.command.FavoritesGetCommand;
-import org.hankki.hankkiserver.api.favorite.service.command.FavoritePostCommand;
-import org.hankki.hankkiserver.api.favorite.controller.request.FavoritePostRequest;
-import org.hankki.hankkiserver.api.favorite.service.command.FavoriteStoreDeleteCommand;
-import org.hankki.hankkiserver.api.favorite.service.command.FavoriteStorePostCommand;
-import org.hankki.hankkiserver.api.favorite.service.command.FavoritesDeleteCommand;
-import org.hankki.hankkiserver.api.favorite.service.command.FavoritesWithStatusGetCommand;
+import org.hankki.hankkiserver.api.favorite.service.FavoriteQueryService;
+import org.hankki.hankkiserver.api.favorite.service.command.*;
+import org.hankki.hankkiserver.api.favorite.service.response.FavoriteGetResponse;
 import org.hankki.hankkiserver.api.favorite.service.response.FavoritesWithStatusGetResponse;
 import org.hankki.hankkiserver.auth.UserId;
 import org.hankki.hankkiserver.common.code.CommonSuccessCode;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.Mapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.hankki.hankkiserver.api.favorite.service.FavoriteQueryService;
-import org.hankki.hankkiserver.api.favorite.service.response.FavoriteGetResponse;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor

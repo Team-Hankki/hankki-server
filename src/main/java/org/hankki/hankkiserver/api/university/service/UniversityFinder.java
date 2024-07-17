@@ -19,6 +19,7 @@ public class UniversityFinder {
         return universityRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(UniversityErrorCode.UNIVERSITY_NOT_FOUND));
     }
+
     public List<University> findAll () {
         return universityRepository.findAll();
     }

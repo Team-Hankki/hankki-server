@@ -1,6 +1,5 @@
 package org.hankki.hankkiserver.common.code;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

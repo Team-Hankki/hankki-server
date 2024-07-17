@@ -15,5 +15,5 @@ public record StorePostRequest(
         long universityId,
         @Size(min = 1) @Valid
         List<MenuPostRequest> menus
-        ) {
+) {
 }

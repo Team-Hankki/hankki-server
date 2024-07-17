@@ -9,5 +9,4 @@ public class HankkiserverApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(HankkiserverApplication.class, args);
 	}
-
 }

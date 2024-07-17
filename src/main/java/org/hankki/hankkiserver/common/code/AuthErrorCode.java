@@ -1,6 +1,5 @@
 package org.hankki.hankkiserver.common.code;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -41,5 +40,4 @@ public enum AuthErrorCode implements ErrorCode {
 
     private final HttpStatus httpStatus;
     private final String message;
-
 }

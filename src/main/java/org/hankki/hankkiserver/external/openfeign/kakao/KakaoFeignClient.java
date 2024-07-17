@@ -1,6 +1,5 @@
 package org.hankki.hankkiserver.external.openfeign.kakao;
 
-import org.hankki.hankkiserver.external.openfeign.kakao.dto.KakaoUnlinkRequest;
 import org.hankki.hankkiserver.external.openfeign.kakao.dto.KakaoUserInfo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.HttpHeaders;

@@ -7,8 +7,6 @@ import org.hankki.hankkiserver.common.code.AuthErrorCode;
 import org.hankki.hankkiserver.common.exception.UnauthorizedException;
 import org.springframework.stereotype.Component;
 
-import java.net.URI;
-
 import static org.hankki.hankkiserver.auth.filter.JwtAuthenticationFilter.BEARER;
 
 @RequiredArgsConstructor

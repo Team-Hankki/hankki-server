@@ -5,21 +5,19 @@ import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.dto.HankkiResponse;
 import org.hankki.hankkiserver.api.store.controller.request.StoreDuplicateValidationRequest;
 import org.hankki.hankkiserver.api.store.controller.request.StorePostRequest;
+import org.hankki.hankkiserver.api.store.parameter.PriceCategory;
+import org.hankki.hankkiserver.api.store.parameter.SortOption;
 import org.hankki.hankkiserver.api.store.service.StoreCommandService;
 import org.hankki.hankkiserver.api.store.service.StoreQueryService;
 import org.hankki.hankkiserver.api.store.service.command.StorePostCommand;
 import org.hankki.hankkiserver.api.store.service.response.*;
 import org.hankki.hankkiserver.common.code.CommonSuccessCode;
+import org.hankki.hankkiserver.domain.store.model.StoreCategory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.hankki.hankkiserver.auth.UserId;
 import org.hankki.hankkiserver.api.store.service.HeartCommandService;
-import org.hankki.hankkiserver.api.store.service.StoreQueryService;
-import org.hankki.hankkiserver.api.store.service.command.StorePostCommand;
 import org.hankki.hankkiserver.api.store.service.command.StoreValidationCommand;
-import org.hankki.hankkiserver.api.store.service.response.*;
-import org.hankki.hankkiserver.auth.UserId;
-import org.hankki.hankkiserver.common.code.CommonSuccessCode;
 import org.hankki.hankkiserver.api.store.service.command.HeartDeleteCommand;
 import org.hankki.hankkiserver.api.store.service.command.HeartPostCommand;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,6 +41,20 @@ public class StoreController {
         return HankkiResponse.success(CommonSuccessCode.OK, storeQueryService.getStoreInformation(storeId, userId));
     }
 
+    @GetMapping("/stores/pins")
+    public HankkiResponse<StorePinsResponse> getStorePins(@RequestParam(required = false) final Long universityId,
+                                                          @RequestParam(required = false) final StoreCategory storeCategory,
+                                                          @RequestParam(required = false) final PriceCategory priceCategory,
+                                                          @RequestParam(required = false) final SortOption sortOption) {
+        return HankkiResponse.success(CommonSuccessCode.OK, storeQueryService.getStorePins(universityId, storeCategory, priceCategory, sortOption));
+    }
+    @GetMapping("/stores")
+    public HankkiResponse<StoresResponse> getStores(@RequestParam(required = false) final Long universityId,
+                                                          @RequestParam(required = false) final StoreCategory storeCategory,
+                                                          @RequestParam(required = false) final PriceCategory priceCategory,
+                                                          @RequestParam(required = false) final SortOption sortOption) {
+        return HankkiResponse.success(CommonSuccessCode.OK, storeQueryService.getStores(universityId, storeCategory, priceCategory, sortOption));
+    }
     @GetMapping("/stores/{id}/thumbnail")
     public HankkiResponse<StoreThumbnailResponse> getStoreThumbnail(@PathVariable final Long id) {
         return HankkiResponse.success(CommonSuccessCode.OK, storeQueryService.getStoreThumbnail(id));

@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface StoreRepository extends JpaRepository<Store, Long> {
+public interface StoreRepository extends JpaRepository<Store, Long>, CustomStoreRepository {
     @Query("select s from Store s where s.id = :id and s.isDeleted = false")
     Optional<Store> findByIdAndIsDeletedIsFalse(Long id);
 

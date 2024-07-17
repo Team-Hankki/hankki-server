@@ -67,13 +67,6 @@ public class Store extends BaseTimeEntity {
         this.isDeleted = isDeleted;
     }
 
-    public String getImage() {
-        if (images.isEmpty()) {
-            return "default.com";
-        }
-        return images.get(0).getImageUrl();
-    }
-
     public void decreaseHeartCount() {
         this.heartCount--;
     }

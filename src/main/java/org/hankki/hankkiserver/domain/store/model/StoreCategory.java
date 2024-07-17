@@ -7,17 +7,20 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum StoreCategory {
 
-    KOREAN("한식", "www."),
-    CHINESE("중식", "www."),
-    JAPANESE("일식", "www."),
-    WESTERN("양식", "www."),
-    CONVENIENCEFOOD("간편식", "www."),
-    BUNSIK("분식", "www."),
-    SALADSANDWICH("샐러드", "www."),
-    FASTFOOD("패스트푸드", "www."),
-    WORLD("세계음식", "www.");
+    KOREAN("한식"),
+    CHINESE("중식"),
+    JAPANESE("일식"),
+    WESTERN("양식"),
+    CONVENIENCEFOOD("간편식"),
+    BUNSIK("분식"),
+    SALADSANDWICH("샐러드"),
+    FASTFOOD("패스트푸드"),
+    WORLD("세계음식");
 
     private final String name;
-    private final String url;
+    private String url;
 
+    protected void setUrl(String url) {
+        this.url = url;
+    }
 }

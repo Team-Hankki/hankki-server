@@ -62,10 +62,25 @@ dependencies {
 	// AWS
 	implementation("software.amazon.awssdk:s3:2.21.0")
 	implementation("software.amazon.awssdk:bom:2.21.0")
+
+	// QueryDSL
+	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+def generated = 'src/main/generated'
+tasks.withType(JavaCompile).configureEach {
+	options.getGeneratedSourceOutputDirectory().set(file(generated))
+}
+
+clean {
+	delete file(generated)
 }
 
 tasks.register('copyYml', Copy) {

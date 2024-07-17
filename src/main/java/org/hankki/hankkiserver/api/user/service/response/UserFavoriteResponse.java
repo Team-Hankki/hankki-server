@@ -6,7 +6,7 @@ import org.hankki.hankkiserver.domain.favorite.model.FavoriteImage;
 public record UserFavoriteResponse(
   Long id,
   String title,
-  FavoriteImage imageUrl
+  FavoriteImage imageType
 ) {
 
   public static UserFavoriteResponse of(Favorite favorite) {

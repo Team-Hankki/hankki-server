@@ -18,6 +18,6 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
 
   List<Favorite> findByUserIdOrderByCreatedAtDesc(Long userId);
 
-  @Query("select f from Favorite f join fetch f.user where f.id = :favoriteId")
+  @Query("select f from Favorite f where f.id = :favoriteId")
   Optional<Favorite> findByIdWithUser(@Param("favoriteId") Long favoriteId);
 }

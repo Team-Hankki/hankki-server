@@ -2,7 +2,7 @@ package org.hankki.hankkiserver.api.favorite.service.response;
 
 import org.hankki.hankkiserver.domain.store.model.Store;
 
-public record FavoriteStoreFindResponse(
+public record FavoriteStoreResponse(
   Long id,
   String name,
   String imageUrl,
@@ -10,9 +10,8 @@ public record FavoriteStoreFindResponse(
   int lowestPrice,
   int heartCount
 ) {
-
-  public static FavoriteStoreFindResponse of(Store store) {
-    return new FavoriteStoreFindResponse(
+  public static FavoriteStoreResponse of(Store store) {
+    return new FavoriteStoreResponse(
         store.getId(),
         store.getName(),
         store.getImages().get(0).getImageUrl(),

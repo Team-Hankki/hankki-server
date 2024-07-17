@@ -7,7 +7,8 @@ public record StoreThumbnailResponse(
         String name,
         String category,
         int lowestPrice,
-        int heartCount
+        int heartCount,
+        String imageUrl
 ) {
     public static StoreThumbnailResponse of(final Store store) {
         return new StoreThumbnailResponse(
@@ -15,7 +16,8 @@ public record StoreThumbnailResponse(
                 store.getName(),
                 store.getCategory().getName(),
                 store.getLowestPrice(),
-                store.getHeartCount()
+                store.getHeartCount(),
+                store.getImages().get(0).getImageUrl()
         );
     }
 }

@@ -13,5 +13,4 @@ public enum PriceCategory {
     private final String name;
     private final int maxPrice;
     private final int minPrice;
-
 }

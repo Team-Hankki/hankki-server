@@ -5,7 +5,6 @@ import org.hankki.hankkiserver.common.exception.UnauthorizedException;
 
 import java.util.List;
 
-
 public record ApplePublicKeys(
         List<ApplePublicKey> keys
 ) {

@@ -5,7 +5,6 @@ public record FavoriteStoreDeleteCommand(
   Long favoriteId,
   Long storeId
 ) {
-
   public static FavoriteStoreDeleteCommand of(Long userId, Long favoriteId, Long storeId) {
     return new FavoriteStoreDeleteCommand(userId, favoriteId, storeId);
   }

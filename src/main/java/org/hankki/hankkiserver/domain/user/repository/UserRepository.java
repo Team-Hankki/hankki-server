@@ -11,5 +11,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByPlatformAndSerialId(Platform platform, String serialId);
 
     boolean existsByPlatformAndSerialIdAndMemberStatus(Platform platform, String serialId, MemberStatus memberStatus);
-    Optional<User> findByPlatformAndSerialIdAndMemberStatus(Platform platform, String serialId, MemberStatus memberStatus);
 }

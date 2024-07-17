@@ -36,8 +36,7 @@ public class StoreController {
     private final HeartCommandService heartCommandService;
 
     @GetMapping("/stores/{storeId}")
-    public HankkiResponse<StoreGetResponse> getStore(@PathVariable final Long storeId,
-                                                     @UserId final Long userId) {
+    public HankkiResponse<StoreGetResponse> getStore(@PathVariable final Long storeId, @UserId final Long userId) {
         return HankkiResponse.success(CommonSuccessCode.OK, storeQueryService.getStoreInformation(storeId, userId));
     }
 
@@ -48,6 +47,7 @@ public class StoreController {
                                                           @RequestParam(required = false) final SortOption sortOption) {
         return HankkiResponse.success(CommonSuccessCode.OK, storeQueryService.getStorePins(universityId, storeCategory, priceCategory, sortOption));
     }
+
     @GetMapping("/stores")
     public HankkiResponse<StoresResponse> getStores(@RequestParam(required = false) final Long universityId,
                                                           @RequestParam(required = false) final StoreCategory storeCategory,
@@ -55,6 +55,7 @@ public class StoreController {
                                                           @RequestParam(required = false) final SortOption sortOption) {
         return HankkiResponse.success(CommonSuccessCode.OK, storeQueryService.getStores(universityId, storeCategory, priceCategory, sortOption));
     }
+
     @GetMapping("/stores/{id}/thumbnail")
     public HankkiResponse<StoreThumbnailResponse> getStoreThumbnail(@PathVariable final Long id) {
         return HankkiResponse.success(CommonSuccessCode.OK, storeQueryService.getStoreThumbnail(id));
@@ -90,6 +91,7 @@ public class StoreController {
         storeQueryService.validateDuplicatedStore(StoreValidationCommand.of(request));
         return HankkiResponse.success(CommonSuccessCode.OK);
     }
+
     @PostMapping("/stores")
     public HankkiResponse<StorePostResponse> createStore(@RequestPart(required = false) final MultipartFile image,
                                                            @Valid @RequestPart final StorePostRequest request,

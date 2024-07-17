@@ -36,6 +36,7 @@ public class StoreFinder {
     protected Optional<Store> findByLatitudeAndLongitude(final double latitude, final double longitude) {
         return storeRepository.findByPoint_LatitudeAndPoint_Longitude(latitude, longitude);
     }
+
     protected boolean existsByLatitudeAndLongitude(final double latitude, final double longitude) {
         return storeRepository.existsByPoint_LatitudeAndPoint_Longitude(latitude, longitude);
     }

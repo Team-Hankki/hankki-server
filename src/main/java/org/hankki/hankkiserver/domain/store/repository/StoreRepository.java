@@ -16,7 +16,5 @@ public interface StoreRepository extends JpaRepository<Store, Long>, CustomStore
     @Query("select s from Store s where s.point.latitude = :latitude and s.point.longitude = :longitude")
     Optional<Store> findByPoint_LatitudeAndPoint_Longitude(double latitude, double longitude);
 
-    Optional<Store> findByName(String name);
-
     boolean existsByPoint_LatitudeAndPoint_Longitude(double latitude, double longitude);
 }

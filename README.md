@@ -27,9 +27,13 @@
   <img src="https://firebasestorage.googleapis.com/v0/b/stackticon-81399.appspot.com/o/images%2F1720497281719?alt=media&token=f40aa73a-b50e-43cc-bd2a-a49e3d62086d)](https://github.com/msdio/stackticon">
 </div>
 
+
+# 🏗️Architecture
+![한끼아키텍쳐](https://github.com/user-attachments/assets/4c538dd1-5734-42a9-afa7-36bd9222b698)
+
 <br><br>
 # 📍ERD
-![hankki (1)](https://github.com/Team-Hankki/hankki-server/assets/109809242/20ea9569-ac38-4c28-a62d-3b616384793b)
+![hankki-DB](https://github.com/user-attachments/assets/bbae0174-e6c7-44e9-a5a8-ca0feb3a25c5)
 
 <br><br>
 # 📜 Covention

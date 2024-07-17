@@ -44,6 +44,18 @@ public class StoreQueryService {
                 getMenus(store));
     }
 
+    @Transactional(readOnly = true)
+    public StorePinsResponse getStorePins(final Long universityId, final StoreCategory storeCategory, final PriceCategory priceCategory, final SortOption sortOption) {
+        return StorePinsResponse.of(storeFinder.findAllDynamicQuery(universityId, storeCategory, priceCategory, sortOption)
+                .stream().map(PinResponse::of).toList());
+    }
+
+    @Transactional(readOnly = true)
+    public StoresResponse getStores(final Long universityId, final StoreCategory storeCategory, final PriceCategory priceCategory, final SortOption sortOption) {
+        return StoresResponse.of(storeFinder.findAllDynamicQuery(universityId, storeCategory, priceCategory, sortOption)
+                .stream().map(StoreResponse::of).toList());
+    }
+
     public CategoriesResponse getCategories() {
         return new CategoriesResponse(Arrays.stream(StoreCategory.values())
                 .map(CategoryResponse::of)

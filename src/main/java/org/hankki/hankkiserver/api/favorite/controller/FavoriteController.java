@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.dto.HankkiResponse;
 import org.hankki.hankkiserver.api.favorite.controller.request.FavoriteDeleteRequest;
 import org.hankki.hankkiserver.api.favorite.controller.request.FavoritePostRequest;
-import org.hankki.hankkiserver.api.favorite.controller.request.FavoritesGetRequest;
 import org.hankki.hankkiserver.api.favorite.service.FavoriteCommandService;
 import org.hankki.hankkiserver.api.favorite.service.FavoriteQueryService;
 import org.hankki.hankkiserver.api.favorite.service.command.*;
@@ -65,7 +64,7 @@ public class FavoriteController {
   }
 
   @GetMapping("/favorites")
-  public HankkiResponse<FavoritesWithStatusGetResponse> getFavoritesWithStatus(@UserId Long id, @RequestBody final FavoritesGetRequest request) {
-    return HankkiResponse.success(CommonSuccessCode.OK, favoriteQueryService.findFavoritesWithStatus(FavoritesWithStatusGetCommand.of(id, request)));
+  public HankkiResponse<FavoritesWithStatusGetResponse> getFavoritesWithStatus(@UserId Long id, @RequestParam("candidate") final Long storeId) {
+    return HankkiResponse.success(CommonSuccessCode.OK, favoriteQueryService.findFavoritesWithStatus(FavoritesWithStatusGetCommand.of(id, storeId)));
   }
 }

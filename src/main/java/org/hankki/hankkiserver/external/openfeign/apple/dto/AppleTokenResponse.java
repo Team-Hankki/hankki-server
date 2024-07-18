@@ -6,18 +6,18 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record AppleTokenResponse(
         String accessToken,
-        String expireIn,
+        String expiresIn,
         String idToken,
         String refreshToken,
         String tokenType) {
 
     public static AppleTokenResponse of(
             final String accessToken,
-            final String expireIn,
+            final String expiresIn,
             final String idToken,
             final String refreshToken,
             final String tokenType) {
-        return new AppleTokenResponse(accessToken, expireIn, idToken, refreshToken, tokenType);
+        return new AppleTokenResponse(accessToken, expiresIn, idToken, refreshToken, tokenType);
     }
 }
 

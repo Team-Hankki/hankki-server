@@ -23,7 +23,7 @@ public class AppleOAuthProvider {
     private final AppleFeignClient appleFeignClient;
     private final AppleIdentityTokenParser appleIdentityTokenParser;
     private final ApplePublicKeyGenerator applePublicKeyGenerator;;
-    private final AppleClientSecretGenerator appleClientSecretGenerator;
+
     @Value("${oauth.apple.client-id}")
     private String clientId;
 
@@ -38,9 +38,8 @@ public class AppleOAuthProvider {
                 claims.get("email").toString());
     }
 
-    public String getAppleRefreshToken(final String code) {
+    public String getAppleRefreshToken(final String code, final String clientSecret) {
         try {
-            String clientSecret = appleClientSecretGenerator.generateClientSecret();
             AppleTokenResponse appleTokenResponse = appleFeignClient.getAppleTokens(
                      AppleTokenRequest.of(code, clientId, clientSecret));
             return appleTokenResponse.refreshToken();
@@ -49,8 +48,7 @@ public class AppleOAuthProvider {
         }
     }
 
-    public void requestRevoke(final String refreshToken) {
-        String clientSecret = appleClientSecretGenerator.generateClientSecret();
+    public void requestRevoke(final String refreshToken, final String clientSecret) {
         AppleRevokeRequest appleRevokeRequest = AppleRevokeRequest.of(
                 refreshToken, clientId, clientSecret);
         appleFeignClient.revoke(appleRevokeRequest);

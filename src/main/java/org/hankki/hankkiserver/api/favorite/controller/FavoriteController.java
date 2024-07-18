@@ -63,8 +63,8 @@ public class FavoriteController {
         FavoritesGetCommand.of(userId, favoriteId)));
   }
 
-  @GetMapping("/favorites/stores/{storeId}")
-  public HankkiResponse<FavoritesWithStatusGetResponse> getFavoritesWithStatus(@UserId Long id, @PathVariable(name = "storeId") final Long storeId) {
+  @GetMapping("/favorites")
+  public HankkiResponse<FavoritesWithStatusGetResponse> getFavoritesWithStatus(@UserId Long id, @RequestParam("candidate") final Long storeId) {
     return HankkiResponse.success(CommonSuccessCode.OK, favoriteQueryService.findFavoritesWithStatus(FavoritesWithStatusGetCommand.of(id, storeId)));
   }
 }

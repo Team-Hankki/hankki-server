@@ -44,4 +44,8 @@ public class StoreFinder {
     public List<Store> findAllDynamicQuery(final Long universityId, final StoreCategory storeCategory, final PriceCategory priceCategory, final SortOption sortOption) {
         return storeRepository.findStoreByCategoryAndLowestPriceAndUniversityIdAndIsDeletedFalseOrderBySortOptions(storeCategory, priceCategory, universityId, sortOption);
     }
+
+    public List<Store> findAllByIdsWhereDeletedIsFalseOrderByCreatedAtDes(final List<Long> ids) {
+        return storeRepository.findAllByIdAndIsDeletedIsFalseOrderByCreatedAtDesc(ids);
+    }
 }

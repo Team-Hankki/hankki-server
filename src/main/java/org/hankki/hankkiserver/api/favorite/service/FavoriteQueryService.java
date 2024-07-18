@@ -1,5 +1,6 @@
 package org.hankki.hankkiserver.api.favorite.service;
 
+import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.favorite.service.command.FavoritesGetCommand;
 import org.hankki.hankkiserver.api.favorite.service.command.FavoritesWithStatusGetCommand;
@@ -26,8 +27,7 @@ public class FavoriteQueryService {
   @Transactional(readOnly = true)
   public FavoriteGetResponse findFavorite(final FavoritesGetCommand command) {
     Favorite favorite = favoriteFinder.findByIdWithFavoriteStore(command.favoriteId());
-    List<Store> store = storeFinder.findAllByIdsWhereDeletedIsFalseOrderByCreatedAtDes(favorite.getFavoriteStores().stream().map(fs -> fs.getStore().getId()).toList());
-    return FavoriteGetResponse.of(favorite, store);
+    return FavoriteGetResponse.of(favorite, findStoresInFavorite(favorite));
   }
 
   @Transactional(readOnly = true)
@@ -44,5 +44,16 @@ public class FavoriteQueryService {
   private boolean isStoreAlreadyAdded(final List<FavoriteStore> favoriteStore, final Long commandStoreId) {
     return favoriteStore.stream()
         .anyMatch(f -> f.getStore().getId().equals(commandStoreId));
+  }
+
+  private List<Store> findStoresInFavorite(final Favorite favorite){
+    if (favoriteHasNoStore(favorite)) {
+      return new ArrayList<>();
+    }
+    return storeFinder.findAllByIdsWhereDeletedIsFalseOrderByCreatedAtDes(favorite.getFavoriteStores().stream().map(fs -> fs.getStore().getId()).toList());
+  }
+
+  private boolean favoriteHasNoStore(final Favorite favorite) {
+    return favorite.getFavoriteStores().isEmpty();
   }
 }

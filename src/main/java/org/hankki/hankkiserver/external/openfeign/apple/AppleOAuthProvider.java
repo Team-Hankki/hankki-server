@@ -2,15 +2,12 @@ package org.hankki.hankkiserver.external.openfeign.apple;
 
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
-
 import lombok.extern.slf4j.Slf4j;
 import org.hankki.hankkiserver.common.code.AuthErrorCode;
 import org.hankki.hankkiserver.common.exception.BadRequestException;
 import org.hankki.hankkiserver.external.openfeign.apple.dto.ApplePublicKeys;
-import org.hankki.hankkiserver.external.openfeign.apple.dto.AppleTokenRequest;
-import org.hankki.hankkiserver.external.openfeign.dto.SocialInfoDto;
-import org.hankki.hankkiserver.external.openfeign.apple.dto.AppleRevokeRequest;
 import org.hankki.hankkiserver.external.openfeign.apple.dto.AppleTokenResponse;
+import org.hankki.hankkiserver.external.openfeign.dto.SocialInfoDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -42,8 +39,7 @@ public class AppleOAuthProvider {
 
     public String getAppleRefreshToken(final String code, final String clientSecret) {
         try {
-            AppleTokenResponse appleTokenResponse = appleFeignClient.getAppleTokens(
-                     AppleTokenRequest.of(code, clientId, clientSecret));
+            AppleTokenResponse appleTokenResponse = appleFeignClient.getAppleTokens(code, clientId, clientSecret, "authorization_code");
             log.info("Apple token response: {}", appleTokenResponse);
             return appleTokenResponse.refreshToken();
         } catch (Exception e) {
@@ -53,9 +49,7 @@ public class AppleOAuthProvider {
     }
 
     public void requestRevoke(final String refreshToken, final String clientSecret) {
-        AppleRevokeRequest appleRevokeRequest = AppleRevokeRequest.of(
-                refreshToken, clientId, clientSecret);
-        log.error("Revoke request: {}", appleRevokeRequest);
-        appleFeignClient.revoke(appleRevokeRequest);
+        appleFeignClient.revoke(refreshToken, clientId, clientSecret, "refresh_token");
+        log.error("Failed to revoke apple refresh token.");
     }
 }

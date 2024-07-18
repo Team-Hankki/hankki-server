@@ -1,21 +1,14 @@
 package org.hankki.hankkiserver.external.openfeign.apple.dto;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record AppleTokenRequest(
         String code,
-        String clientId,
-        String clientSecret,
-        String grantType
+        String client_id,
+        String client_secret,
+        String grant_type
 ) {
     private static final String GRANT_TYPE = "authorization_code";
 
-    public static AppleTokenRequest of(
-            final String code,
-            final String clientId,
-            final String clientSecret) {
-        return new AppleTokenRequest(code, clientId, clientSecret, GRANT_TYPE);
+    public static AppleTokenRequest of(String code, String client_id, String client_secret) {
+        return new AppleTokenRequest(code, client_id, client_secret, GRANT_TYPE);
     }
 }

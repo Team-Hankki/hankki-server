@@ -1,22 +1,15 @@
 package org.hankki.hankkiserver.external.openfeign.apple.dto;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record AppleRevokeRequest(
         String token,
-        String clientId,
-        String clientSecret,
-        String tokenTypeHint
+        String client_id,
+        String client_secret,
+        String token_type_hint
 ) {
 
     private static final String TOKEN_TYPE_HINT = "refresh_token";
 
-    public static AppleRevokeRequest of(
-            final String token,
-            final String clientId,
-            final String clientSecret) {
-        return new AppleRevokeRequest(token, clientId, clientSecret, TOKEN_TYPE_HINT);
+    public static AppleRevokeRequest of(String token, String client_id, String client_secret) {
+        return new AppleRevokeRequest(token, client_id, client_secret, TOKEN_TYPE_HINT);
     }
 }

@@ -7,6 +7,7 @@ import org.hankki.hankkiserver.external.openfeign.apple.dto.AppleTokenResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(name = "appleClient", url = "https://appleid.apple.com/auth")
 public interface AppleFeignClient {
@@ -14,9 +15,9 @@ public interface AppleFeignClient {
     @GetMapping("/keys")
     ApplePublicKeys getApplePublicKey();
 
-    @PostMapping(value = "token", consumes = "application/x-www-form-urlencoded")
-    AppleTokenResponse getAppleTokens(AppleTokenRequest request);
+    @PostMapping(value = "/token", consumes = "application/x-www-form-urlencoded")
+    AppleTokenResponse getAppleTokens(@RequestBody AppleTokenRequest request);
 
-    @PostMapping(value = "revoke", consumes = "application/x-www-form-urlencoded")
+    @PostMapping(value = "/revoke", consumes = "application/x-www-form-urlencoded")
     void revoke(AppleRevokeRequest request);
 }

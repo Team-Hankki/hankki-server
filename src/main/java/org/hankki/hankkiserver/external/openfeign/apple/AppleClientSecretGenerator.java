@@ -26,10 +26,10 @@ public class AppleClientSecretGenerator {
     @Value("${oauth.apple.client-id}")
     private String clientId;
 
-    protected String generateClientSecret() {
-        try {
-            Date expirationDate = Date.from(LocalDateTime.now().plusMinutes(5)
+    public String generateClientSecret() {
+            Date expirationDate = Date.from(LocalDateTime.now().plusDays(5)
                     .atZone(ZoneId.systemDefault()).toInstant());
+        try {
             return Jwts.builder()
                     .setHeaderParam("alg", SignatureAlgorithm.ES256)
                     .setHeaderParam("kid", keyId)

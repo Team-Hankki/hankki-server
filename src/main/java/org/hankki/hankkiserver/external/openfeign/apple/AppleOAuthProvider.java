@@ -3,6 +3,7 @@ package org.hankki.hankkiserver.external.openfeign.apple;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.hankki.hankkiserver.common.code.AuthErrorCode;
 import org.hankki.hankkiserver.common.exception.BadRequestException;
 import org.hankki.hankkiserver.external.openfeign.apple.dto.ApplePublicKeys;
@@ -18,6 +19,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class AppleOAuthProvider {
 
     private final AppleFeignClient appleFeignClient;
@@ -42,8 +44,10 @@ public class AppleOAuthProvider {
         try {
             AppleTokenResponse appleTokenResponse = appleFeignClient.getAppleTokens(
                      AppleTokenRequest.of(code, clientId, clientSecret));
+            log.info("Apple token response: {}", appleTokenResponse);
             return appleTokenResponse.refreshToken();
         } catch (Exception e) {
+            log.error("Failed to get apple refresh token.");
             throw new BadRequestException(AuthErrorCode.FAILED_TO_LOAD_PRIVATE_KEY);
         }
     }
@@ -51,6 +55,7 @@ public class AppleOAuthProvider {
     public void requestRevoke(final String refreshToken, final String clientSecret) {
         AppleRevokeRequest appleRevokeRequest = AppleRevokeRequest.of(
                 refreshToken, clientId, clientSecret);
+        log.error("Revoke request: {}", appleRevokeRequest);
         appleFeignClient.revoke(appleRevokeRequest);
     }
 }

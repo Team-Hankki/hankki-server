@@ -43,4 +43,8 @@ public class UserInfo {
     public void updateNickname(final String nickname) {
         this.nickname = nickname;
     }
+
+    public void updateProfile() {
+        this.profileImageUrl = ImageSelector.setRandomDefaultImageUrl();
+    }
 }

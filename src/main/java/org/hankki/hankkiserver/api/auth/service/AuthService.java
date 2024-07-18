@@ -56,7 +56,7 @@ public class AuthService {
         return UserLoginResponse.of(issuedToken, isRegistered);
     }
 
-    public void logOut(final Long userId) {
+    public void logout(final Long userId) {
         UserInfo findUserInfo = userInfoFinder.getUserInfo(userId);
         findUserInfo.updateRefreshToken(null);
     }
@@ -125,6 +125,7 @@ public class AuthService {
         user.updateStatus(ACTIVE);
         user.updateDeletedAt(null);
         userInfoFinder.getUserInfo(user.getId()).updateNickname(user.getName());
+        userInfoFinder.getUserInfo(user.getId()).updateProfile();
         return user;
     }
 
@@ -144,7 +145,7 @@ public class AuthService {
             String storedRefreshToken = getRefreshToken(userId);
             jwtValidator.equalsRefreshToken(refreshToken, storedRefreshToken);
         } catch (UnauthorizedException e) {
-            logOut(userId);
+            logout(userId);
             throw e;
         }
     }

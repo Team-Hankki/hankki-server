@@ -31,7 +31,7 @@ public class AuthController {
     @PatchMapping("/auth/logout")
     public HankkiResponse<Void> signOut(
             @UserId final Long userId) {
-        authService.logOut(userId);
+        authService.logout(userId);
         return HankkiResponse.success(CommonSuccessCode.OK);
     }
 

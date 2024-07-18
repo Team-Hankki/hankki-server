@@ -1,7 +1,6 @@
 package org.hankki.hankkiserver.api.auth.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.hankki.hankkiserver.api.auth.controller.request.UserLoginRequest;
 import org.hankki.hankkiserver.api.auth.service.response.UserLoginResponse;
 import org.hankki.hankkiserver.api.auth.service.response.UserReissueResponse;
@@ -31,7 +30,6 @@ import static org.hankki.hankkiserver.domain.user.model.User.createUser;
 
 @Service
 @Transactional
-@Slf4j
 @RequiredArgsConstructor
 public class AuthService {
 
@@ -68,11 +66,7 @@ public class AuthService {
         if (APPLE == user.getPlatform()){
             try {
                 String clientSecret = appleClientSecretGenerator.generateClientSecret();
-                log.info(clientSecret);
-                log.error("clientSecret" + clientSecret);
                 String refreshToken = appleOAuthProvider.getAppleRefreshToken(code, clientSecret);
-                log.info(refreshToken);
-                log.error("refreshToken" + refreshToken);
                 appleOAuthProvider.requestRevoke(refreshToken, clientSecret);
             } catch (Exception e) {
                 throw new BadRequestException(AuthErrorCode.APPLE_REVOKE_FAILED);

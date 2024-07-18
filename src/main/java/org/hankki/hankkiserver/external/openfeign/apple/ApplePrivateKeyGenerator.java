@@ -3,8 +3,11 @@ package org.hankki.hankkiserver.external.openfeign.apple;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
 
@@ -14,7 +17,7 @@ public class ApplePrivateKeyGenerator {
     @Value("${oauth.apple.private-key}")
     private String privateKey;
 
-    protected PrivateKey getPrivateKey() throws Exception {
+    protected PrivateKey getPrivateKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 
         byte[] keyBytes = Base64.getDecoder().decode(privateKey);
 

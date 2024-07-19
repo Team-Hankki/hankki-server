@@ -29,7 +29,7 @@ public class UserFinder {
     }
 
     public boolean isRegisteredUser(final Platform platform, final SocialInfoDto socialInfo) {
-        return userRepository.existsByPlatformAndSerialIdAndMemberStatus(
+        return userRepository.existsByPlatformAndSerialIdAndStatus(
                 platform,
                 socialInfo.serialId(),
                 ACTIVE);

@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByPlatformAndSerialId(Platform platform, String serialId);
 
-    boolean existsByPlatformAndSerialIdAndMemberStatus(Platform platform, String serialId, UserStatus userStatus);
+    boolean existsByPlatformAndSerialIdAndStatus(Platform platform, String serialId, UserStatus userStatus);
 }

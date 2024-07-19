@@ -34,14 +34,17 @@ public class User extends BaseTimeEntity {
     private String serialId;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Platform platform;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private UserRole role;
 
     private LocalDateTime deletedAt;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private UserStatus status;
 
     public static User createUser(final String name, final String email, final String serialId, final Platform platform) {

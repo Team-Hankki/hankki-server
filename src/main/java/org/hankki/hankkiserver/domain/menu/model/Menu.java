@@ -14,7 +14,7 @@ import org.hankki.hankkiserver.domain.store.model.Store;
 public class Menu extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "menu_id")
     private Long id;
 

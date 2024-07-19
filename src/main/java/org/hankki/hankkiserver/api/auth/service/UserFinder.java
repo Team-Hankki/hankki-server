@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-import static org.hankki.hankkiserver.domain.user.model.MemberStatus.ACTIVE;
+import static org.hankki.hankkiserver.domain.user.model.UserStatus.ACTIVE;
 
 @Component
 @RequiredArgsConstructor

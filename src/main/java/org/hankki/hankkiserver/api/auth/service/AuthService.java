@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.hankki.hankkiserver.auth.filter.JwtAuthenticationFilter.BEARER;
-import static org.hankki.hankkiserver.domain.user.model.MemberStatus.ACTIVE;
+import static org.hankki.hankkiserver.domain.user.model.UserStatus.ACTIVE;
 import static org.hankki.hankkiserver.domain.user.model.Platform.APPLE;
 import static org.hankki.hankkiserver.domain.user.model.Platform.KAKAO;
 import static org.hankki.hankkiserver.domain.user.model.User.createUser;
@@ -97,7 +97,7 @@ public class AuthService {
     }
 
     private String getUserRole(final Long userId) {
-        return userFinder.getUser(userId).getUserRole().getValue();
+        return userFinder.getUser(userId).getRole().getValue();
     }
 
     private SocialInfoDto getSocialInfo(final String providerToken, final Platform platform, final String name) {

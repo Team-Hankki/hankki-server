@@ -7,8 +7,8 @@ import org.hankki.hankkiserver.domain.common.BaseTimeEntity;
 
 import java.time.LocalDateTime;
 
-import static org.hankki.hankkiserver.domain.user.model.MemberStatus.ACTIVE;
-import static org.hankki.hankkiserver.domain.user.model.MemberStatus.INACTIVE;
+import static org.hankki.hankkiserver.domain.user.model.UserStatus.ACTIVE;
+import static org.hankki.hankkiserver.domain.user.model.UserStatus.INACTIVE;
 import static org.hankki.hankkiserver.domain.user.model.UserRole.USER;
 
 @Entity
@@ -37,12 +37,12 @@ public class User extends BaseTimeEntity {
     private Platform platform;
 
     @Enumerated(EnumType.STRING)
-    private UserRole userRole;
+    private UserRole role;
 
     private LocalDateTime deletedAt;
 
     @Enumerated(EnumType.STRING)
-    private MemberStatus memberStatus;
+    private UserStatus status;
 
     public static User createUser(final String name, final String email, final String serialId, final Platform platform) {
         return User.builder()
@@ -50,8 +50,8 @@ public class User extends BaseTimeEntity {
                 .email(email)
                 .serialId(serialId)
                 .platform(platform)
-                .userRole(USER)
-                .memberStatus(ACTIVE)
+                .role(USER)
+                .status(ACTIVE)
                 .build();
     }
 
@@ -60,8 +60,8 @@ public class User extends BaseTimeEntity {
         this.deletedAt = LocalDateTime.now();
     }
 
-    public void updateStatus(MemberStatus memberStatus) {
-        this.memberStatus = memberStatus;
+    public void updateStatus(UserStatus userStatus) {
+        this.status = userStatus;
     }
 
     public void updateDeletedAt(LocalDateTime deletedAt) {

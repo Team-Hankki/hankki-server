@@ -51,7 +51,7 @@ public class AuthService {
         Platform platform = Platform.getEnumPlatformFromStringPlatform(request.platform());
         SocialInfoDto socialInfo = getSocialInfo(token, platform, request.name());
         boolean isRegistered = userFinder.isRegisteredUser(platform, socialInfo);
-        User findUser = loadOrCreateUser(platform, socialInfo);
+        User findUser = loadOrCreateUser(platform, socialInfo, isRegistered);
         Token issuedToken = generateTokens(findUser.getId());
         return UserLoginResponse.of(issuedToken, isRegistered);
     }
@@ -107,9 +107,15 @@ public class AuthService {
         return appleOAuthProvider.getAppleUserInfo(providerToken, name);
     }
 
-    private User loadOrCreateUser(final Platform platform, final SocialInfoDto socialInfo) {
+    private User loadOrCreateUser(final Platform platform, final SocialInfoDto socialInfo, final boolean isRegistered) {
         return userFinder.findUserByPlatFormAndSeralId(platform, socialInfo.serialId())
-                .map(this::updateUserInfo)
+                .map(user -> {
+                    if (isRegistered) {
+                        return user;
+                    } else {
+                        return updateUserInfo(user);
+                    }
+                })
                 .orElseGet(() -> {
                     User newUser = createUser(
                             socialInfo.name(),

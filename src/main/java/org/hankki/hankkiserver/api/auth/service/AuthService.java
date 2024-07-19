@@ -109,13 +109,7 @@ public class AuthService {
 
     private User loadOrCreateUser(final Platform platform, final SocialInfoDto socialInfo, final boolean isRegistered) {
         return userFinder.findUserByPlatFormAndSeralId(platform, socialInfo.serialId())
-                .map(user -> {
-                    if (isRegistered) {
-                        return user;
-                    } else {
-                        return updateUserInfo(user);
-                    }
-                })
+                .map(user -> updateOrFindUserInfo(user, isRegistered))
                 .orElseGet(() -> {
                     User newUser = createUser(
                             socialInfo.name(),
@@ -125,6 +119,14 @@ public class AuthService {
                     saveUserAndUserInfo(newUser);
                     return newUser;
                 });
+    }
+
+    private User updateOrFindUserInfo(final User user, final boolean isRegistered) {
+        if (isRegistered) {
+            return user;
+        } else {
+            return updateUserInfo(user);
+        }
     }
 
     private User updateUserInfo(final User user) {

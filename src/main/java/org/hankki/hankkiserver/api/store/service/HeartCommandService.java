@@ -27,7 +27,7 @@ public class HeartCommandService {
 
     public HeartCreateResponse createHeart(final HeartPostCommand heartPostCommand) {
         User user = userFinder.getUserReference(heartPostCommand.userId());
-        Store store = storeFinder.getStoreReference(heartPostCommand.storeId());
+        Store store = storeFinder.findByIdWhereDeletedIsFalse(heartPostCommand.storeId());
         validateStoreHeartCreation(user, store);
         saveStoreHeart(user, store);
         increaseStoreHeartCount(store);
@@ -36,7 +36,7 @@ public class HeartCommandService {
 
     public HeartDeleteResponse deleteHeart(final HeartDeleteCommand heartDeleteCommand) {
         User user = userFinder.getUserReference(heartDeleteCommand.userId());
-        Store store = storeFinder.getStoreReference(heartDeleteCommand.storeId());
+        Store store = storeFinder.findByIdWhereDeletedIsFalse(heartDeleteCommand.storeId());
         validateStoreHeartRemoval(user, store);
         heartDeleter.deleteHeart(user,store);
         decreaseStoreHeartCount(store);

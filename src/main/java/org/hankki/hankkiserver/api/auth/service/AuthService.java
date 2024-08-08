@@ -40,7 +40,6 @@ public class AuthService {
     private final UserUpdater userUpdater;
     private final UserInfoFinder userInfoFinder;
     private final UserInfoUpdater userInfoUpdater;
-    private final UserInfoDeleter userInfoDeleter;
     private final JwtProvider jwtProvider;
     private final JwtValidator jwtValidator;
     private final KakaoOAuthProvider kakaoOAuthProvider;
@@ -76,7 +75,7 @@ public class AuthService {
             kakaoOAuthProvider.unlinkKakaoServer(adminKey, KakaoUnlinkRequest.of(user.getSerialId()));
         }
         user.softDelete();
-        userInfoDeleter.softDelete(userId);
+        userInfoFinder.getUserInfo(userId).softDelete();
     }
 
     @Transactional(noRollbackFor = UnauthorizedException.class)

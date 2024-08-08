@@ -50,6 +50,5 @@ public class AppleOAuthProvider {
 
     public void requestRevoke(final String refreshToken, final String clientSecret) {
         appleFeignClient.revoke(refreshToken, clientId, clientSecret, "refresh_token");
-        log.error("Failed to revoke apple refresh token.");
     }
 }

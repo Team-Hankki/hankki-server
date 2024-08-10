@@ -46,6 +46,6 @@ public class StoreFinder {
     }
 
     public List<Store> findAllByIdsWhereDeletedIsFalseOrderByCreatedAtDes(final List<Long> ids) {
-        return storeRepository.findAllByIdAndIsDeletedIsFalseOrderByCreatedAtDesc(ids);
+        return storeRepository.findAllByIdsAndIsDeletedIsFalseOrderByCreatedAtDesc(ids);
     }
 }

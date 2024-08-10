@@ -28,14 +28,14 @@ public class UserFinder {
         return userRepository.getReferenceById(id);
     }
 
-    public boolean isRegisteredUser(final Platform platform, final SocialInfoDto socialInfo) {
+    protected boolean isRegisteredUser(final Platform platform, final SocialInfoDto socialInfo) {
         return userRepository.existsByPlatformAndSerialIdAndStatus(
                 platform,
                 socialInfo.serialId(),
                 ACTIVE);
     }
 
-    public Optional<User> findUserByPlatFormAndSeralId(final Platform platform, final String serialId) {
+    protected Optional<User> findUserByPlatFormAndSeralId(final Platform platform, final String serialId) {
         return userRepository.findByPlatformAndSerialId(platform, serialId);
     }
 }

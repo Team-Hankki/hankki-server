@@ -3,6 +3,7 @@ package org.hankki.hankkiserver.domain.favorite.repository;
 import java.util.List;
 import java.util.Optional;
 import org.hankki.hankkiserver.domain.favorite.model.Favorite;
+import org.hankki.hankkiserver.domain.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -23,4 +24,6 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
 
   @Query("select f from Favorite f left join fetch f.favoriteStores where f.id = :favoriteId")
   Optional<Favorite> findByIdWithFavoriteStore(@Param("favoriteId") Long favoriteId);
+
+  Optional<Favorite> findByNameAndUser(String title, User user);
 }

@@ -93,16 +93,17 @@ public class StoreQueryService {
     }
 
     @Transactional(readOnly = true)
-    public void validateDuplicatedStore(final StoreValidationCommand command) {
-        storeFinder.findByLatitudeAndLongitudeWhereDeletedIsFalse(command.latitude(), command.longitude())
-                .ifPresent(store -> findUniversityStore(command.universityId(), store));
-
+    public StoreDuplicateValidationResponse validateDuplicatedStore(final StoreValidationCommand command) {
+        return storeFinder.findByLatitudeAndLongitudeWhereDeletedIsFalse(command.latitude(), command.longitude())
+                .map(store -> new StoreDuplicateValidationResponse(findUniversityStore(command.universityId(), store)))
+                .orElseGet(() -> new StoreDuplicateValidationResponse(null));
     }
 
-    private void findUniversityStore(final Long universityId, final Store store) {
+    private long findUniversityStore(final Long universityId, final Store store) {
         if (isExistedUniversityStore(universityId, store)) {
-            throw new ConflictException(StoreErrorCode.STORE_ALREADY_REGISTERED);
+            throw new ConflictException(StoreErrorCode.STORE_ALREADY_REGISTERED, new StoreDuplicateValidationResponse(store.getId()));
         }
+        return store.getId();
     }
 
     private boolean isExistedUniversityStore(final Long universityId, final Store store) {

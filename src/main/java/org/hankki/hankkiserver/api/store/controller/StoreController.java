@@ -82,9 +82,8 @@ public class StoreController {
     }
 
     @PostMapping("/stores/validate")
-    public HankkiResponse<Void> validateDuplicatedStore(@RequestBody final StoreDuplicateValidationRequest request) {
-        storeQueryService.validateDuplicatedStore(StoreValidationCommand.of(request));
-        return HankkiResponse.success(CommonSuccessCode.OK);
+    public HankkiResponse<StoreDuplicateValidationResponse> validateDuplicatedStore(@RequestBody final StoreDuplicateValidationRequest request) {
+        return HankkiResponse.success(CommonSuccessCode.OK, storeQueryService.validateDuplicatedStore(StoreValidationCommand.of(request)));
     }
 
     @PostMapping("/stores")

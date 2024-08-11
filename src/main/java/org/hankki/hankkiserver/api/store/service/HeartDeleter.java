@@ -15,4 +15,8 @@ public class HeartDeleter {
     public void deleteHeart(final User user, final Store store) {
         heartRepository.deleteByUserAndStore(user, store);
     }
+
+    public void deleteHeart(final Store store) {
+        heartRepository.deleteHeartByStore(store);
+    }
 }

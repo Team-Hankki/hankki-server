@@ -42,7 +42,6 @@ public class StoreCommandService {
     private final ReportUpdater reportUpdater;
     private final UserFinder userFinder;
     private final StoreFinder storeFinder;
-    private final HeartDeleter heartDeleter;
 
     @Transactional(rollbackFor = Exception.class)
     public StorePostResponse createStore(final StorePostCommand command) {
@@ -91,8 +90,6 @@ public class StoreCommandService {
 
     @Transactional
     public void deleteStore(final Long id) {
-      Store store = storeFinder.findByIdWhereDeletedIsFalse(id);
-      store.softDelete();
-      heartDeleter.deleteHeart(store);
+      storeFinder.findByIdWhereDeletedIsFalse(id).softDelete();
     }
 }

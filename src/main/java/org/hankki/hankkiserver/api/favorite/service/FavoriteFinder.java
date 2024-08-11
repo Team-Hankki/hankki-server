@@ -29,4 +29,8 @@ public class FavoriteFinder {
   protected Favorite findByIdWithUser(final Long id) {
     return favoriteRepository.findByIdWithUser(id).orElseThrow(() -> new NotFoundException(FavoriteErrorCode.FAVORITE_NOT_FOUND));
   }
+
+  protected Favorite findByIdWithFavoriteStore(final Long id) {
+    return favoriteRepository.findByIdWithFavoriteStore(id).orElseThrow(() -> new NotFoundException(FavoriteErrorCode.FAVORITE_NOT_FOUND));
+  }
 }

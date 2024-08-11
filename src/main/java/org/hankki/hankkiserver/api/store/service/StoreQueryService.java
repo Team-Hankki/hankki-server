@@ -94,7 +94,7 @@ public class StoreQueryService {
 
     @Transactional(readOnly = true)
     public void validateDuplicatedStore(final StoreValidationCommand command) {
-        storeFinder.findByLatitudeAndLongitude(command.latitude(), command.longitude())
+        storeFinder.findByLatitudeAndLongitudeWhereDeletedIsFalse(command.latitude(), command.longitude())
                 .ifPresent(store -> findUniversityStore(command.universityId(), store));
 
     }

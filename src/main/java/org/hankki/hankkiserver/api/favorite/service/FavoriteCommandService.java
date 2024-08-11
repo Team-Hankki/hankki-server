@@ -11,6 +11,7 @@ import org.hankki.hankkiserver.api.favoritestore.service.FavoriteStoreDeleter;
 import org.hankki.hankkiserver.api.favoritestore.service.FavoriteStoreFinder;
 import org.hankki.hankkiserver.api.favoritestore.service.FavoriteStoreUpdater;
 import org.hankki.hankkiserver.api.store.service.StoreFinder;
+import org.hankki.hankkiserver.common.code.FavoriteErrorCode;
 import org.hankki.hankkiserver.common.code.FavoriteStoreErrorCode;
 import org.hankki.hankkiserver.common.code.UserErrorCode;
 import org.hankki.hankkiserver.common.exception.ConflictException;
@@ -40,9 +41,8 @@ public class FavoriteCommandService {
 
     User findUser = userFinder.getUser(command.userId());
     String title = command.title();
-    String details = String.join(" ", command.details());
-
-    return favoriteUpdater.save(Favorite.create(findUser, title, details));
+    checkTitleExists(title, findUser);
+    return favoriteUpdater.save(Favorite.create(findUser, title, String.join(" ", command.details())));
   }
 
   @Transactional
@@ -91,5 +91,11 @@ public class FavoriteCommandService {
 
   private boolean isAlreadyExistsFavoriteStore(final Long favoriteId, final Long storeId){
     return favoriteStoreFinder.isExist(favoriteId, storeId);
+  }
+
+  private void checkTitleExists(final String title, final User user){
+    favoriteFinder.findByNameAndUser(title, user).ifPresent(f -> {
+      throw new ConflictException(FavoriteErrorCode.FAVORITE_TITLE_IS_EXIST);
+    });
   }
 }

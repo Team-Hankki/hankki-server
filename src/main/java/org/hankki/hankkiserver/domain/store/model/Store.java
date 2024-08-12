@@ -1,8 +1,6 @@
 package org.hankki.hankkiserver.domain.store.model;
 
 import jakarta.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,6 +10,9 @@ import org.hankki.hankkiserver.domain.common.Point;
 import org.hankki.hankkiserver.domain.heart.model.Heart;
 import org.hankki.hankkiserver.domain.universitystore.model.UniversityStore;
 import org.hibernate.annotations.BatchSize;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -73,5 +74,9 @@ public class Store extends BaseTimeEntity {
 
     public void increaseHeartCount() {
         this.heartCount++;
+    }
+
+    public void softDelete() {
+        this.isDeleted = true;
     }
 }

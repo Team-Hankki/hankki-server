@@ -98,4 +98,10 @@ public class StoreController {
                                                          @UserId final Long userId) {
         return HankkiResponse.success(CommonSuccessCode.CREATED, storeCommandService.createStore(StorePostCommand.of(image, request, userId)));
     }
+
+    @DeleteMapping("/stores/{id}")
+    public HankkiResponse<Void> deleteStore(@PathVariable final Long id) {
+        storeCommandService.deleteStore(id);
+        return HankkiResponse.success(CommonSuccessCode.NO_CONTENT);
+    }
 }

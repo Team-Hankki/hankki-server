@@ -87,4 +87,9 @@ public class StoreCommandService {
                 .map(menuPostRequest -> Menu.create(store, menuPostRequest.name(), menuPostRequest.price()))
                 .toList();
     }
+
+    @Transactional
+    public void deleteStore(final Long id) {
+      storeFinder.findByIdWhereDeletedIsFalse(id).softDelete();
+    }
 }

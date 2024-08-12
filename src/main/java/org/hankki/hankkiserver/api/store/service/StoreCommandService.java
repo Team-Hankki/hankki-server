@@ -5,7 +5,6 @@ import org.hankki.hankkiserver.api.auth.service.UserFinder;
 import org.hankki.hankkiserver.api.menu.service.MenuUpdater;
 import org.hankki.hankkiserver.api.report.service.ReportUpdater;
 import org.hankki.hankkiserver.api.store.service.command.StorePostCommand;
-import org.hankki.hankkiserver.api.store.service.command.UniversityStorePostCommand;
 import org.hankki.hankkiserver.api.store.service.response.StorePostResponse;
 import org.hankki.hankkiserver.api.university.service.UniversityFinder;
 import org.hankki.hankkiserver.api.universitystore.service.UniversityStoreUpdater;
@@ -59,13 +58,6 @@ public class StoreCommandService {
         reportUpdater.save(Report.create(userFinder.getUser(command.userId()), store, university));
 
         return StorePostResponse.of(store);
-    }
-
-    @Transactional
-    public void createUniversityStore(final UniversityStorePostCommand universityStorePostCommand) {
-        Store store = storeFinder.findByIdWhereDeletedIsFalse(universityStorePostCommand.storeId());
-        University university = universityFinder.findById(universityStorePostCommand.universityId());
-        universityStoreUpdater.save(UniversityStore.create(store,university));
     }
 
     private boolean storeExists(final double latitude, final double longitude) {

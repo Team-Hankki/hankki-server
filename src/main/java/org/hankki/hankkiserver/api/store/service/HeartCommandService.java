@@ -30,7 +30,7 @@ public class HeartCommandService {
         Store store = storeFinder.findByIdWhereDeletedIsFalse(heartPostCommand.storeId());
         validateStoreHeartCreation(user, store);
         saveStoreHeart(user, store);
-        increaseStoreHeartCount(store);
+        store.increaseHeartCount();
         return HeartCreateResponse.of(store);
     }
 
@@ -39,7 +39,7 @@ public class HeartCommandService {
         Store store = storeFinder.findByIdWhereDeletedIsFalse(heartDeleteCommand.storeId());
         validateStoreHeartRemoval(user, store);
         heartDeleter.deleteHeart(user,store);
-        decreaseStoreHeartCount(store);
+        store.decreaseHeartCount();
         return HeartDeleteResponse.of(store);
     }
 
@@ -57,13 +57,5 @@ public class HeartCommandService {
 
     private void saveStoreHeart(final User user, final Store store) {
         heartUpdater.saveHeart(Heart.createHeart(user, store));
-    }
-
-    private void increaseStoreHeartCount(final Store store) {
-        store.increaseHeartCount();
-    }
-
-    private void decreaseStoreHeartCount(final Store store) {
-        store.decreaseHeartCount();
     }
 }

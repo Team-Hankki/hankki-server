@@ -1,11 +1,13 @@
 package org.hankki.hankkiserver.api.favorite.service;
 
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.common.code.FavoriteErrorCode;
 import org.hankki.hankkiserver.common.exception.NotFoundException;
 import org.hankki.hankkiserver.domain.favorite.model.Favorite;
 import org.hankki.hankkiserver.domain.favorite.repository.FavoriteRepository;
+import org.hankki.hankkiserver.domain.user.model.User;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -31,6 +33,11 @@ public class FavoriteFinder {
   }
 
   protected Favorite findByIdWithFavoriteStore(final Long id) {
-    return favoriteRepository.findByIdWithFavoriteStore(id).orElseThrow(() -> new NotFoundException(FavoriteErrorCode.FAVORITE_NOT_FOUND));
+    return favoriteRepository.findByIdWithFavoriteStore(id)
+        .orElseThrow(() -> new NotFoundException(FavoriteErrorCode.FAVORITE_NOT_FOUND));
+  }
+
+  protected Optional<Favorite> findByNameAndUser(final String name, final User user) {
+    return favoriteRepository.findByNameAndUser(name, user);
   }
 }

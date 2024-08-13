@@ -24,14 +24,12 @@ public class FavoriteController {
 
   @PostMapping("/favorites")
   public HankkiResponse<Void> createFavorite(@UserId final Long userId, @RequestBody @Valid final FavoritePostRequest request) {
-
-    favoriteCommandService.create(FavoritePostCommand.of(userId, request));
+    favoriteCommandService.createFavorite(FavoritePostCommand.of(userId, request));
     return HankkiResponse.success(CommonSuccessCode.CREATED);
   }
 
   @PostMapping("/favorites/batch-delete")
   public HankkiResponse<Void> deleteFavorite(@UserId final Long userId, @RequestBody final FavoriteDeleteRequest request) {
-
     favoriteCommandService.deleteFavorites(FavoritesDeleteCommand.of(userId, request));
     return HankkiResponse.success(CommonSuccessCode.NO_CONTENT);
   }

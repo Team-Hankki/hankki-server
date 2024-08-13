@@ -1,6 +1,5 @@
 package org.hankki.hankkiserver.api.favorite.service;
 
-import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.auth.service.UserFinder;
@@ -22,6 +21,7 @@ import org.hankki.hankkiserver.domain.favoritestore.model.FavoriteStore;
 import org.hankki.hankkiserver.domain.store.model.Store;
 import org.hankki.hankkiserver.domain.user.model.User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor

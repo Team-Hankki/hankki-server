@@ -9,6 +9,8 @@ import org.hankki.hankkiserver.api.store.service.response.StorePostResponse;
 import org.hankki.hankkiserver.api.university.service.UniversityFinder;
 import org.hankki.hankkiserver.api.universitystore.service.UniversityStoreUpdater;
 import org.hankki.hankkiserver.common.code.StoreErrorCode;
+import org.hankki.hankkiserver.common.code.StoreImageErrorCode;
+import org.hankki.hankkiserver.common.exception.BadGatewayException;
 import org.hankki.hankkiserver.common.exception.BadRequestException;
 import org.hankki.hankkiserver.domain.menu.model.Menu;
 import org.hankki.hankkiserver.domain.report.model.Report;
@@ -65,15 +67,12 @@ public class StoreCommandService {
     }
 
     private void saveImages(final StorePostCommand command, final Store store) {
-        if (isNullOrEmptyImage(command)) {
-            storeImageUpdater.saveImage(StoreImage.createImage(store, DEFAULT_IMAGE_URL));
-        }
-        else {
+        if (!isNullOrEmptyImage(command)) {
             try {
                 String imageUrl = s3Service.uploadImage(STORE_IMAGE_DIRECTORY, command.image());
                 storeImageUpdater.saveImage(StoreImage.createImage(store, imageUrl));
             } catch (IOException e) {
-                storeImageUpdater.saveImage(StoreImage.createImage(store, DEFAULT_IMAGE_URL));
+                throw new BadGatewayException(StoreImageErrorCode.STORE_IMAGE_UPLOAD_FAILED);
             }
         }
     }

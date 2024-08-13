@@ -11,23 +11,13 @@ public record StoreThumbnailResponse(
         String imageUrl
 ) {
     public static StoreThumbnailResponse of(final Store store) {
-        if (store.getImages().isEmpty()) {
-            return new StoreThumbnailResponse(
-                    store.getId(),
-                    store.getName(),
-                    store.getCategory().getName(),
-                    store.getLowestPrice(),
-                    store.getHeartCount(),
-                    null
-            );
-        }
         return new StoreThumbnailResponse(
                 store.getId(),
                 store.getName(),
                 store.getCategory().getName(),
                 store.getLowestPrice(),
                 store.getHeartCount(),
-                store.getImages().get(0).getImageUrl()
+                store.getImages().isEmpty() ? null : store.getImages().get(0).getImageUrl()
         );
     }
 }

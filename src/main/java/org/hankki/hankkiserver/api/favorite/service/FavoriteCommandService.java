@@ -37,7 +37,7 @@ public class FavoriteCommandService {
   private final FavoriteDeleter favoriteDeleter;
 
   @Transactional
-  public Long create(final FavoritePostCommand command) {
+  public Long createFavorite(final FavoritePostCommand command) {
 
     User findUser = userFinder.getUser(command.userId());
     String title = command.title();
@@ -95,7 +95,7 @@ public class FavoriteCommandService {
 
   private void checkTitleExists(final String title, final User user){
     favoriteFinder.findByNameAndUser(title, user).ifPresent(f -> {
-      throw new ConflictException(FavoriteErrorCode.FAVORITE_TITLE_IS_EXIST);
+      throw new ConflictException(FavoriteErrorCode.FAVORITE_TITLE_EXISTS);
     });
   }
 }

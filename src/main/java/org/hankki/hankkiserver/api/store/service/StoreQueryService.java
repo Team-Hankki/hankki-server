@@ -7,8 +7,6 @@ import org.hankki.hankkiserver.api.store.parameter.PriceCategory;
 import org.hankki.hankkiserver.api.store.parameter.SortOption;
 import org.hankki.hankkiserver.api.store.service.command.StoreValidationCommand;
 import org.hankki.hankkiserver.api.store.service.response.*;
-import org.hankki.hankkiserver.common.code.StoreErrorCode;
-import org.hankki.hankkiserver.common.exception.ConflictException;
 import org.hankki.hankkiserver.domain.heart.model.Heart;
 import org.hankki.hankkiserver.domain.store.model.Store;
 import org.hankki.hankkiserver.domain.store.model.StoreCategory;
@@ -93,19 +91,9 @@ public class StoreQueryService {
     }
 
     @Transactional(readOnly = true)
-    public void validateDuplicatedStore(final StoreValidationCommand command) {
-        storeFinder.findByLatitudeAndLongitude(command.latitude(), command.longitude())
-                .ifPresent(store -> findUniversityStore(command.universityId(), store));
-
-    }
-
-    private void findUniversityStore(final Long universityId, final Store store) {
-        if (isExistedUniversityStore(universityId, store)) {
-            throw new ConflictException(StoreErrorCode.STORE_ALREADY_REGISTERED);
-        }
-    }
-
-    private boolean isExistedUniversityStore(final Long universityId, final Store store) {
-        return universityStoreFinder.existsByUniversityIdAndStore(universityId, store);
+    public StoreDuplicateValidationResponse validateDuplicatedStore(final StoreValidationCommand command) {
+        return storeFinder.findByLatitudeAndLongitudeWhereIsDeletedFalse(command.latitude(), command.longitude())
+                .map(store -> StoreDuplicateValidationResponse.of(store.getId(), universityStoreFinder.existsByUniversityIdAndStore(command.universityId(), store)))
+                .orElseGet(() -> StoreDuplicateValidationResponse.of(null, false));
     }
 }

@@ -94,12 +94,8 @@ public class StoreQueryService {
     public StoreDuplicateValidationResponse validateDuplicatedStore(final StoreValidationCommand command) {
         return storeFinder.findByLatitudeAndLongitudeWhereDeletedIsFalse(command.latitude(), command.longitude())
                 .map(store -> new StoreDuplicateValidationResponse(store.getId(),
-                        isExistedUniversityStore(command.universityId(), store))
+                        universityStoreFinder.existsByUniversityIdAndStore(command.universityId(), store))
                 )
                 .orElseGet(() -> new StoreDuplicateValidationResponse(null, false));
-    }
-
-    private boolean isExistedUniversityStore(final Long universityId, final Store store) {
-        return universityStoreFinder.existsByUniversityIdAndStore(universityId, store);
     }
 }

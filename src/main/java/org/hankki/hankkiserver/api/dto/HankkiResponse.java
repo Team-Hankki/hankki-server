@@ -27,8 +27,4 @@ public class HankkiResponse<T> {
     public static <T> HankkiResponse<T> fail(ErrorCode error) {
         return new HankkiResponse<>(error.getHttpStatus().value(), error.getMessage());
     }
-
-    public static <T> HankkiResponse<T> fail(ErrorCode error, T data) {
-        return new HankkiResponse<>(error.getHttpStatus().value(), error.getMessage(), data);
-    }
 }

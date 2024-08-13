@@ -37,9 +37,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ConflictException.class)
-    public HankkiResponse<Object> handleConflictException(ConflictException e) {
+    public HankkiResponse<Void> handleConflictException(ConflictException e) {
         log.error("handleConflictException() in GlobalExceptionHandler throw ConflictException : {}", e.getMessage());
-        return HankkiResponse.fail(e.getErrorCode(), e.getData());
+        return HankkiResponse.fail(e.getErrorCode());
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)

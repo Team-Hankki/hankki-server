@@ -4,15 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.hankki.hankkiserver.api.dto.HankkiResponse;
 import org.hankki.hankkiserver.common.code.BusinessErrorCode;
 import org.hankki.hankkiserver.common.code.StoreErrorCode;
-import org.hankki.hankkiserver.common.exception.BadRequestException;
-import org.hankki.hankkiserver.common.exception.ConflictException;
-import org.hankki.hankkiserver.common.exception.NotFoundException;
-import org.hankki.hankkiserver.common.exception.UnauthorizedException;
+import org.hankki.hankkiserver.common.code.StoreImageErrorCode;
+import org.hankki.hankkiserver.common.exception.*;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import software.amazon.awssdk.core.exception.SdkClientException;
 
 @RestControllerAdvice
 @Slf4j
@@ -58,6 +57,18 @@ public class GlobalExceptionHandler {
     public HankkiResponse<Void> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.error("handleMethodArgumentNotValidException() in GlobalExceptionHandler throw MethodArgumentNotValidException : {}", e.getMessage());
         return HankkiResponse.fail(BusinessErrorCode.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(SdkClientException.class)
+    public HankkiResponse<Void> handleSdkClientException(SdkClientException e) {
+        log.error("handleSdkClientException() in GlobalExceptionHandler throw SdkClientException : {}", e.getMessage());
+        return HankkiResponse.fail(StoreImageErrorCode.STORE_IMAGE_UPLOAD_FAILED);
+    }
+
+    @ExceptionHandler(BadGatewayException.class)
+    public HankkiResponse<Void> handleBadGatewayException(BadGatewayException e) {
+        log.error("handleBadGatewayException() in GlobalExceptionHandler throw BadGatewayException : {}", e.getMessage());
+        return HankkiResponse.fail(e.getErrorCode());
     }
 
     @ExceptionHandler(Exception.class)

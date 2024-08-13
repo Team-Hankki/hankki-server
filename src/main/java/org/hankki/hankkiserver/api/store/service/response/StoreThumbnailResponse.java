@@ -17,7 +17,7 @@ public record StoreThumbnailResponse(
                 store.getCategory().getName(),
                 store.getLowestPrice(),
                 store.getHeartCount(),
-                store.getImages().get(0).getImageUrl()
+                store.getImages().isEmpty() ? null : store.getImages().get(0).getImageUrl()
         );
     }
 }

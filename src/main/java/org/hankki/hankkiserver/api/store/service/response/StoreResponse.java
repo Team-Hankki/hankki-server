@@ -11,6 +11,11 @@ public record StoreResponse (
         int heartCount
 ) {
     public static StoreResponse of(final Store store) {
-        return new StoreResponse(store.getId(), store.getImages().get(0).getImageUrl(), store.getCategory().getName(), store.getName(), store.getLowestPrice(), store.getHeartCount());
+        return new StoreResponse(store.getId(),
+                store.getImages().isEmpty() ? null : store.getImages().get(0).getImageUrl(),
+                store.getCategory().getName(),
+                store.getName(),
+                store.getLowestPrice(),
+                store.getHeartCount());
     }
 }

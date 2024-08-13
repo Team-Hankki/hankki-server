@@ -93,7 +93,7 @@ public class StoreQueryService {
     @Transactional(readOnly = true)
     public StoreDuplicateValidationResponse validateDuplicatedStore(final StoreValidationCommand command) {
         return storeFinder.findByLatitudeAndLongitudeWhereIsDeletedFalse(command.latitude(), command.longitude())
-                .map(store -> StoreDuplicateValidationResponse.of(command.universityId(), universityStoreFinder.existsByUniversityIdAndStore(command.universityId(), store)))
+                .map(store -> StoreDuplicateValidationResponse.of(store.getId(), universityStoreFinder.existsByUniversityIdAndStore(command.universityId(), store)))
                 .orElseGet(() -> StoreDuplicateValidationResponse.of(null, false));
     }
 }

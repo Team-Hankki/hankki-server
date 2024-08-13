@@ -92,10 +92,12 @@ public class StoreQueryService {
 
     @Transactional(readOnly = true)
     public StoreDuplicateValidationResponse validateDuplicatedStore(final StoreValidationCommand command) {
-        return storeFinder.findByLatitudeAndLongitudeWhereDeletedIsFalse(command.latitude(), command.longitude())
-                .map(store -> new StoreDuplicateValidationResponse(store.getId(),
-                        universityStoreFinder.existsByUniversityIdAndStore(command.universityId(), store))
-                )
-                .orElseGet(() -> new StoreDuplicateValidationResponse(null, false));
+        return storeFinder.findByLatitudeAndLongitudeWhereIsDeletedFalse(command.latitude(), command.longitude())
+                .map(store -> isStoreRegisteredToUniversity(command.universityId(), store))
+                .orElseGet(() -> StoreDuplicateValidationResponse.of(null, false));
+    }
+
+    private StoreDuplicateValidationResponse isStoreRegisteredToUniversity(long universityId, Store store) {
+        return StoreDuplicateValidationResponse.of(store.getId(), universityStoreFinder.existsByUniversityIdAndStore(universityId, store));
     }
 }

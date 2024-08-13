@@ -1,6 +1,7 @@
 package org.hankki.hankkiserver.api.store.service.response;
 
 public record StoreDuplicateValidationResponse(
-        Long id
+        Long id,
+        boolean isRegistered
 ) {
 }

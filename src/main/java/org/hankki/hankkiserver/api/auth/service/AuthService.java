@@ -132,8 +132,7 @@ public class AuthService {
     private User updateUserInfo(final User user) {
         user.updateStatus(ACTIVE);
         user.updateDeletedAt(null);
-        userInfoFinder.getUserInfo(user.getId()).updateNickname(user.getName());
-        userInfoFinder.getUserInfo(user.getId()).updateProfile();
+        userInfoFinder.getUserInfo(user.getId()).updateNickname(user.getName());;
         return user;
     }
 

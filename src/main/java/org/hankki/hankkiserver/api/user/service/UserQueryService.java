@@ -6,7 +6,7 @@ import org.hankki.hankkiserver.api.favorite.service.FavoriteFinder;
 import org.hankki.hankkiserver.api.store.service.HeartFinder;
 import org.hankki.hankkiserver.api.user.service.response.UserFavoritesGetResponse;
 import org.hankki.hankkiserver.api.user.service.response.UserHeartedStoreListResponse;
-import org.hankki.hankkiserver.api.user.service.response.UserProfileAndNicknameResponse;
+import org.hankki.hankkiserver.api.user.service.response.UserNicknameResponse;
 import org.hankki.hankkiserver.api.report.service.ReportFinder;
 import org.hankki.hankkiserver.api.user.service.response.UserStoresReportedGetResponse;
 import org.hankki.hankkiserver.api.user.service.response.UserUniversityFindResponse;
@@ -38,8 +38,8 @@ public class UserQueryService {
     }
 
     @Transactional(readOnly = true)
-    public UserProfileAndNicknameResponse getUserProfileAndNickname(final Long userId) {
-        return UserProfileAndNicknameResponse.of(userInfoFinder.getUserInfo(userId));
+    public UserNicknameResponse getUserNickname(final Long userId) {
+        return UserNicknameResponse.of(userInfoFinder.getUserInfo(userId));
     }
 
     @Transactional(readOnly = true)

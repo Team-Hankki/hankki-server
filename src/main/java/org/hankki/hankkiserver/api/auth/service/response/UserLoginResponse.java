@@ -15,7 +15,7 @@ public record UserLoginResponse(
         return UserLoginResponse.builder()
                 .accessToken(token.accessToken())
                 .refreshToken(token.refreshToken())
-                . isRegistered(isRegistered)
+                .isRegistered(isRegistered)
                 .build();
     }
 }

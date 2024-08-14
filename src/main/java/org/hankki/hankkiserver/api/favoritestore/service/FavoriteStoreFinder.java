@@ -1,5 +1,6 @@
 package org.hankki.hankkiserver.api.favoritestore.service;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.common.code.FavoriteStoreErrorCode;
 import org.hankki.hankkiserver.common.exception.NotFoundException;
@@ -25,5 +26,9 @@ public class FavoriteStoreFinder {
 
   public boolean isExist(final Long favoriteId, final Long storeId) {
     return favoriteStoreRepository.isExist(favoriteId, storeId);
+  }
+
+  public List<FavoriteStore> findAllByFavoriteWithStoresAndStoreIsDeletedIsFalseOrderById(final Favorite favorites) {
+    return favoriteStoreRepository.findAllByFavoriteWithStoresAndStoreIsDeletedIsFalseOrderById(favorites);
   }
 }

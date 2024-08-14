@@ -1,6 +1,7 @@
 package org.hankki.hankkiserver.api.user.service.response;
 
 import org.hankki.hankkiserver.domain.store.model.Store;
+import org.hankki.hankkiserver.domain.store.model.StoreImage;
 
 public record UserHeartedStoreViewResponse(
         Long id,
@@ -14,10 +15,17 @@ public record UserHeartedStoreViewResponse(
         return new UserHeartedStoreViewResponse(
                 store.getId(),
                 store.getName(),
-                store.getImages().get(0).getImageUrl(),
+                getStoreImageUrl(store),
                 store.getCategory().getName(),
                 store.getLowestPrice(),
                 store.getHeartCount()
         );
+    }
+
+    private static String getStoreImageUrl(Store store) {
+        return store.getImages().stream()
+                .findFirst()
+                .map(StoreImage::getImageUrl)
+                .orElse(null);
     }
 }

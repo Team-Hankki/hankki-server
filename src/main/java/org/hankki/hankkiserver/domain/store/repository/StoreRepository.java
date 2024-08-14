@@ -19,7 +19,4 @@ public interface StoreRepository extends JpaRepository<Store, Long>, CustomStore
     Optional<Store> findByLatitudeAndLongitudeAndNameWhereIsDeletedFalse(double latitude, double longitude, String name);
 
     boolean existsByPoint_LatitudeAndPoint_Longitude(double latitude, double longitude);
-
-    @Query("select s from Store s where s.id in :ids and s.isDeleted = false order by s.createdAt desc")
-    List<Store> findAllByIdsAndIsDeletedIsFalseOrderByCreatedAtDesc(@Param("ids") List<Long> ids);
 }

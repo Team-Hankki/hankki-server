@@ -7,6 +7,7 @@ import org.hankki.hankkiserver.api.favorite.service.command.FavoritesWithStatusG
 import org.hankki.hankkiserver.api.favorite.service.response.FavoriteGetResponse;
 import org.hankki.hankkiserver.api.favorite.service.response.FavoritesWithStatusGetResponse;
 import org.hankki.hankkiserver.api.favoritestore.service.FavoriteStoreFinder;
+import org.hankki.hankkiserver.api.store.service.StoreFinder;
 import org.hankki.hankkiserver.domain.favorite.model.Favorite;
 import org.hankki.hankkiserver.domain.favoritestore.model.FavoriteStore;
 import org.hankki.hankkiserver.domain.store.model.Store;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 public class FavoriteQueryService {
 
   private final FavoriteFinder favoriteFinder;
-  private final FavoriteStoreFinder favoriteStoreFinder;
+  private final StoreFinder storeFinder;
 
   @Transactional(readOnly = true)
   public FavoriteGetResponse findFavorite(final FavoritesGetCommand command) {
@@ -50,7 +51,7 @@ public class FavoriteQueryService {
     if (favoriteHasNoStore(favorite)) {
       return new ArrayList<>();
     }
-    return favoriteStoreFinder.findAllByFavoriteWithStoresAndStoreIsDeletedIsFalseOrderById(favorite).stream().map(FavoriteStore::getStore).toList();
+    return storeFinder.findAllByIdsWhereDeletedIsFalseOrderByFavoriteStoreId(favorite.getFavoriteStores());
   }
 
   private boolean favoriteHasNoStore(final Favorite favorite) {

@@ -1,5 +1,6 @@
 package org.hankki.hankkiserver.domain.store.repository;
 
+import org.hankki.hankkiserver.domain.favoritestore.model.FavoriteStore;
 import org.hankki.hankkiserver.domain.store.model.Store;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,4 +20,7 @@ public interface StoreRepository extends JpaRepository<Store, Long>, CustomStore
     Optional<Store> findByLatitudeAndLongitudeAndNameWhereIsDeletedFalse(double latitude, double longitude, String name);
 
     boolean existsByPoint_LatitudeAndPoint_Longitude(double latitude, double longitude);
+
+    @Query("select s from Store s join FavoriteStore fs on s.id = fs.store.id where fs in :favoriteStores and s.isDeleted = false order by fs.id desc ")
+    List<Store> findAllByIdsAndIsDeletedIsFalseOrderByFavoriteStoreId(@Param("favoriteStores") List<FavoriteStore> favoriteStores);
 }

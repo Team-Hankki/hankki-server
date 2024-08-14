@@ -8,7 +8,8 @@ public record UserHeartedStoreListResponse(
         List<UserHeartedStoreViewResponse> stores
 ) {
     public static UserHeartedStoreListResponse of(List<Heart> hearts) {
-        return new UserHeartedStoreListResponse(hearts.stream()
+        return new UserHeartedStoreListResponse(
+                hearts.stream()
                 .map(heart -> UserHeartedStoreViewResponse.of(heart.getStore()))
                 .toList());
     }

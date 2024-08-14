@@ -1,6 +1,8 @@
 package org.hankki.hankkiserver.api.favorite.service.response;
 
+import java.util.List;
 import org.hankki.hankkiserver.domain.store.model.Store;
+import org.hankki.hankkiserver.domain.store.model.StoreImage;
 
 public record FavoriteStoreResponse(
   Long id,
@@ -14,9 +16,15 @@ public record FavoriteStoreResponse(
     return new FavoriteStoreResponse(
         store.getId(),
         store.getName(),
-        store.getImages().get(0).getImageUrl(),
+        getImageUrlOrNull(store.getImages()),
         store.getCategory().getName(),
         store.getLowestPrice(),
         store.getHeartCount());
+  }
+
+  public static String getImageUrlOrNull(List<StoreImage> storeImages) {
+    return storeImages != null && !storeImages.isEmpty()
+        ? storeImages.get(0).getImageUrl()
+        : null;
   }
 }

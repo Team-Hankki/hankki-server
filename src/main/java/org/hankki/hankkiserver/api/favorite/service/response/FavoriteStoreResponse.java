@@ -16,15 +16,9 @@ public record FavoriteStoreResponse(
     return new FavoriteStoreResponse(
         store.getId(),
         store.getName(),
-        getImageUrlOrNull(store.getImages()),
+        store.getImageUrlOrNull(),
         store.getCategory().getName(),
         store.getLowestPrice(),
         store.getHeartCount());
-  }
-
-  public static String getImageUrlOrNull(List<StoreImage> storeImages) {
-    return storeImages != null && !storeImages.isEmpty()
-        ? storeImages.get(0).getImageUrl()
-        : null;
   }
 }

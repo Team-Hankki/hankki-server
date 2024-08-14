@@ -80,7 +80,7 @@ public class Store extends BaseTimeEntity {
         this.isDeleted = true;
     }
 
-    public String getImageUrlOrElse() {
+    public String getImageUrlOrElseNull() {
         return images.isEmpty() ? null : images.get(0).getImageUrl();
     }
 }

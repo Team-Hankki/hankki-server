@@ -16,7 +16,7 @@ public record FavoriteStoreResponse(
     return new FavoriteStoreResponse(
         store.getId(),
         store.getName(),
-        store.getImageUrlOrNull(),
+        store.getImageUrlOrElse(),
         store.getCategory().getName(),
         store.getLowestPrice(),
         store.getHeartCount());

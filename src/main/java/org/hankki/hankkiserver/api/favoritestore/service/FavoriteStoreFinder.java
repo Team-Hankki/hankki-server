@@ -27,8 +27,4 @@ public class FavoriteStoreFinder {
   public boolean isExist(final Long favoriteId, final Long storeId) {
     return favoriteStoreRepository.isExist(favoriteId, storeId);
   }
-
-  public List<FavoriteStore> findAllByFavoriteWithStoresAndStoreIsDeletedIsFalseOrderById(final Favorite favorites) {
-    return favoriteStoreRepository.findAllByFavoriteWithStoresAndStoreIsDeletedIsFalseOrderById(favorites);
-  }
 }

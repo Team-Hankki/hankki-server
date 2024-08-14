@@ -79,4 +79,10 @@ public class Store extends BaseTimeEntity {
     public void softDelete() {
         this.isDeleted = true;
     }
+
+    public String getImageUrlOrNull() {
+        return this.images != null && !images.isEmpty()
+            ? images.get(0).getImageUrl()
+            : null;
+    }
 }

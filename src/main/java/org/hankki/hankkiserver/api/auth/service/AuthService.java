@@ -23,6 +23,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 import static org.hankki.hankkiserver.auth.filter.JwtAuthenticationFilter.BEARER;
 import static org.hankki.hankkiserver.domain.user.model.UserStatus.ACTIVE;
 import static org.hankki.hankkiserver.domain.user.model.Platform.APPLE;
@@ -50,8 +52,9 @@ public class AuthService {
     public UserLoginResponse login(final String token, final UserLoginRequest request) {
         Platform platform = Platform.getEnumPlatformFromStringPlatform(request.platform());
         SocialInfoDto socialInfo = getSocialInfo(token, platform, request.name());
-        boolean isRegistered = userFinder.isRegisteredUser(platform, socialInfo);
-        User findUser = loadOrCreateUser(platform, socialInfo);
+        Optional<User> user = userFinder.findUserByPlatFormAndSeralId(platform, socialInfo.serialId());
+        boolean isRegistered = isRegistered(user);
+        User findUser = loadOrCreateUser(user, platform, socialInfo);
         Token issuedToken = generateTokens(findUser.getId());
         return UserLoginResponse.of(issuedToken, isRegistered);
     }
@@ -106,15 +109,10 @@ public class AuthService {
         return appleOAuthProvider.getAppleUserInfo(providerToken, name);
     }
 
-    private User loadOrCreateUser(final Platform platform, final SocialInfoDto socialInfo) {
-        return userFinder.findUserByPlatFormAndSeralId(platform, socialInfo.serialId())
-                .map(user -> updateOrFindUserInfo(user, user.getStatus(), socialInfo))
+    private User loadOrCreateUser(final Optional<User> findUser, final Platform platform, final SocialInfoDto socialInfo) {
+        return findUser.map(user -> updateOrFindUserInfo(user, user.getStatus(), socialInfo))
                 .orElseGet(() -> {
-                    User newUser = createUser(
-                            socialInfo.name(),
-                            socialInfo.email(),
-                            socialInfo.serialId(),
-                            platform);
+                    User newUser = createUser(socialInfo.name(), socialInfo.email(), socialInfo.serialId(), platform);
                     saveUserAndUserInfo(newUser);
                     return newUser;
                 });
@@ -132,6 +130,15 @@ public class AuthService {
         user.updateStatus(ACTIVE);
         user.updateDeletedAt(null);
         userInfoFinder.getUserInfo(user.getId()).updateNickname(user.getName());;
+        return user.map(u -> u.getStatus() == ACTIVE)
+                .orElse(false);
+    }
+
+
+    private User updateUserInfo(final User user, final SocialInfoDto socialInfo) {
+        user.rejoin(socialInfo);
+        userInfoFinder.getUserInfo(user.getId()).rejoin(socialInfo);
+        userInfoFinder.getUserInfo(user.getId()).updateProfile();
         return user;
     }
 

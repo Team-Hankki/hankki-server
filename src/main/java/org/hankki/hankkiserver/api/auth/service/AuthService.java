@@ -13,6 +13,7 @@ import org.hankki.hankkiserver.common.exception.UnauthorizedException;
 import org.hankki.hankkiserver.domain.user.model.Platform;
 import org.hankki.hankkiserver.domain.user.model.User;
 import org.hankki.hankkiserver.domain.user.model.UserInfo;
+import org.hankki.hankkiserver.domain.user.model.UserStatus;
 import org.hankki.hankkiserver.external.openfeign.apple.AppleClientSecretGenerator;
 import org.hankki.hankkiserver.external.openfeign.apple.AppleOAuthProvider;
 import org.hankki.hankkiserver.external.openfeign.dto.SocialInfoDto;
@@ -50,7 +51,7 @@ public class AuthService {
         Platform platform = Platform.getEnumPlatformFromStringPlatform(request.platform());
         SocialInfoDto socialInfo = getSocialInfo(token, platform, request.name());
         boolean isRegistered = userFinder.isRegisteredUser(platform, socialInfo);
-        User findUser = loadOrCreateUser(platform, socialInfo, isRegistered);
+        User findUser = loadOrCreateUser(platform, socialInfo);
         Token issuedToken = generateTokens(findUser.getId());
         return UserLoginResponse.of(issuedToken, isRegistered);
     }
@@ -78,7 +79,6 @@ public class AuthService {
         userInfoFinder.getUserInfo(userId).softDelete();
     }
 
-    @Transactional(noRollbackFor = UnauthorizedException.class)
     public UserReissueResponse reissue(final String refreshToken) {
         Long userId = jwtProvider.getSubject(refreshToken.substring(BEARER.length()));
         validateRefreshToken(refreshToken, userId);
@@ -106,9 +106,9 @@ public class AuthService {
         return appleOAuthProvider.getAppleUserInfo(providerToken, name);
     }
 
-    private User loadOrCreateUser(final Platform platform, final SocialInfoDto socialInfo, final boolean isRegistered) {
+    private User loadOrCreateUser(final Platform platform, final SocialInfoDto socialInfo) {
         return userFinder.findUserByPlatFormAndSeralId(platform, socialInfo.serialId())
-                .map(user -> updateOrFindUserInfo(user, isRegistered))
+                .map(user -> updateOrFindUserInfo(user, user.getStatus(), socialInfo))
                 .orElseGet(() -> {
                     User newUser = createUser(
                             socialInfo.name(),
@@ -120,11 +120,11 @@ public class AuthService {
                 });
     }
 
-    private User updateOrFindUserInfo(final User user, final boolean isRegistered) {
-        if (isRegistered) {
+    private User updateOrFindUserInfo(final User user, final UserStatus status, final SocialInfoDto socialInfo) {
+        if (status == ACTIVE) {
             return user;
         } else {
-            return updateUserInfo(user);
+            return updateUserInfo(user, socialInfo);
         }
     }
 

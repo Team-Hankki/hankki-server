@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import lombok.*;
 import org.hankki.hankkiserver.domain.common.BaseTimeEntity;
+import org.hankki.hankkiserver.external.openfeign.dto.SocialInfoDto;
 
 import java.time.LocalDateTime;
 
@@ -60,14 +61,23 @@ public class User extends BaseTimeEntity {
 
     public void softDelete() {
         updateStatus(INACTIVE);
+        this.name = "알 수 없음";
+        this.email = "알 수 없음";
         this.deletedAt = LocalDateTime.now();
     }
 
-    public void updateStatus(UserStatus userStatus) {
+    public void rejoin(final SocialInfoDto socialInfo) {
+        updateStatus(ACTIVE);
+        updateDeletedAt(null);
+        this.name = socialInfo.name();
+        this.email = socialInfo.email();
+    }
+
+    private void updateStatus(final UserStatus userStatus) {
         this.status = userStatus;
     }
 
-    public void updateDeletedAt(LocalDateTime deletedAt) {
+    private void updateDeletedAt(final LocalDateTime deletedAt) {
         this.deletedAt = deletedAt;
     }
 }

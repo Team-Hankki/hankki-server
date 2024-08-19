@@ -61,9 +61,9 @@ public class User extends BaseTimeEntity {
 
     public void softDelete() {
         updateStatus(INACTIVE);
+        updateDeletedAt(LocalDateTime.now());
         this.name = "알 수 없음";
         this.email = "알 수 없음";
-        this.deletedAt = LocalDateTime.now();
     }
 
     public void rejoin(final SocialInfoDto socialInfo) {

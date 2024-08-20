@@ -29,8 +29,8 @@ public class StoreFinder {
                 .orElseThrow(() -> new NotFoundException(StoreErrorCode.STORE_NOT_FOUND));
     }
 
-    protected Optional<Store> findByLatitudeAndLongitudeWhereIsDeletedFalse(final double latitude, final double longitude) {
-        return storeRepository.findByPoint_LatitudeAndPoint_LongitudeAndIsDeletedFalse(latitude, longitude);
+    protected Optional<Store> findByLatitudeAndLongitudeAndNameWhereIsDeletedFalse(final double latitude, final double longitude, String name) {
+        return storeRepository.findByLatitudeAndLongitudeAndNameWhereIsDeletedFalse(latitude, longitude, name);
     }
 
     protected boolean existsByLatitudeAndLongitude(final double latitude, final double longitude) {

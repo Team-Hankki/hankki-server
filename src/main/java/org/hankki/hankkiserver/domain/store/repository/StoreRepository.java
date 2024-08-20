@@ -15,8 +15,8 @@ public interface StoreRepository extends JpaRepository<Store, Long>, CustomStore
     @Query("select distinct s from Store s left join fetch s.hearts where s.id = :id and s.isDeleted = false")
     Optional<Store> findByIdWithHeartAndIsDeletedFalse(Long id);
 
-    @Query("select s from Store s where s.point.latitude = :latitude and s.point.longitude = :longitude and s.isDeleted = false")
-    Optional<Store> findByPoint_LatitudeAndPoint_LongitudeAndIsDeletedFalse(double latitude, double longitude);
+    @Query("select s from Store s where s.point.latitude = :latitude and s.point.longitude = :longitude and s.name = :name and s.isDeleted = false")
+    Optional<Store> findByLatitudeAndLongitudeAndNameWhereIsDeletedFalse(double latitude, double longitude, String name);
 
     boolean existsByPoint_LatitudeAndPoint_Longitude(double latitude, double longitude);
 

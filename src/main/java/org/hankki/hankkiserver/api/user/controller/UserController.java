@@ -37,7 +37,7 @@ public class UserController {
     }
 
     @GetMapping("/users/me")
-    public HankkiResponse<UserNicknameResponse> getUserProfileAndNickname(@UserId final Long userId) {
+    public HankkiResponse<UserNicknameResponse> getUserNickname(@UserId final Long userId) {
         return HankkiResponse.success(CommonSuccessCode.OK, userQueryService.getUserNickname(userId));
     }
 

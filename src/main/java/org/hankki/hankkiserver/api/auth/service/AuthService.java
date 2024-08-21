@@ -13,6 +13,7 @@ import org.hankki.hankkiserver.common.exception.UnauthorizedException;
 import org.hankki.hankkiserver.domain.user.model.Platform;
 import org.hankki.hankkiserver.domain.user.model.User;
 import org.hankki.hankkiserver.domain.user.model.UserInfo;
+import org.hankki.hankkiserver.domain.user.model.UserStatus;
 import org.hankki.hankkiserver.external.openfeign.apple.AppleClientSecretGenerator;
 import org.hankki.hankkiserver.external.openfeign.apple.AppleOAuthProvider;
 import org.hankki.hankkiserver.external.openfeign.dto.SocialInfoDto;
@@ -21,6 +22,8 @@ import org.hankki.hankkiserver.external.openfeign.kakao.dto.KakaoUnlinkRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 import static org.hankki.hankkiserver.auth.filter.JwtAuthenticationFilter.BEARER;
 import static org.hankki.hankkiserver.domain.user.model.UserStatus.ACTIVE;
@@ -40,7 +43,6 @@ public class AuthService {
     private final UserUpdater userUpdater;
     private final UserInfoFinder userInfoFinder;
     private final UserInfoUpdater userInfoUpdater;
-    private final UserInfoDeleter userInfoDeleter;
     private final JwtProvider jwtProvider;
     private final JwtValidator jwtValidator;
     private final KakaoOAuthProvider kakaoOAuthProvider;
@@ -50,8 +52,9 @@ public class AuthService {
     public UserLoginResponse login(final String token, final UserLoginRequest request) {
         Platform platform = Platform.getEnumPlatformFromStringPlatform(request.platform());
         SocialInfoDto socialInfo = getSocialInfo(token, platform, request.name());
-        boolean isRegistered = userFinder.isRegisteredUser(platform, socialInfo);
-        User findUser = loadOrCreateUser(platform, socialInfo, isRegistered);
+        Optional<User> user = userFinder.findUserByPlatFormAndSeralId(platform, socialInfo.serialId());
+        boolean isRegistered = isRegistered(user);
+        User findUser = loadOrCreateUser(user, platform, socialInfo);
         Token issuedToken = generateTokens(findUser.getId());
         return UserLoginResponse.of(issuedToken, isRegistered);
     }
@@ -76,10 +79,9 @@ public class AuthService {
             kakaoOAuthProvider.unlinkKakaoServer(adminKey, KakaoUnlinkRequest.of(user.getSerialId()));
         }
         user.softDelete();
-        userInfoDeleter.softDelete(userId);
+        userInfoFinder.getUserInfo(userId).softDelete();
     }
 
-    @Transactional(noRollbackFor = UnauthorizedException.class)
     public UserReissueResponse reissue(final String refreshToken) {
         Long userId = jwtProvider.getSubject(refreshToken.substring(BEARER.length()));
         validateRefreshToken(refreshToken, userId);
@@ -107,32 +109,32 @@ public class AuthService {
         return appleOAuthProvider.getAppleUserInfo(providerToken, name);
     }
 
-    private User loadOrCreateUser(final Platform platform, final SocialInfoDto socialInfo, final boolean isRegistered) {
-        return userFinder.findUserByPlatFormAndSeralId(platform, socialInfo.serialId())
-                .map(user -> updateOrFindUserInfo(user, isRegistered))
+    private User loadOrCreateUser(final Optional<User> findUser, final Platform platform, final SocialInfoDto socialInfo) {
+        return findUser.map(user -> updateOrFindUserInfo(user, user.getStatus(), socialInfo))
                 .orElseGet(() -> {
-                    User newUser = createUser(
-                            socialInfo.name(),
-                            socialInfo.email(),
-                            socialInfo.serialId(),
-                            platform);
+                    User newUser = createUser(socialInfo.name(), socialInfo.email(), socialInfo.serialId(), platform);
                     saveUserAndUserInfo(newUser);
                     return newUser;
                 });
     }
 
-    private User updateOrFindUserInfo(final User user, final boolean isRegistered) {
-        if (isRegistered) {
+    private User updateOrFindUserInfo(final User user, final UserStatus status, final SocialInfoDto socialInfo) {
+        if (status == ACTIVE) {
             return user;
         } else {
-            return updateUserInfo(user);
+            return updateUserInfo(user, socialInfo);
         }
     }
 
-    private User updateUserInfo(final User user) {
-        user.updateStatus(ACTIVE);
-        user.updateDeletedAt(null);
-        userInfoFinder.getUserInfo(user.getId()).updateNickname(user.getName());;
+    private boolean isRegistered(final Optional<User> user) {
+        return user.map(u -> u.getStatus() == ACTIVE)
+                .orElse(false);
+    }
+
+
+    private User updateUserInfo(final User user, final SocialInfoDto socialInfo) {
+        user.rejoin(socialInfo);
+        userInfoFinder.getUserInfo(user.getId()).updateNickname(socialInfo.name());
         return user;
     }
 

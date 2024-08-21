@@ -39,4 +39,9 @@ public class UserInfo {
     public void updateNickname(final String nickname) {
         this.nickname = nickname;
     }
+
+    public void softDelete() {
+        updateRefreshToken(null);
+        updateNickname("알 수 없음");
+    }
 }

@@ -2,8 +2,6 @@ package org.hankki.hankkiserver.domain.user.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hankki.hankkiserver.external.openfeign.dto.SocialInfoDto;
-
 
 @Entity
 @Getter
@@ -34,15 +32,11 @@ public class UserInfo {
                 .build();
     }
 
-    public void rejoin(final SocialInfoDto socialInfoDto) {
-        updateNickname(socialInfoDto.name());
-    }
-
     public void updateRefreshToken(final String refreshToken) {
         this.refreshToken = refreshToken;
     }
 
-    private void updateNickname(final String nickname) {
+    public void updateNickname(final String nickname) {
         this.nickname = nickname;
     }
 

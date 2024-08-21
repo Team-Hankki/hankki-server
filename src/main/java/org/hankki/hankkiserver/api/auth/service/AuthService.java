@@ -137,7 +137,7 @@ public class AuthService {
 
     private User updateUserInfo(final User user, final SocialInfoDto socialInfo) {
         user.rejoin(socialInfo);
-        userInfoFinder.getUserInfo(user.getId()).rejoin(socialInfo);
+        userInfoFinder.getUserInfo(user.getId()).updateNickname(socialInfo.name());
         userInfoFinder.getUserInfo(user.getId()).updateProfile();
         return user;
     }

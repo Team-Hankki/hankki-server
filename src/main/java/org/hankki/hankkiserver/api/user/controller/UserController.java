@@ -9,7 +9,7 @@ import org.hankki.hankkiserver.api.user.service.UserQueryService;
 import org.hankki.hankkiserver.api.user.service.command.UserUniversityPostCommand;
 import org.hankki.hankkiserver.api.user.service.response.UserFavoritesGetResponse;
 import org.hankki.hankkiserver.api.user.service.response.UserHeartedStoreListResponse;
-import org.hankki.hankkiserver.api.user.service.response.UserProfileAndNicknameResponse;
+import org.hankki.hankkiserver.api.user.service.response.UserNicknameResponse;
 import org.hankki.hankkiserver.api.user.service.response.UserStoresReportedGetResponse;
 import org.hankki.hankkiserver.api.user.service.response.UserUniversityFindResponse;
 import org.hankki.hankkiserver.auth.UserId;
@@ -37,8 +37,8 @@ public class UserController {
     }
 
     @GetMapping("/users/me")
-    public HankkiResponse<UserProfileAndNicknameResponse> getUserProfileAndNickname(@UserId final Long userId) {
-        return HankkiResponse.success(CommonSuccessCode.OK, userQueryService.getUserProfileAndNickname(userId));
+    public HankkiResponse<UserNicknameResponse> getUserNickname(@UserId final Long userId) {
+        return HankkiResponse.success(CommonSuccessCode.OK, userQueryService.getUserNickname(userId));
     }
 
     @GetMapping("/users/me/favorites")

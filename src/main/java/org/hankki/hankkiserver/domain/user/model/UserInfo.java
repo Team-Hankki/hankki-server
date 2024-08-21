@@ -2,7 +2,6 @@ package org.hankki.hankkiserver.domain.user.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hankki.hankkiserver.domain.user.ImageSelector;
 
 @Entity
 @Getter
@@ -19,8 +18,6 @@ public class UserInfo {
     @Column(nullable = false)
     private String nickname;
 
-    private String profileImageUrl;
-
     private String refreshToken;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -31,7 +28,6 @@ public class UserInfo {
         return UserInfo.builder()
                 .user(user)
                 .refreshToken(refreshToken)
-                .profileImageUrl(ImageSelector.setRandomDefaultImageUrl())
                 .nickname(user.getName())
                 .build();
     }
@@ -42,9 +38,5 @@ public class UserInfo {
 
     public void updateNickname(final String nickname) {
         this.nickname = nickname;
-    }
-
-    public void updateProfile() {
-        this.profileImageUrl = ImageSelector.setRandomDefaultImageUrl();
     }
 }

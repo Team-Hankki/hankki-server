@@ -126,10 +126,7 @@ public class AuthService {
         }
     }
 
-    private User updateUserInfo(final User user) {
-        user.updateStatus(ACTIVE);
-        user.updateDeletedAt(null);
-        userInfoFinder.getUserInfo(user.getId()).updateNickname(user.getName());;
+    private boolean isRegistered(final Optional<User> user) {
         return user.map(u -> u.getStatus() == ACTIVE)
                 .orElse(false);
     }
@@ -138,7 +135,6 @@ public class AuthService {
     private User updateUserInfo(final User user, final SocialInfoDto socialInfo) {
         user.rejoin(socialInfo);
         userInfoFinder.getUserInfo(user.getId()).updateNickname(socialInfo.name());
-        userInfoFinder.getUserInfo(user.getId()).updateProfile();
         return user;
     }
 

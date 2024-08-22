@@ -82,7 +82,7 @@ public class StoreController {
     }
 
     @PostMapping("/stores/validate")
-    public HankkiResponse<StoreDuplicateValidationResponse> validateDuplicatedStore(@RequestBody final StoreDuplicateValidationRequest request) {
+    public HankkiResponse<StoreDuplicateValidationResponse> validateDuplicatedStore(@RequestBody @Valid final StoreDuplicateValidationRequest request) {
         return HankkiResponse.success(CommonSuccessCode.OK, storeQueryService.validateDuplicatedStore(StoreValidationCommand.of(request.universityId(), request.latitude(), request.longitude(), request.storeName())));
     }
 

@@ -79,6 +79,11 @@ public class StoreQueryService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public StoreDuplicateValidationResponse validateDuplicatedStore(final StoreValidationCommand command) {
+        return createStoreDuplicateValidationResponse(storeFinder.findByLatitudeAndLongitudeAndNameWhereIsDeletedFalse(command.latitude(), command.longitude(), command.name()), command.universityId());
+    }
+
     private List<MenuResponse> getMenus(final Store store) {
         return menuFinder.findAllByStore(store).stream().map(MenuResponse::of).toList();
     }
@@ -89,11 +94,6 @@ public class StoreQueryService {
 
     private boolean hasSameUserId(final Long id, final Heart heart) {
         return heart.getUser().getId().equals(id);
-    }
-
-    @Transactional(readOnly = true)
-    public StoreDuplicateValidationResponse validateDuplicatedStore(final StoreValidationCommand command) {
-        return createStoreDuplicateValidationResponse(storeFinder.findByLatitudeAndLongitudeAndNameWhereIsDeletedFalse(command.latitude(), command.longitude(), command.name()), command.universityId());
     }
 
     private StoreDuplicateValidationResponse createStoreDuplicateValidationResponse(Optional<Store> store, Long universityId) {

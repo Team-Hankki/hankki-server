@@ -29,7 +29,7 @@ public class StoreFinder {
                 .orElseThrow(() -> new NotFoundException(StoreErrorCode.STORE_NOT_FOUND));
     }
 
-    protected Optional<Store> findByLatitudeAndLongitudeAndNameWhereIsDeletedFalse(final double latitude, final double longitude, String name) {
+    protected Optional<Store> findByLatitudeAndLongitudeAndNameWhereIsDeletedFalse(final double latitude, final double longitude, final String name) {
         return storeRepository.findByLatitudeAndLongitudeAndNameWhereIsDeletedFalse(latitude, longitude, name);
     }
 

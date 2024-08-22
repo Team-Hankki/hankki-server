@@ -2,7 +2,7 @@ package org.hankki.hankkiserver.api.user.service.response;
 
 import org.hankki.hankkiserver.domain.user.model.UserUniversity;
 
-public record UserUniversityFindResponse(long id,
+public record UserUniversityFindResponse(Long id,
                                          String name,
                                          double longitude,
                                          double latitude)

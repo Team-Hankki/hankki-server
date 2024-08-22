@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -92,8 +93,11 @@ public class StoreQueryService {
 
     @Transactional(readOnly = true)
     public StoreDuplicateValidationResponse validateDuplicatedStore(final StoreValidationCommand command) {
-        return storeFinder.findByLatitudeAndLongitudeAndNameWhereIsDeletedFalse(command.latitude(), command.longitude(), command.name())
-                .map(store -> StoreDuplicateValidationResponse.of(store.getId(), universityStoreFinder.existsByUniversityIdAndStore(command.universityId(), store)))
+        return createStoreDuplicateValidationResponse(storeFinder.findByLatitudeAndLongitudeAndNameWhereIsDeletedFalse(command.latitude(), command.longitude(), command.name()), command.universityId());
+    }
+
+    private StoreDuplicateValidationResponse createStoreDuplicateValidationResponse(Optional<Store> store, Long universityId) {
+        return store.map(s -> StoreDuplicateValidationResponse.of(s.getId(), universityStoreFinder.existsByUniversityIdAndStore(universityId, s)))
                 .orElseGet(() -> StoreDuplicateValidationResponse.of(null, false));
     }
 }

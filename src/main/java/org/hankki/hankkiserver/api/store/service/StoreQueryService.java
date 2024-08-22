@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -78,6 +79,11 @@ public class StoreQueryService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public StoreDuplicateValidationResponse validateDuplicatedStore(final StoreValidationCommand command) {
+        return createStoreDuplicateValidationResponse(storeFinder.findByLatitudeAndLongitudeAndNameWhereIsDeletedFalse(command.latitude(), command.longitude(), command.name()), command.universityId());
+    }
+
     private List<MenuResponse> getMenus(final Store store) {
         return menuFinder.findAllByStore(store).stream().map(MenuResponse::of).toList();
     }
@@ -90,10 +96,8 @@ public class StoreQueryService {
         return heart.getUser().getId().equals(id);
     }
 
-    @Transactional(readOnly = true)
-    public StoreDuplicateValidationResponse validateDuplicatedStore(final StoreValidationCommand command) {
-        return storeFinder.findByLatitudeAndLongitudeWhereIsDeletedFalse(command.latitude(), command.longitude())
-                .map(store -> StoreDuplicateValidationResponse.of(store.getId(), universityStoreFinder.existsByUniversityIdAndStore(command.universityId(), store)))
+    private StoreDuplicateValidationResponse createStoreDuplicateValidationResponse(Optional<Store> store, Long universityId) {
+        return store.map(s -> StoreDuplicateValidationResponse.of(s.getId(), universityStoreFinder.existsByUniversityIdAndStore(universityId, s)))
                 .orElseGet(() -> StoreDuplicateValidationResponse.of(null, false));
     }
 }

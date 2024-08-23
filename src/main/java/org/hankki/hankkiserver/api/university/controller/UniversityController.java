@@ -18,6 +18,6 @@ public class UniversityController {
 
     @GetMapping("/universities")
     public HankkiResponse<UniversitiesResponse> getUniversities() {
-        return HankkiResponse.success(CommonSuccessCode.OK, universityQueryService.findAll());
+        return HankkiResponse.success(CommonSuccessCode.OK, universityQueryService.findAllByOrderByName());
     }
 }

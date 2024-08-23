@@ -20,7 +20,7 @@ public class UniversityFinder {
                 .orElseThrow(() -> new NotFoundException(UniversityErrorCode.UNIVERSITY_NOT_FOUND));
     }
 
-    public List<University> findAll () {
-        return universityRepository.findAll();
+    public List<University> findAllByOrderByName () {
+        return universityRepository.findAllByOrderByName();
     }
 }

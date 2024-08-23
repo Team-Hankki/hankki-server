@@ -13,8 +13,8 @@ public class UniversityQueryService {
     
     private final UniversityFinder universityFinder;
 
-    public UniversitiesResponse findAll() {
-        return new UniversitiesResponse(universityFinder.findAll()
+    public UniversitiesResponse findAllByOrderByName() {
+        return new UniversitiesResponse(universityFinder.findAllByOrderByName()
                 .stream().map(UniversityFindResponse::of).toList());
     }
 }

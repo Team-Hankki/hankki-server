@@ -34,8 +34,8 @@ public class StoreFinder {
         return storeRepository.findByLatitudeAndLongitudeAndNameWhereIsDeletedFalse(latitude, longitude, name);
     }
 
-    protected boolean existsByLatitudeAndLongitude(final double latitude, final double longitude) {
-        return storeRepository.existsByPoint_LatitudeAndPoint_Longitude(latitude, longitude);
+    protected boolean existsByLatitudeAndLongitudeAndNameAndIsDeleted(final double latitude, final double longitude, final String name, final boolean isDeleted) {
+        return storeRepository.existsByPoint_LatitudeAndPoint_LongitudeAndNameAndIsDeleted(latitude, longitude, name, isDeleted);
     }
 
     public List<Store> findAllDynamicQuery(final Long universityId, final StoreCategory storeCategory, final PriceCategory priceCategory, final SortOption sortOption) {

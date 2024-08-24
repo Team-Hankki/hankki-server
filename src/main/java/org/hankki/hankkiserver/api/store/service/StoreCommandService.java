@@ -47,7 +47,7 @@ public class StoreCommandService {
 
     @Transactional(rollbackFor = Exception.class)
     public StorePostResponse createStore(final StorePostCommand command) {
-        if (storeExists(command.latitude(), command.longitude())) {
+        if (storeExists(command.latitude(), command.longitude(), command.name(), false)) {
             throw new BadRequestException(StoreErrorCode.BAD_STORE_INFO);
         }
 
@@ -62,8 +62,8 @@ public class StoreCommandService {
         return StorePostResponse.of(store);
     }
 
-    private boolean storeExists(final double latitude, final double longitude) {
-        return storeFinder.existsByLatitudeAndLongitude(latitude, longitude);
+    private boolean storeExists(final double latitude, final double longitude, final String name, final boolean isDeleted) {
+        return storeFinder.existsByLatitudeAndLongitudeAndNameAndIsDeleted(latitude, longitude, name, isDeleted);
     }
 
     private void saveImages(final StorePostCommand command, final Store store) {

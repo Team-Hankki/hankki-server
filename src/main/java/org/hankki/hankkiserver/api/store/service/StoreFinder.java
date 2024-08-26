@@ -42,7 +42,7 @@ public class StoreFinder {
         return storeRepository.findStoreByCategoryAndLowestPriceAndUniversityIdAndIsDeletedFalseOrderBySortOptions(storeCategory, priceCategory, universityId, sortOption);
     }
 
-    public List<Store> findAllByIdsWhereDeletedIsFalseOrderByFavoriteStoreId(final List<FavoriteStore> favoriteStores) {
-        return storeRepository.findAllByIdsAndIsDeletedIsFalseOrderByFavoriteStoreId(favoriteStores);
+    public List<Store> findAllByFavoriteStoresAndDeletedIsFalseOrderByFavoriteStoreId(final List<FavoriteStore> favoriteStores) {
+        return storeRepository.findAllByFavoriteStoresAndIsDeletedIsFalseOrderByFavoriteStoreId(favoriteStores);
     }
 }

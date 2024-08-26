@@ -1,0 +1,4 @@
+FROM amd64/amazoncorretto:17
+WORKDIR /app
+COPY ./build/libs/hankkiserver-0.0.1-SNAPSHOT.jar /app/hankki.jar
+ENTRYPOINT ["java", "-Duser.timezone=Asia/Seoul", "-jar", "-Dspring.profiles.active=prod", "hankki.jar"]

@@ -19,7 +19,6 @@ import org.hankki.hankkiserver.domain.store.model.StoreImage;
 import org.hankki.hankkiserver.domain.university.model.University;
 import org.hankki.hankkiserver.domain.universitystore.model.UniversityStore;
 import org.hankki.hankkiserver.external.s3.S3Service;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,9 +28,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class StoreCommandService {
-
-    @Value("${store.default-image}")
-    private String DEFAULT_IMAGE_URL;
 
     private static final String STORE_IMAGE_DIRECTORY = "store/";
 

@@ -1,5 +1,6 @@
 package org.hankki.hankkiserver.api.favoritestore.service;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.common.code.FavoriteStoreErrorCode;
 import org.hankki.hankkiserver.common.exception.NotFoundException;

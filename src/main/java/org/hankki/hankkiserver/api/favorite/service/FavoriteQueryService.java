@@ -6,9 +6,9 @@ import org.hankki.hankkiserver.api.favorite.service.command.FavoritesGetCommand;
 import org.hankki.hankkiserver.api.favorite.service.command.FavoritesWithStatusGetCommand;
 import org.hankki.hankkiserver.api.favorite.service.response.FavoriteGetResponse;
 import org.hankki.hankkiserver.api.favorite.service.response.FavoritesWithStatusGetResponse;
+import org.hankki.hankkiserver.api.store.service.StoreFinder;
 import org.hankki.hankkiserver.domain.favorite.model.Favorite;
 import org.hankki.hankkiserver.domain.favoritestore.model.FavoriteStore;
-import org.hankki.hankkiserver.api.store.service.StoreFinder;
 import org.hankki.hankkiserver.domain.store.model.Store;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,7 +50,7 @@ public class FavoriteQueryService {
     if (favoriteHasNoStore(favorite)) {
       return new ArrayList<>();
     }
-    return storeFinder.findAllByIdsWhereDeletedIsFalseOrderByCreatedAtDes(favorite.getFavoriteStores().stream().map(fs -> fs.getStore().getId()).toList());
+    return storeFinder.findAllByFavoriteStoresAndDeletedIsFalseOrderByFavoriteStoreId(favorite.getFavoriteStores());
   }
 
   private boolean favoriteHasNoStore(final Favorite favorite) {

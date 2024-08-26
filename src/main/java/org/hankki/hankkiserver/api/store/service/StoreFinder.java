@@ -5,6 +5,7 @@ import org.hankki.hankkiserver.api.store.parameter.PriceCategory;
 import org.hankki.hankkiserver.api.store.parameter.SortOption;
 import org.hankki.hankkiserver.common.code.StoreErrorCode;
 import org.hankki.hankkiserver.common.exception.NotFoundException;
+import org.hankki.hankkiserver.domain.favoritestore.model.FavoriteStore;
 import org.hankki.hankkiserver.domain.store.model.Store;
 import org.hankki.hankkiserver.domain.store.model.StoreCategory;
 import org.hankki.hankkiserver.domain.store.repository.StoreRepository;
@@ -41,7 +42,7 @@ public class StoreFinder {
         return storeRepository.findStoreByCategoryAndLowestPriceAndUniversityIdAndIsDeletedFalseOrderBySortOptions(storeCategory, priceCategory, universityId, sortOption);
     }
 
-    public List<Store> findAllByIdsWhereDeletedIsFalseOrderByCreatedAtDes(final List<Long> ids) {
-        return storeRepository.findAllByIdsAndIsDeletedIsFalseOrderByCreatedAtDesc(ids);
+    public List<Store> findAllByFavoriteStoresAndDeletedIsFalseOrderByFavoriteStoreId(final List<FavoriteStore> favoriteStores) {
+        return storeRepository.findAllByFavoriteStoresAndIsDeletedIsFalseOrderByFavoriteStoreId(favoriteStores);
     }
 }

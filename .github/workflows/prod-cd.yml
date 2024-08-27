@@ -42,7 +42,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ./Dockerfile-dev
+          file: ./Dockerfile-prod
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.PROD_REPO_NAME }}
 

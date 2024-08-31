@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.event.store.CreateStoreEvent;
 import org.hankki.hankkiserver.event.store.DeleteStoreEvent;
 import org.hankki.hankkiserver.event.user.CreateUserEvent;
-import org.hankki.hankkiserver.external.openfeign.discord.dto.DiscordMessage;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 

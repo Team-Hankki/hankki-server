@@ -16,16 +16,16 @@ public class DiscordEventListener {
 
     @EventListener
     public void sendStoreCreationNotice(CreateStoreEvent event) {
-        discordService.sendStoreCreationMessage(DiscordMessage.storeCreationMessageOf(event.storeName(), event.universityName()));
+        discordService.sendStoreCreationMessage(event.storeName(), event.universityName());
     }
 
     @EventListener
     public void sendUserCreateNotice(CreateUserEvent event) {
-        discordService.sendUserCreationMessage(DiscordMessage.userCreationMessageOf(event.userId(), event.userName(), event.platform()));
+        discordService.sendUserCreationMessage(event.userId(), event.userName(), event.platform());
     }
 
     @EventListener
     public void sendStoreDeleteNotice(DeleteStoreEvent event) {
-        discordService.sendStoreDeleteMessage(DiscordMessage.storeDeleteMessageOf(event.name()));
+        discordService.sendStoreDeleteMessage(event.name());
     }
 }

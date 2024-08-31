@@ -11,13 +11,13 @@ public class DiscordService {
 
     private final DiscordFeignClient discordFeignClient;
 
-    public void sendStoreCreationMessage(DiscordMessage message) {
-        discordFeignClient.sendStoreCreationMessage(message);
+    public void sendStoreCreationMessage(String storeName, String universityName) {
+        discordFeignClient.sendStoreCreationMessage(DiscordMessage.storeCreationMessageOf(storeName, universityName));
     }
-    public void sendUserCreationMessage(DiscordMessage message) {
-        discordFeignClient.sendUserCreationMessage(message);
+    public void sendUserCreationMessage(Long userId, String userName, String platform) {
+        discordFeignClient.sendUserCreationMessage(DiscordMessage.userCreationMessageOf(userId, userName, platform);
     }
-    public void sendStoreDeleteMessage(DiscordMessage message) {
-        discordFeignClient.sendStoreDeleteMessage(message);
+    public void sendStoreDeleteMessage(String storeName) {
+        discordFeignClient.sendStoreDeleteMessage(DiscordMessage.storeDeleteMessageOf(storeName));
     }
 }

@@ -14,6 +14,8 @@ import org.hankki.hankkiserver.domain.user.model.Platform;
 import org.hankki.hankkiserver.domain.user.model.User;
 import org.hankki.hankkiserver.domain.user.model.UserInfo;
 import org.hankki.hankkiserver.domain.user.model.UserStatus;
+import org.hankki.hankkiserver.event.EventPublisher;
+import org.hankki.hankkiserver.event.user.CreateUserEvent;
 import org.hankki.hankkiserver.external.openfeign.apple.AppleClientSecretGenerator;
 import org.hankki.hankkiserver.external.openfeign.apple.AppleOAuthProvider;
 import org.hankki.hankkiserver.external.openfeign.dto.SocialInfoDto;
@@ -48,6 +50,7 @@ public class AuthService {
     private final KakaoOAuthProvider kakaoOAuthProvider;
     private final AppleOAuthProvider appleOAuthProvider;
     private final AppleClientSecretGenerator appleClientSecretGenerator;
+    private final EventPublisher eventPublisher;
 
     public UserLoginResponse login(final String token, final UserLoginRequest request) {
         Platform platform = Platform.getEnumPlatformFromStringPlatform(request.platform());
@@ -114,6 +117,7 @@ public class AuthService {
                 .orElseGet(() -> {
                     User newUser = createUser(socialInfo.name(), socialInfo.email(), socialInfo.serialId(), platform);
                     saveUserAndUserInfo(newUser);
+                    eventPublisher.publish(CreateUserEvent.of(newUser.getId(), newUser.getName(), newUser.getPlatform().toString()));
                     return newUser;
                 });
     }

@@ -9,7 +9,7 @@ public record DiscordMessage(String content) {
         return new DiscordMessage( platform + userId + "번째 유저 <" +userName+ ">가 가입했습니다.");
     }
 
-    public static DiscordMessage storeDeleteMessageOf(String universityName) {
-        return new DiscordMessage("<" +universityName+ ">가 삭제되었습니다.");
+    public static DiscordMessage storeDeleteMessageOf(String storeName, Long userId) {
+        return new DiscordMessage( userId + "번 유저에의해 <" + storeName + ">가 삭제되었습니다.");
     }
 }

@@ -17,7 +17,7 @@ public class DiscordService {
     public void sendUserCreationMessage(Long userId, String userName, String platform) {
         discordFeignClient.sendUserCreationMessage(DiscordMessage.userCreationMessageOf(userId, userName, platform));
     }
-    public void sendStoreDeleteMessage(String storeName) {
-        discordFeignClient.sendStoreDeleteMessage(DiscordMessage.storeDeleteMessageOf(storeName));
+    public void sendStoreDeleteMessage(String storeName, Long userId) {
+        discordFeignClient.sendStoreDeleteMessage(DiscordMessage.storeDeleteMessageOf(storeName, userId));
     }
 }

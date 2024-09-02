@@ -25,6 +25,6 @@ public class DiscordEventListener {
 
     @EventListener
     public void sendStoreDeleteNotice(DeleteStoreEvent event) {
-        discordService.sendStoreDeleteMessage(event.name());
+        discordService.sendStoreDeleteMessage(event.name(), event.userId());
     }
 }

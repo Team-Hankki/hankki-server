@@ -21,7 +21,7 @@ public class StoreImage extends BaseCreatedAtEntity {
     @JoinColumn(name = "store_id")
     private Store store;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String imageUrl;
 
     @Builder

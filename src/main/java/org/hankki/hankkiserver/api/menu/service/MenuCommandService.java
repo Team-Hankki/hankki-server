@@ -23,27 +23,24 @@ public class MenuCommandService {
     private final StoreFinder storeFinder;
 
     @Transactional
-    public void deleteMenu(final MenuDeleteCommand request) {
-        Store findStore = storeFinder.findByIdWhereDeletedIsFalse(request.storeId());
-        Menu findMenu = menuFinder.findById(request.id());
-        validateMenuExistInStore(findStore, findMenu);
+    public void deleteMenu(final MenuDeleteCommand command) {
+        Menu findMenu = menuFinder.findById(command.id());
+        Store findStore = validateMenuExistInStore(command.storeId(), findMenu);
         menuDeleter.deleteMenu(findMenu);
         updateLowestPriceInStore(findStore);
     }
 
     @Transactional
-    public void modifyMenu(final MenuPatchCommand request) {
-        Store findStore = storeFinder.findByIdWhereDeletedIsFalse(request.storeId());
-        Menu findMenu  = menuFinder.findById(request.id());
-        validateMenuExistInStore(findStore, findMenu);
-        findMenu.update(request.name(), request.price());
+    public void modifyMenu(final MenuPatchCommand command) {
+        Menu findMenu  = menuFinder.findById(command.id());
+        Store findStore = validateMenuExistInStore(command.storeId(), findMenu);
+        findMenu.update(command.name(), command.price());
         updateLowestPriceInStore(findStore);
     }
 
     @Transactional
     public MenuPostResponse createMenu(final MenuPostCommand request) {
-        Store findStore = storeFinder.findByIdWhereDeletedIsFalse(request.storeId());
-        validateConflictMenu(findStore, request.name());
+        Store findStore = validateConflictMenu(request.storeId(), request.name());
         Menu menu = Menu.create(findStore, request.name(), request.price());
         menuUpdater.save(menu);
         updateLowestPriceInStore(findStore, menu);
@@ -64,13 +61,17 @@ public class MenuCommandService {
         }
     }
 
-    private void validateMenuExistInStore(final Store store, final Menu menu) {
+    private Store validateMenuExistInStore(final long storeId, final Menu menu) {
+        Store store = storeFinder.findByIdWhereDeletedIsFalse(storeId);
         menuFinder.findByStoreAndMenu(store, menu);
+        return store;
     }
 
-    private void validateConflictMenu(final Store store, final String name) {
+    private Store validateConflictMenu(final long storeId, final String name) {
+        Store store = storeFinder.findByIdWhereDeletedIsFalse(storeId);
         menuFinder.findByStoreAndName(store, name).ifPresent(menu -> {
                     throw new ConflictException(MenuErrorCode.ALREADY_EXISTED_MENU);
         });
+        return store;
     }
 }

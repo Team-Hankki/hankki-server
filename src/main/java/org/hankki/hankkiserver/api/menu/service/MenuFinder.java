@@ -26,10 +26,6 @@ public class MenuFinder {
         return menuRepository.findById(id).orElseThrow(() -> new NotFoundException(MenuErrorCode.MENU_NOT_FOUND));
     }
 
-    protected List<Menu> findByStore(final Store store) {
-        return menuRepository.findByStoreId(store.getId());
-    }
-
     protected Menu findByStoreAndMenu(final Store store, final Menu menu) {
         return menuRepository.findByStoreAndId(store, menu.getId()).orElseThrow(() -> new BadRequestException(MenuErrorCode.MENU_NOT_FOUND));
     }

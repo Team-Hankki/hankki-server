@@ -6,7 +6,6 @@ import org.hankki.hankkiserver.api.menu.service.command.MenuPatchCommand;
 import org.hankki.hankkiserver.api.menu.service.command.MenuPostCommand;
 import org.hankki.hankkiserver.api.menu.service.response.MenuPostResponse;
 import org.hankki.hankkiserver.api.store.service.StoreFinder;
-import org.hankki.hankkiserver.api.store.service.StoreUpdater;
 import org.hankki.hankkiserver.common.code.MenuErrorCode;
 import org.hankki.hankkiserver.common.exception.ConflictException;
 import org.hankki.hankkiserver.domain.menu.model.Menu;
@@ -22,7 +21,6 @@ public class MenuCommandService {
     private final MenuFinder menuFinder;
     private final MenuUpdater menuUpdater;
     private final StoreFinder storeFinder;
-    private final StoreUpdater storeUpdater;
 
     @Transactional
     public void deleteMenu(final MenuDeleteCommand request) {

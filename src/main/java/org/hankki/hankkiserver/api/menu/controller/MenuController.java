@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.dto.HankkiResponse;
 import org.hankki.hankkiserver.api.menu.service.MenuCommandService;
+import org.hankki.hankkiserver.api.menu.service.command.MenuDeleteCommand;
 import org.hankki.hankkiserver.api.menu.service.command.MenuPatchCommand;
 import org.hankki.hankkiserver.api.menu.service.command.MenuPostCommand;
 import org.hankki.hankkiserver.api.menu.service.response.MenuPostResponse;
@@ -18,15 +19,16 @@ public class MenuController {
 
     private final MenuCommandService menuCommandService;
 
-    @DeleteMapping("/menus/{id}")
-    public HankkiResponse<Void> deleteMenu(@PathVariable final Long id) {
-        menuCommandService.deleteMenu(id);
+    @DeleteMapping("/{storeId}/menus/{id}")
+    public HankkiResponse<Void> deleteMenu(@PathVariable("storeId") final Long storeId, @PathVariable("id") final Long id) {
+        menuCommandService.deleteMenu(MenuDeleteCommand.of(storeId, id));
         return HankkiResponse.success(CommonSuccessCode.NO_CONTENT);
     }
 
-    @PatchMapping("/menus/{id}")
-    public HankkiResponse<Void> updateMenu(@PathVariable final Long id, @Valid @RequestBody final MenuPostRequest request) {
-        menuCommandService.modifyMenu(MenuPatchCommand.of(id, request.name(), request.price()));
+    @PatchMapping("/{storeId}/menus/{id}")
+    public HankkiResponse<Void> updateMenu(@PathVariable("storeId") final Long storeId, @PathVariable("id") final Long id,
+                                           @Valid @RequestBody final MenuPostRequest request) {
+        menuCommandService.modifyMenu(MenuPatchCommand.of(storeId, id, request.name(), request.price()));
         return HankkiResponse.success(CommonSuccessCode.OK);
     }
 

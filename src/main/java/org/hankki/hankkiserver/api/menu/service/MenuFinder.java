@@ -2,6 +2,7 @@ package org.hankki.hankkiserver.api.menu.service;
 
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.common.code.MenuErrorCode;
+import org.hankki.hankkiserver.common.exception.BadRequestException;
 import org.hankki.hankkiserver.common.exception.NotFoundException;
 import org.hankki.hankkiserver.domain.menu.model.Menu;
 import org.hankki.hankkiserver.domain.menu.repository.MenuRepository;
@@ -23,6 +24,10 @@ public class MenuFinder {
 
     protected Menu findById(final Long id) {
         return menuRepository.findById(id).orElseThrow(() -> new NotFoundException(MenuErrorCode.MENU_NOT_FOUND));
+    }
+
+    protected Menu findByStoreAndMenu(final Store store, final Menu menu) {
+        return menuRepository.findByStoreAndId(store, menu.getId()).orElseThrow(() -> new BadRequestException(MenuErrorCode.MENU_NOT_FOUND));
     }
 
     protected Optional<Menu> findByStoreAndName(final Store store, final String name) {

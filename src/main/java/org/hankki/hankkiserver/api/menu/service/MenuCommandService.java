@@ -1,7 +1,7 @@
 package org.hankki.hankkiserver.api.menu.service;
 
 import lombok.RequiredArgsConstructor;
-import org.hankki.hankkiserver.api.menu.service.command.MenuPatchRequest;
+import org.hankki.hankkiserver.api.menu.service.command.MenuPatchCommand;
 import org.hankki.hankkiserver.domain.menu.model.Menu;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +20,7 @@ public class MenuCommandService {
     }
 
     @Transactional
-    public void modifyMenu(final MenuPatchRequest request) {
+    public void modifyMenu(final MenuPatchCommand request) {
         Menu findMenu  = menuFinder.findById(request.id());
         findMenu.update(request.name(), request.price());
     }

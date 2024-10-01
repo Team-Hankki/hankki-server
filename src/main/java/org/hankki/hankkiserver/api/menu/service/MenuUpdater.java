@@ -16,4 +16,8 @@ public class MenuUpdater {
     public void saveAll(final List<Menu> menus) {
         menuRepository.saveAll(menus);
     }
+
+    protected void save(final Menu menu) {
+        menuRepository.save(menu);
+    }
 }

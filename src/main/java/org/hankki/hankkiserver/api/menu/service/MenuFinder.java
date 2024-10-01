@@ -9,6 +9,7 @@ import org.hankki.hankkiserver.domain.store.model.Store;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -22,5 +23,9 @@ public class MenuFinder {
 
     protected Menu findById(final Long id) {
         return menuRepository.findById(id).orElseThrow(() -> new NotFoundException(MenuErrorCode.MENU_NOT_FOUND));
+    }
+
+    protected Optional<Menu> findByStoreAndName(final Store store, final String name) {
+        return menuRepository.findByStoreAndName(store, name);
     }
 }

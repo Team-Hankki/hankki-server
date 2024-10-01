@@ -6,6 +6,7 @@ import org.hankki.hankkiserver.api.menu.service.command.MenuPatchCommand;
 import org.hankki.hankkiserver.api.menu.service.command.MenuPostCommand;
 import org.hankki.hankkiserver.api.menu.service.response.MenuPostResponse;
 import org.hankki.hankkiserver.api.store.service.StoreFinder;
+import org.hankki.hankkiserver.api.store.service.StoreUpdater;
 import org.hankki.hankkiserver.common.code.MenuErrorCode;
 import org.hankki.hankkiserver.common.exception.ConflictException;
 import org.hankki.hankkiserver.domain.menu.model.Menu;
@@ -21,19 +22,24 @@ public class MenuCommandService {
     private final MenuFinder menuFinder;
     private final MenuUpdater menuUpdater;
     private final StoreFinder storeFinder;
+    private final StoreUpdater storeUpdater;
 
     @Transactional
     public void deleteMenu(final MenuDeleteCommand request) {
+        Store findStore = storeFinder.findByIdWhereDeletedIsFalse(request.storeId());
         Menu findMenu = menuFinder.findById(request.id());
-        validateMenuExistInStore(storeFinder.findByIdWhereDeletedIsFalse(request.storeId()), findMenu);
+        validateMenuExistInStore(findStore, findMenu);
         menuDeleter.deleteMenu(findMenu);
+        updateLowestPriceInStore(findStore);
     }
 
     @Transactional
     public void modifyMenu(final MenuPatchCommand request) {
+        Store findStore = storeFinder.findByIdWhereDeletedIsFalse(request.storeId());
         Menu findMenu  = menuFinder.findById(request.id());
-        validateMenuExistInStore(storeFinder.findByIdWhereDeletedIsFalse(request.storeId()), findMenu);
+        validateMenuExistInStore(findStore, findMenu);
         findMenu.update(request.name(), request.price());
+        updateLowestPriceInStore(findStore);
     }
 
     @Transactional
@@ -42,7 +48,22 @@ public class MenuCommandService {
         validateConflictMenu(findStore, request.name());
         Menu menu = Menu.create(findStore, request.name(), request.price());
         menuUpdater.save(menu);
+        updateLowestPriceInStore(findStore, menu);
         return MenuPostResponse.of(menu);
+    }
+
+    private void updateLowestPriceInStore(final Store store) {
+        int lowestPrice = menuFinder.findByStore(store).stream()
+                .mapToInt(Menu::getPrice)
+                .min()
+                .orElse(0);
+        store.updateLowestPrice(lowestPrice);
+    }
+
+    private void updateLowestPriceInStore(final Store store, final Menu menu) {
+        if (store.getLowestPrice() > menu.getPrice()) {
+            store.updateLowestPrice(menu.getPrice());
+        }
     }
 
     private void validateMenuExistInStore(final Store store, final Menu menu) {

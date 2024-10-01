@@ -11,4 +11,5 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
     List<Menu> findAllByStore(Store store);
     Optional<Menu> findByStoreAndId(Store store, Long id);
     Optional<Menu> findByStoreAndName(Store store, String name);
+    List<Menu> findByStoreId(long storeId);
 }

@@ -83,4 +83,8 @@ public class Store extends BaseTimeEntity {
     public String getImageUrlOrElseNull() {
         return images.isEmpty() ? null : images.get(0).getImageUrl();
     }
+
+    public void updateLowestPrice(int lowestPrice) {
+        this.lowestPrice = lowestPrice;
+    }
 }

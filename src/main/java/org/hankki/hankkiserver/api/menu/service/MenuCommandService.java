@@ -25,30 +25,22 @@ public class MenuCommandService {
 
     @Transactional
     public void deleteMenu(final MenuDeleteCommand command) {
-        Menu findMenu = menuFinder.findById(command.id());
-        if (!validateMenuExistInStore(command.storeId(), findMenu)) {
-            throw new BadRequestException(MenuErrorCode.MENU_NOT_FOUND);
-        }
-        menuDeleter.deleteMenu(findMenu);
+        Menu menu = getValidatedMenu(command.storeId(), command.id());
+        menuDeleter.deleteMenu(menu);
         updateLowestPriceInStore(command.storeId());
     }
 
     @Transactional
     public void modifyMenu(final MenuPatchCommand command) {
-        Menu findMenu  = menuFinder.findById(command.id());
-        if (!validateMenuExistInStore(command.storeId(), findMenu)) {
-            throw new BadRequestException(MenuErrorCode.MENU_NOT_FOUND);
-        }
-        findMenu.update(command.name(), command.price());
+        Menu menu = getValidatedMenu(command.storeId(), command.id());
+        menu.update(command.name(), command.price());
         updateLowestPriceInStore(command.storeId());
     }
 
     @Transactional
     public MenuPostResponse createMenu(final MenuPostCommand command) {
         Store findStore = storeFinder.findByIdWhereDeletedIsFalse(command.storeId());
-        if (validateConflictMenu(findStore, command.name())) {
-            throw new ConflictException(MenuErrorCode.ALREADY_EXISTED_MENU);
-        }
+        validateMenuNotConflict(findStore, command.name());
         Menu menu = Menu.create(findStore, command.name(), command.price());
         menuUpdater.save(menu);
         updateLowestPriceInStore(findStore, menu);
@@ -70,11 +62,21 @@ public class MenuCommandService {
         }
     }
 
+    private Menu getValidatedMenu(long storeId, long menuId) {
+        Menu menu = menuFinder.findById(menuId);
+        if (!validateMenuExistInStore(storeId, menu)) {
+            throw new BadRequestException(MenuErrorCode.MENU_NOT_FOUND);
+        }
+        return menu;
+    }
+
     private boolean validateMenuExistInStore(final long storeId, final Menu menu) {
         return storeId == menu.getStore().getId();
     }
 
-    private boolean validateConflictMenu(final Store store, final String name) {
-        return menuFinder.existsByStoreAndName(store, name);
+    private void validateMenuNotConflict(Store store, String menuName) {
+        if (menuFinder.existsByStoreAndName(store, menuName)) {
+            throw new ConflictException(MenuErrorCode.ALREADY_EXISTED_MENU);
+        }
     }
 }

@@ -42,4 +42,9 @@ public class Menu extends BaseTimeEntity {
                 .price(price)
                 .build();
     }
+
+    public void update(final String name, final int price) {
+        this.name = name;
+        this.price = price;
+    }
 }

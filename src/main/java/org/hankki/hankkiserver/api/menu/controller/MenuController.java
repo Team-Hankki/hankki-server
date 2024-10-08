@@ -8,7 +8,7 @@ import org.hankki.hankkiserver.api.menu.service.command.MenuDeleteCommand;
 import org.hankki.hankkiserver.api.menu.service.command.MenuPatchCommand;
 import org.hankki.hankkiserver.api.menu.service.command.MenuPostCommand;
 import org.hankki.hankkiserver.api.menu.service.command.MenusPostCommand;
-import org.hankki.hankkiserver.api.menu.service.response.MenuListPostResponse;
+import org.hankki.hankkiserver.api.menu.service.response.MenusPostResponse;
 import org.hankki.hankkiserver.api.store.controller.request.MenuPostRequest;
 import org.hankki.hankkiserver.common.code.CommonSuccessCode;
 import org.springframework.web.bind.annotation.*;
@@ -35,11 +35,11 @@ public class MenuController {
         return HankkiResponse.success(CommonSuccessCode.OK);
     }
 
-    @PostMapping("/{storeId}/menus")
-    public HankkiResponse<MenuListPostResponse> createMenu(@PathVariable final Long storeId, @Valid @RequestBody final List<MenuPostRequest> requests) {
-        List<MenuPostCommand> commands = requests.stream()
-                .map(request -> MenuPostCommand.of(request.name(), request.price()))
+    @PostMapping("{storeId}/menus/bulk")
+    public HankkiResponse<MenusPostResponse> createMenu(@PathVariable final Long storeId, @Valid @RequestBody final List<MenuPostRequest> request) {
+        List<MenuPostCommand> command = request.stream()
+                .map(r -> MenuPostCommand.of(r.name(), r.price()))
                 .toList();
-        return HankkiResponse.success(CommonSuccessCode.CREATED, menuCommandService.createMenus(MenusPostCommand.of(storeId, commands)));
+        return HankkiResponse.success(CommonSuccessCode.CREATED, menuCommandService.createMenus(MenusPostCommand.of(storeId, command)));
     }
 }

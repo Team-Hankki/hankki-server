@@ -27,4 +27,8 @@ public class MenuFinder {
     protected boolean existsByStoreAndName(final Store store, final String name) {
         return menuRepository.existsByStoreAndName(store, name);
     }
+
+    protected int findLowestPriceByStore(Store store) {
+        return menuRepository.findLowestPriceByStore(store);
+    }
 }

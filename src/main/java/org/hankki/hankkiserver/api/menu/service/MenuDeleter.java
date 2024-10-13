@@ -5,19 +5,13 @@ import org.hankki.hankkiserver.domain.menu.model.Menu;
 import org.hankki.hankkiserver.domain.menu.repository.MenuRepository;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
 @RequiredArgsConstructor
-public class MenuUpdater {
+public class MenuDeleter {
 
     private final MenuRepository menuRepository;
 
-    public void saveAll(final List<Menu> menus) {
-        menuRepository.saveAll(menus);
-    }
-
-    protected void save(final Menu menu) {
-        menuRepository.save(menu);
+    protected void deleteMenu(final Menu menu) {
+        menuRepository.delete(menu);
     }
 }

@@ -10,10 +10,7 @@ import org.hankki.hankkiserver.api.store.parameter.SortOption;
 import org.hankki.hankkiserver.api.store.service.HeartCommandService;
 import org.hankki.hankkiserver.api.store.service.StoreCommandService;
 import org.hankki.hankkiserver.api.store.service.StoreQueryService;
-import org.hankki.hankkiserver.api.store.service.command.HeartDeleteCommand;
-import org.hankki.hankkiserver.api.store.service.command.HeartPostCommand;
-import org.hankki.hankkiserver.api.store.service.command.StorePostCommand;
-import org.hankki.hankkiserver.api.store.service.command.StoreValidationCommand;
+import org.hankki.hankkiserver.api.store.service.command.*;
 import org.hankki.hankkiserver.api.store.service.response.*;
 import org.hankki.hankkiserver.auth.UserId;
 import org.hankki.hankkiserver.common.code.CommonSuccessCode;
@@ -94,8 +91,8 @@ public class StoreController {
     }
 
     @DeleteMapping("/stores/{id}")
-    public HankkiResponse<Void> deleteStore(@PathVariable final Long id) {
-        storeCommandService.deleteStore(id);
+    public HankkiResponse<Void> deleteStore(@PathVariable final Long id, @UserId final Long userId) {
+        storeCommandService.deleteStore(StoreDeleteCommand.of(id, userId));
         return HankkiResponse.success(CommonSuccessCode.NO_CONTENT);
     }
 }

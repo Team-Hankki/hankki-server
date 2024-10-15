@@ -2,6 +2,8 @@ package org.hankki.hankkiserver.api.store.service;
 
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.auth.service.UserFinder;
+import org.hankki.hankkiserver.api.store.service.command.StoreDeleteCommand;
+import org.hankki.hankkiserver.event.store.CreateStoreEvent;
 import org.hankki.hankkiserver.api.menu.service.MenuUpdater;
 import org.hankki.hankkiserver.api.report.service.ReportUpdater;
 import org.hankki.hankkiserver.api.store.service.command.StorePostCommand;
@@ -18,6 +20,8 @@ import org.hankki.hankkiserver.domain.store.model.Store;
 import org.hankki.hankkiserver.domain.store.model.StoreImage;
 import org.hankki.hankkiserver.domain.university.model.University;
 import org.hankki.hankkiserver.domain.universitystore.model.UniversityStore;
+import org.hankki.hankkiserver.event.EventPublisher;
+import org.hankki.hankkiserver.event.store.DeleteStoreEvent;
 import org.hankki.hankkiserver.external.s3.S3Service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,20 +44,20 @@ public class StoreCommandService {
     private final ReportUpdater reportUpdater;
     private final UserFinder userFinder;
     private final StoreFinder storeFinder;
+    private final EventPublisher publisher;
 
     @Transactional(rollbackFor = Exception.class)
     public StorePostResponse createStore(final StorePostCommand command) {
         if (storeExists(command.latitude(), command.longitude(), command.name(), false)) {
             throw new BadRequestException(StoreErrorCode.BAD_STORE_INFO);
         }
-
         Store store = storeUpdater.save(command.toEntity());
         saveImages(command, store);
         menuUpdater.saveAll(getMenus(command, store));
-
         University university = universityFinder.findById(command.universityId());
         universityStoreUpdater.save(UniversityStore.create(store, university));
         reportUpdater.save(Report.create(userFinder.getUser(command.userId()), store, university));
+        publisher.publish(CreateStoreEvent.of(store.getName(), university.getName()));
 
         return StorePostResponse.of(store);
     }
@@ -84,7 +88,9 @@ public class StoreCommandService {
     }
 
     @Transactional
-    public void deleteStore(final Long id) {
-      storeFinder.findByIdWhereDeletedIsFalse(id).softDelete();
+    public void deleteStore(final StoreDeleteCommand command) {
+        Store findStore = storeFinder.findByIdWhereDeletedIsFalse(command.storeId());
+        findStore.softDelete();
+        publisher.publish(DeleteStoreEvent.of(findStore.getName(), command.userId()));
     }
 }

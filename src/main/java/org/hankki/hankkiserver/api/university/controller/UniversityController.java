@@ -2,7 +2,7 @@ package org.hankki.hankkiserver.api.university.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.dto.HankkiResponse;
-import org.hankki.hankkiserver.api.university.request.UniversitiesPostRequest;
+import org.hankki.hankkiserver.api.university.controller.request.UniversitiesPostRequest;
 import org.hankki.hankkiserver.api.university.service.UniversityCommandService;
 import org.hankki.hankkiserver.api.university.service.UniversityQueryService;
 import org.hankki.hankkiserver.api.university.service.command.UniversitiesPostCommand;

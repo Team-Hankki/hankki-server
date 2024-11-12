@@ -47,9 +47,9 @@ public class MenuController {
         return HankkiResponse.success(CommonSuccessCode.OK);
     }
 
-    @PostMapping("{storeId}/menus/bulk")
-    public HankkiResponse<MenusPostResponse> createMenus(@PathVariable @Min(value = 1L) final long storeId,
-                                                         @Valid @RequestBody final List<MenuPostRequest> request) {
+    @PostMapping("/{storeId}/menus/bulk")
+    public HankkiResponse<MenusPostResponse> createMenu(@PathVariable @Min(value = 1L) final long storeId,
+                                                        @Valid @RequestBody final List<MenuPostRequest> request) {
         List<MenuPostCommand> command = request.stream()
                 .map(r -> MenuPostCommand.of(r.name(), r.price()))
                 .toList();
@@ -57,7 +57,7 @@ public class MenuController {
                 menuCommandService.createMenus(MenusPostCommand.of(storeId, command)));
     }
 
-    @GetMapping("{storeId}/menus")
+    @GetMapping("/{storeId}/menus")
     public HankkiResponse<MenusGetResponse> getMenus(@PathVariable final long storeId) {
         return HankkiResponse.success(CommonSuccessCode.OK, menuCommandService.getMenus(storeId));
     }

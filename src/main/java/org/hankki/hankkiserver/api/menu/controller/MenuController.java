@@ -58,7 +58,7 @@ public class MenuController {
     }
 
     @GetMapping("/{storeId}/menus")
-    public HankkiResponse<MenusGetResponse> getMenus(@PathVariable final long storeId) {
+    public HankkiResponse<MenusGetResponse> getMenus(@PathVariable @Min(value = 1L) final long storeId) {
         return HankkiResponse.success(CommonSuccessCode.OK, menuCommandService.getMenus(storeId));
     }
 }

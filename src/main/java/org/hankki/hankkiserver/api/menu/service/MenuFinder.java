@@ -28,7 +28,11 @@ public class MenuFinder {
         return menuRepository.existsByStoreAndName(store, name);
     }
 
-    protected int findLowestPriceByStore(Store store) {
+    protected int findLowestPriceByStore(final Store store) {
         return menuRepository.findLowestPriceByStore(store);
+    }
+
+    protected boolean existsByStoreId(final Long storeId) {
+        return menuRepository.existsByStoreId(storeId);
     }
 }

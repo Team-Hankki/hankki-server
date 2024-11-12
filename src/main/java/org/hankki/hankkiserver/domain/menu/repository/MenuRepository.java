@@ -15,4 +15,6 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
 
     @Query("SELECT MIN(m.price) FROM Menu m WHERE m.store = :store")
     int findLowestPriceByStore(Store store);
+
+    boolean existsByStoreId(long storeId);
 }

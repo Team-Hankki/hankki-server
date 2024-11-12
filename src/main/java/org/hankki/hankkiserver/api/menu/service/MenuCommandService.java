@@ -33,7 +33,7 @@ public class MenuCommandService {
         Menu menu = menuFinder.findByStoreIdAndId(findStore.getId(), command.id());
         menuDeleter.deleteMenu(menu);
         updateLowestPriceInStore(storeFinder.findByIdWhereDeletedIsFalse(command.storeId()));
-        noMenuInStore(findStore, command.userId());
+        checkNoMenuInStore(findStore, command.userId());
     }
 
     @Transactional
@@ -70,7 +70,7 @@ public class MenuCommandService {
         return menuFinder.existsByStoreAndName(store, menuName);
     }
 
-    private void noMenuInStore(final Store store, final long userId) {
+    private void checkNoMenuInStore(final Store store, final long userId) {
         if (!menuFinder.existsByStoreId(store.getId())) {
             storeUpdater.deleteStore(store.getId());
             publisher.publish(DeleteStoreEvent.of(store.getName(), userId));

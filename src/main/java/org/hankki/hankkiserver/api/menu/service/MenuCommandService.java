@@ -54,7 +54,7 @@ public class MenuCommandService {
     }
 
     @Transactional(readOnly = true)
-    public MenusGetResponse getMenus(final Long storeId) {
+    public MenusGetResponse getMenus(final long storeId) {
         Store findStore = storeFinder.findByIdWhereDeletedIsFalse(storeId);
         List<Menu> findmenus = menuFinder.findAllByStore(findStore);
         List<MenuGetResponse> menus = findmenus.stream()

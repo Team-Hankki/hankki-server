@@ -61,11 +61,11 @@ public class MenuCommandService {
         findStore.updateLowestPrice(menuFinder.findLowestPriceByStore(findStore));
     }
 
-    private boolean validateMenuConflict(Store store, String menuName) {
+    private boolean validateMenuConflict(final Store store, final String menuName) {
         return menuFinder.existsByStoreAndName(store, menuName);
     }
 
-    private boolean emptyMenuInStore(final Long storeId) {
+    private boolean emptyMenuInStore(final long storeId) {
         return !menuFinder.existsByStoreId(storeId);
     }
 }

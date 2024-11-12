@@ -75,13 +75,9 @@ public class MenuCommandService {
     private void checkNoMenuInStore(final Store store, final long userId, final Menu menu) {
         if (!menuFinder.existsByStoreId(store.getId())) {
             storeUpdater.deleteStore(store.getId());
-            DeletedMenu deletedMenu = convertToDeletedMenu(menu, store.getId());
+            DeletedMenu deletedMenu = DeletedMenu.create(menu.getName(), menu.getPrice(), store.getId());
             deletedMenuUpdater.save(deletedMenu);
             publisher.publish(DeleteStoreEvent.of(store.getName(), userId));
         }
-    }
-
-    private DeletedMenu convertToDeletedMenu(final Menu menu, final long storeId) {
-        return DeletedMenu.create(menu.getName(), menu.getPrice(), storeId);
     }
 }

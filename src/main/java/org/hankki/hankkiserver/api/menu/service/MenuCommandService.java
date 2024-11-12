@@ -1,5 +1,6 @@
 package org.hankki.hankkiserver.api.menu.service;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.menu.service.command.MenuDeleteCommand;
 import org.hankki.hankkiserver.api.menu.service.command.MenuPatchCommand;
@@ -10,8 +11,6 @@ import org.hankki.hankkiserver.domain.menu.model.Menu;
 import org.hankki.hankkiserver.domain.store.model.Store;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +25,10 @@ public class MenuCommandService {
     public void deleteMenu(final MenuDeleteCommand command) {
         Menu menu = menuFinder.findByStoreIdAndId(command.storeId(), command.id());
         menuDeleter.deleteMenu(menu);
+        if (emptyMenuInStore(command.storeId())) {
+            deleteStore(command.storeId());
+            return;
+        }
         updateLowestPriceInStore(storeFinder.findByIdWhereDeletedIsFalse(command.storeId()));
     }
 
@@ -48,11 +51,21 @@ public class MenuCommandService {
         return MenusPostResponse.of(menus);
     }
 
+    private void deleteStore(final long id) {
+        Store store = storeFinder.findByIdWhereDeletedIsFalse(id);
+        store.updateLowestPrice(0);
+        store.softDelete();
+    }
+
     private void updateLowestPriceInStore(final Store findStore) {
         findStore.updateLowestPrice(menuFinder.findLowestPriceByStore(findStore));
     }
 
-    private boolean validateMenuConflict(Store store, String menuName) {
+    private boolean validateMenuConflict(final Store store, final String menuName) {
         return menuFinder.existsByStoreAndName(store, menuName);
+    }
+
+    private boolean emptyMenuInStore(final long storeId) {
+        return !menuFinder.existsByStoreId(storeId);
     }
 }

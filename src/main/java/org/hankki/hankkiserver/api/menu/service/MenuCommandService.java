@@ -9,6 +9,7 @@ import org.hankki.hankkiserver.api.menu.service.response.MenusGetResponse;
 import org.hankki.hankkiserver.api.menu.service.response.MenusPostResponse;
 import org.hankki.hankkiserver.api.store.service.StoreFinder;
 import org.hankki.hankkiserver.api.store.service.StoreUpdater;
+import org.hankki.hankkiserver.domain.menu.model.DeletedMenu;
 import org.hankki.hankkiserver.domain.menu.model.Menu;
 import org.hankki.hankkiserver.domain.store.model.Store;
 import org.hankki.hankkiserver.event.EventPublisher;
@@ -25,6 +26,7 @@ public class MenuCommandService {
     private final MenuUpdater menuUpdater;
     private final StoreFinder storeFinder;
     private final StoreUpdater storeUpdater;
+    private final DeletedMenuUpdater deletedMenuUpdater;
     private final EventPublisher publisher;
 
     @Transactional
@@ -33,7 +35,7 @@ public class MenuCommandService {
         Menu menu = menuFinder.findByStoreIdAndId(findStore.getId(), command.id());
         menuDeleter.deleteMenu(menu);
         updateLowestPriceInStore(storeFinder.findByIdWhereDeletedIsFalse(command.storeId()));
-        checkNoMenuInStore(findStore, command.userId());
+        checkNoMenuInStore(findStore, command.userId(), menu);
     }
 
     @Transactional
@@ -70,10 +72,16 @@ public class MenuCommandService {
         return menuFinder.existsByStoreAndName(store, menuName);
     }
 
-    private void checkNoMenuInStore(final Store store, final long userId) {
+    private void checkNoMenuInStore(final Store store, final long userId, final Menu menu) {
         if (!menuFinder.existsByStoreId(store.getId())) {
             storeUpdater.deleteStore(store.getId());
+            DeletedMenu deletedMenu = convertToDeletedMenu(menu, store.getId());
+            deletedMenuUpdater.save(deletedMenu);
             publisher.publish(DeleteStoreEvent.of(store.getName(), userId));
         }
+    }
+
+    private DeletedMenu convertToDeletedMenu(final Menu menu, final long storeId) {
+        return DeletedMenu.create(menu.getName(), menu.getPrice(), storeId);
     }
 }

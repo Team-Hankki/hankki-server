@@ -46,8 +46,8 @@ public class MenuController {
     }
 
     @PostMapping("{storeId}/menus/bulk")
-    public HankkiResponse<MenusPostResponse> createMenu(@PathVariable @Min(value = 1L) final long storeId,
-                                                        @Valid @RequestBody final List<MenuPostRequest> request) {
+    public HankkiResponse<MenusPostResponse> createMenus(@PathVariable @Min(value = 1L) final long storeId,
+                                                         @Valid @RequestBody final List<MenuPostRequest> request) {
         List<MenuPostCommand> command = request.stream()
                 .map(r -> MenuPostCommand.of(r.name(), r.price()))
                 .toList();

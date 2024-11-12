@@ -1,11 +1,15 @@
 package org.hankki.hankkiserver.api.advice;
 
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.hankki.hankkiserver.api.dto.HankkiResponse;
 import org.hankki.hankkiserver.common.code.BusinessErrorCode;
 import org.hankki.hankkiserver.common.code.StoreErrorCode;
 import org.hankki.hankkiserver.common.code.StoreImageErrorCode;
-import org.hankki.hankkiserver.common.exception.*;
+import org.hankki.hankkiserver.common.exception.BadRequestException;
+import org.hankki.hankkiserver.common.exception.ConflictException;
+import org.hankki.hankkiserver.common.exception.NotFoundException;
+import org.hankki.hankkiserver.common.exception.UnauthorizedException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -97,5 +101,11 @@ public class GlobalExceptionHandler {
     public HankkiResponse<Void> handleException(Exception e) {
         log.error("[500] INTERNAL SERVER ERROR({}) : {}",e.getClass() , e.getMessage());
         return HankkiResponse.fail(BusinessErrorCode.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public HankkiResponse<Void> handleConstraintViolationException(ConstraintViolationException e) {
+        log.warn("handleConstraintViolationException() in GlobalExceptionHandler throw ConstraintViolationException : {}", e.getMessage());
+        return HankkiResponse.fail(BusinessErrorCode.BAD_REQUEST);
     }
 }

@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.menu.service.command.MenuDeleteCommand;
 import org.hankki.hankkiserver.api.menu.service.command.MenuPatchCommand;
 import org.hankki.hankkiserver.api.menu.service.command.MenusPostCommand;
+import org.hankki.hankkiserver.api.menu.service.response.MenuGetResponse;
+import org.hankki.hankkiserver.api.menu.service.response.MenusGetResponse;
 import org.hankki.hankkiserver.api.menu.service.response.MenusPostResponse;
 import org.hankki.hankkiserver.api.store.service.StoreFinder;
 import org.hankki.hankkiserver.domain.menu.model.Menu;
@@ -49,6 +51,16 @@ public class MenuCommandService {
         menuUpdater.saveAll(menus);
         updateLowestPriceInStore(findStore);
         return MenusPostResponse.of(menus);
+    }
+
+    @Transactional(readOnly = true)
+    public MenusGetResponse getMenus(final Long storeId) {
+        Store findStore = storeFinder.findByIdWhereDeletedIsFalse(storeId);
+        List<Menu> findmenus = menuFinder.findAllByStore(findStore);
+        List<MenuGetResponse> menus = findmenus.stream()
+                .map(MenuGetResponse::of)
+                .toList();
+        return MenusGetResponse.of(menus);
     }
 
     private void deleteStore(final long id) {

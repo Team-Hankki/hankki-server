@@ -13,6 +13,7 @@ import org.hankki.hankkiserver.api.menu.service.command.MenusPostCommand;
 import org.hankki.hankkiserver.api.menu.service.response.MenusGetResponse;
 import org.hankki.hankkiserver.api.menu.service.response.MenusPostResponse;
 import org.hankki.hankkiserver.api.store.controller.request.MenuPostRequest;
+import org.hankki.hankkiserver.auth.UserId;
 import org.hankki.hankkiserver.common.code.CommonSuccessCode;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,8 +35,9 @@ public class MenuController {
 
     @DeleteMapping("/{storeId}/menus/{id}")
     public HankkiResponse<Void> deleteMenu(@PathVariable("storeId") @Min(value = 1L) final long storeId,
-                                           @PathVariable("id") @Min(value = 1L) final long id) {
-        menuCommandService.deleteMenu(MenuDeleteCommand.of(storeId, id));
+                                           @PathVariable("id") @Min(value = 1L) final long id,
+                                           @UserId final Long userId) {
+        menuCommandService.deleteMenu(MenuDeleteCommand.of(storeId, id, userId));
         return HankkiResponse.success(CommonSuccessCode.NO_CONTENT);
     }
 

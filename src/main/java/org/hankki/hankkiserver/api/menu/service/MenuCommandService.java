@@ -34,8 +34,9 @@ public class MenuCommandService {
         Store findStore = storeFinder.findByIdWhereDeletedIsFalse(command.storeId());
         Menu menu = menuFinder.findByStoreIdAndId(findStore.getId(), command.id());
         menuDeleter.deleteMenu(menu);
+        saveToDeletedMenu(menu, findStore.getId());
         updateLowestPriceInStore(storeFinder.findByIdWhereDeletedIsFalse(command.storeId()));
-        checkNoMenuInStore(findStore, command.userId(), menu);
+        checkNoMenuInStore(findStore, command.userId());
     }
 
     @Transactional
@@ -72,12 +73,15 @@ public class MenuCommandService {
         return menuFinder.existsByStoreAndName(store, menuName);
     }
 
-    private void checkNoMenuInStore(final Store store, final long userId, final Menu menu) {
+    private void checkNoMenuInStore(final Store store, final long userId) {
         if (!menuFinder.existsByStoreId(store.getId())) {
             storeUpdater.deleteStore(store.getId());
-            DeletedMenu deletedMenu = DeletedMenu.create(menu.getName(), menu.getPrice(), store.getId());
-            deletedMenuUpdater.save(deletedMenu);
             publisher.publish(DeleteStoreEvent.of(store.getName(), userId));
         }
+    }
+
+    private void saveToDeletedMenu(final Menu menu, final long storedId) {
+        DeletedMenu deletedMenu = DeletedMenu.create(menu.getName(), menu.getPrice(), storedId);
+        deletedMenuUpdater.save(deletedMenu);
     }
 }

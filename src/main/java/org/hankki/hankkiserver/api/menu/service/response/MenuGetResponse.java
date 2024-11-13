@@ -3,7 +3,7 @@ package org.hankki.hankkiserver.api.menu.service.response;
 import org.hankki.hankkiserver.domain.menu.model.Menu;
 
 public record MenuGetResponse (
-        long menuId,
+        long id,
         int price,
         String name
 ){

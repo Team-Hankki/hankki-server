@@ -5,10 +5,15 @@ import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.menu.service.command.MenuDeleteCommand;
 import org.hankki.hankkiserver.api.menu.service.command.MenuPatchCommand;
 import org.hankki.hankkiserver.api.menu.service.command.MenusPostCommand;
+import org.hankki.hankkiserver.api.menu.service.response.MenusGetResponse;
 import org.hankki.hankkiserver.api.menu.service.response.MenusPostResponse;
 import org.hankki.hankkiserver.api.store.service.StoreFinder;
+import org.hankki.hankkiserver.api.store.service.StoreUpdater;
+import org.hankki.hankkiserver.domain.menu.model.DeletedMenu;
 import org.hankki.hankkiserver.domain.menu.model.Menu;
 import org.hankki.hankkiserver.domain.store.model.Store;
+import org.hankki.hankkiserver.event.EventPublisher;
+import org.hankki.hankkiserver.event.store.DeleteStoreEvent;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,16 +25,18 @@ public class MenuCommandService {
     private final MenuFinder menuFinder;
     private final MenuUpdater menuUpdater;
     private final StoreFinder storeFinder;
+    private final StoreUpdater storeUpdater;
+    private final DeletedMenuUpdater deletedMenuUpdater;
+    private final EventPublisher publisher;
 
     @Transactional
     public void deleteMenu(final MenuDeleteCommand command) {
-        Menu menu = menuFinder.findByStoreIdAndId(command.storeId(), command.id());
+        Store findStore = storeFinder.findByIdWhereDeletedIsFalse(command.storeId());
+        Menu menu = menuFinder.findByStoreIdAndId(findStore.getId(), command.id());
         menuDeleter.deleteMenu(menu);
-        if (emptyMenuInStore(command.storeId())) {
-            deleteStore(command.storeId());
-            return;
-        }
+        saveToDeletedMenu(menu, findStore.getId());
         updateLowestPriceInStore(storeFinder.findByIdWhereDeletedIsFalse(command.storeId()));
+        checkNoMenuInStore(findStore, command.userId());
     }
 
     @Transactional
@@ -51,10 +58,11 @@ public class MenuCommandService {
         return MenusPostResponse.of(menus);
     }
 
-    private void deleteStore(final long id) {
-        Store store = storeFinder.findByIdWhereDeletedIsFalse(id);
-        store.updateLowestPrice(0);
-        store.softDelete();
+    @Transactional(readOnly = true)
+    public MenusGetResponse getMenus(final long storeId) {
+        Store findStore = storeFinder.findByIdWhereDeletedIsFalse(storeId);
+        List<Menu> findMenus = menuFinder.findAllByStore(findStore);
+        return MenusGetResponse.of(findMenus);
     }
 
     private void updateLowestPriceInStore(final Store findStore) {
@@ -65,7 +73,15 @@ public class MenuCommandService {
         return menuFinder.existsByStoreAndName(store, menuName);
     }
 
-    private boolean emptyMenuInStore(final long storeId) {
-        return !menuFinder.existsByStoreId(storeId);
+    private void checkNoMenuInStore(final Store store, final long userId) {
+        if (!menuFinder.existsByStoreId(store.getId())) {
+            storeUpdater.deleteStore(store.getId());
+            publisher.publish(DeleteStoreEvent.of(store.getName(), userId));
+        }
+    }
+
+    private void saveToDeletedMenu(final Menu menu, final long storedId) {
+        DeletedMenu deletedMenu = DeletedMenu.create(menu.getName(), menu.getPrice(), storedId);
+        deletedMenuUpdater.save(deletedMenu);
     }
 }

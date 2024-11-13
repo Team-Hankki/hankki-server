@@ -21,7 +21,8 @@ public class MenuFinder {
     }
 
     protected Menu findByStoreIdAndId(final long storeId, final long id) {
-        return menuRepository.findByStoreIdAndId(storeId,id).orElseThrow(() -> new NotFoundException(MenuErrorCode.MENU_NOT_FOUND));
+        return menuRepository.findByStoreIdAndId(storeId,id)
+                .orElseThrow(() -> new NotFoundException(MenuErrorCode.MENU_NOT_FOUND));
     }
 
     protected boolean existsByStoreAndName(final Store store, final String name) {

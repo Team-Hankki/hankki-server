@@ -10,11 +10,14 @@ import org.hankki.hankkiserver.api.menu.service.command.MenuDeleteCommand;
 import org.hankki.hankkiserver.api.menu.service.command.MenuPatchCommand;
 import org.hankki.hankkiserver.api.menu.service.command.MenuPostCommand;
 import org.hankki.hankkiserver.api.menu.service.command.MenusPostCommand;
+import org.hankki.hankkiserver.api.menu.service.response.MenusGetResponse;
 import org.hankki.hankkiserver.api.menu.service.response.MenusPostResponse;
 import org.hankki.hankkiserver.api.store.controller.request.MenuPostRequest;
+import org.hankki.hankkiserver.auth.UserId;
 import org.hankki.hankkiserver.common.code.CommonSuccessCode;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,8 +35,9 @@ public class MenuController {
 
     @DeleteMapping("/{storeId}/menus/{id}")
     public HankkiResponse<Void> deleteMenu(@PathVariable("storeId") @Min(value = 1L) final long storeId,
-                                           @PathVariable("id") @Min(value = 1L) final long id) {
-        menuCommandService.deleteMenu(MenuDeleteCommand.of(storeId, id));
+                                           @PathVariable("id") @Min(value = 1L) final long id,
+                                           @UserId final Long userId) {
+        menuCommandService.deleteMenu(MenuDeleteCommand.of(storeId, id, userId));
         return HankkiResponse.success(CommonSuccessCode.NO_CONTENT);
     }
 
@@ -45,12 +49,18 @@ public class MenuController {
         return HankkiResponse.success(CommonSuccessCode.OK);
     }
 
-    @PostMapping("{storeId}/menus/bulk")
-    public HankkiResponse<MenusPostResponse> createMenus(@PathVariable @Min(value = 1L) final long storeId,
-                                                         @Valid @RequestBody final List<MenuPostRequest> request) {
+    @PostMapping("/{storeId}/menus/bulk")
+    public HankkiResponse<MenusPostResponse> createMenu(@PathVariable @Min(value = 1L) final long storeId,
+                                                        @Valid @RequestBody final List<MenuPostRequest> request) {
         List<MenuPostCommand> command = request.stream()
                 .map(r -> MenuPostCommand.of(r.name(), r.price()))
                 .toList();
-        return HankkiResponse.success(CommonSuccessCode.CREATED, menuCommandService.createMenus(MenusPostCommand.of(storeId, command)));
+        return HankkiResponse.success(CommonSuccessCode.CREATED,
+                menuCommandService.createMenus(MenusPostCommand.of(storeId, command)));
+    }
+
+    @GetMapping("/{storeId}/menus")
+    public HankkiResponse<MenusGetResponse> getMenus(@PathVariable @Min(value = 1L) final long storeId) {
+        return HankkiResponse.success(CommonSuccessCode.OK, menuCommandService.getMenus(storeId));
     }
 }

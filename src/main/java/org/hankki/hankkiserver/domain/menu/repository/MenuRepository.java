@@ -13,7 +13,7 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
     Optional<Menu> findByStoreIdAndId(long storeId, long id);
     boolean existsByStoreAndName(Store store, String name);
 
-    @Query("SELECT MIN(m.price) FROM Menu m WHERE m.store = :store")
+    @Query("SELECT COALESCE(MIN(m.price), 0) FROM Menu m WHERE m.store = :store")
     int findLowestPriceByStore(Store store);
 
     boolean existsByStoreId(long storeId);

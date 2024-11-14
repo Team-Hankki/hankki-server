@@ -5,7 +5,7 @@ import org.hankki.hankkiserver.domain.menu.model.Menu;
 import java.util.List;
 
 public record MenusPostResponse(
-        List<MenuPostResponse> menuList
+        List<MenuPostResponse> menus
 ) {
     public static MenusPostResponse of(List<Menu> menus) {
         List<MenuPostResponse> menuResponses = menus.stream()

@@ -20,15 +20,20 @@ public class MenuFinder {
         return menuRepository.findAllByStore(store);
     }
 
-    protected Menu findByStoreIdAndId(final Long storeId, final Long id) {
-        return menuRepository.findByStoreIdAndId(storeId,id).orElseThrow(() -> new NotFoundException(MenuErrorCode.MENU_NOT_FOUND));
+    protected Menu findByStoreIdAndId(final long storeId, final long id) {
+        return menuRepository.findByStoreIdAndId(storeId,id)
+                .orElseThrow(() -> new NotFoundException(MenuErrorCode.MENU_NOT_FOUND));
     }
 
     protected boolean existsByStoreAndName(final Store store, final String name) {
         return menuRepository.existsByStoreAndName(store, name);
     }
 
-    protected int findLowestPriceByStore(Store store) {
+    protected int findLowestPriceByStore(final Store store) {
         return menuRepository.findLowestPriceByStore(store);
+    }
+
+    protected boolean existsByStoreId(final long storeId) {
+        return menuRepository.existsByStoreId(storeId);
     }
 }

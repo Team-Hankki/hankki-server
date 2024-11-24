@@ -157,3 +157,5 @@ application-prod.yml
 
 # Qclass
 /src/main/generated
+
+.env

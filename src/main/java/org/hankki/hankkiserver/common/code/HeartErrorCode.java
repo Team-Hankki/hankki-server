@@ -9,7 +9,8 @@ import org.springframework.http.HttpStatus;
 public enum HeartErrorCode implements ErrorCode {
 
     ALREADY_EXISTED_HEART(HttpStatus.CONFLICT, "이미 좋아요 한 가게입니다."),
-    ALREADY_NO_HEART(HttpStatus.CONFLICT, "이미 좋아요를 취소한 가게입니다.");
+    ALREADY_NO_HEART(HttpStatus.CONFLICT, "이미 좋아요를 취소한 가게입니다."),
+    HEART_COUNT_CONCURRENCY_ERROR(HttpStatus.CONFLICT, "좋아요 처리 중 충돌이 발생했습니다. 잠시 후 다시 시도해주세요.");
 
     private final HttpStatus httpStatus;
     private final String message;

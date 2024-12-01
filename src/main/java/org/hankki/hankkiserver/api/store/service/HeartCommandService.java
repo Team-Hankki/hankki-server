@@ -2,8 +2,7 @@ package org.hankki.hankkiserver.api.store.service;
 
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.auth.service.UserFinder;
-import org.hankki.hankkiserver.api.store.service.command.HeartDeleteCommand;
-import org.hankki.hankkiserver.api.store.service.command.HeartPostCommand;
+import org.hankki.hankkiserver.api.store.service.command.HeartCommand;
 import org.hankki.hankkiserver.api.store.service.response.HeartCreateResponse;
 import org.hankki.hankkiserver.api.store.service.response.HeartDeleteResponse;
 import org.hankki.hankkiserver.common.code.HeartErrorCode;
@@ -33,19 +32,22 @@ public class HeartCommandService {
             retryFor = ObjectOptimisticLockingFailureException.class,
             backoff = @Backoff(delay = 100))
     @Transactional
-    public HeartCreateResponse createHeart(final HeartPostCommand heartPostCommand) {
-        User user = userFinder.getUserReference(heartPostCommand.userId());
-        Store store = storeFinder.findByIdWhereDeletedIsFalse(heartPostCommand.storeId());
+    public HeartCreateResponse createHeart(final HeartCommand heartCommand) {
+        User user = userFinder.getUserReference(heartCommand.userId());
+        Store store = storeFinder.findByIdWhereDeletedIsFalse(heartCommand.storeId());
         validateStoreHeartCreation(user, store);
         saveStoreHeart(user, store);
         store.increaseHeartCount();
         return HeartCreateResponse.of(store);
     }
 
+    @Retryable(
+            retryFor = ObjectOptimisticLockingFailureException.class,
+            backoff = @Backoff(delay = 100))
     @Transactional
-    public HeartDeleteResponse deleteHeart(final HeartDeleteCommand heartDeleteCommand) {
-        User user = userFinder.getUserReference(heartDeleteCommand.userId());
-        Store store = storeFinder.findByIdWhereDeletedIsFalse(heartDeleteCommand.storeId());
+    public HeartDeleteResponse deleteHeart(final HeartCommand heartCommand) {
+        User user = userFinder.getUserReference(heartCommand.userId());
+        Store store = storeFinder.findByIdWhereDeletedIsFalse(heartCommand.storeId());
         validateStoreHeartRemoval(user, store);
         heartDeleter.deleteHeart(user, store);
         store.decreaseHeartCount();
@@ -54,7 +56,7 @@ public class HeartCommandService {
 
     @Recover
     public HeartCreateResponse recoverFromOptimisticLockFailure(final ObjectOptimisticLockingFailureException e,
-                                                                final HeartPostCommand heartPostCommand) {
+                                                                final HeartCommand heartCommand) {
         throw new ConcurrencyException(HeartErrorCode.HEART_COUNT_CONCURRENCY_ERROR);
     }
 

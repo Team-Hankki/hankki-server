@@ -3,8 +3,7 @@ package org.hankki.hankkiserver.api.store.service;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.auth.service.UserFinder;
 import org.hankki.hankkiserver.api.store.service.command.HeartCommand;
-import org.hankki.hankkiserver.api.store.service.response.HeartCreateResponse;
-import org.hankki.hankkiserver.api.store.service.response.HeartDeleteResponse;
+import org.hankki.hankkiserver.api.store.service.response.HeartResponse;
 import org.hankki.hankkiserver.common.code.HeartErrorCode;
 import org.hankki.hankkiserver.common.exception.ConcurrencyException;
 import org.hankki.hankkiserver.common.exception.ConflictException;
@@ -32,31 +31,31 @@ public class HeartCommandService {
             retryFor = ObjectOptimisticLockingFailureException.class,
             backoff = @Backoff(delay = 100))
     @Transactional
-    public HeartCreateResponse createHeart(final HeartCommand heartCommand) {
+    public HeartResponse createHeart(final HeartCommand heartCommand) {
         User user = userFinder.getUserReference(heartCommand.userId());
         Store store = storeFinder.findByIdWhereDeletedIsFalse(heartCommand.storeId());
         validateStoreHeartCreation(user, store);
         saveStoreHeart(user, store);
         store.increaseHeartCount();
-        return HeartCreateResponse.of(store);
+        return HeartResponse.of(store);
     }
 
     @Retryable(
             retryFor = ObjectOptimisticLockingFailureException.class,
             backoff = @Backoff(delay = 100))
     @Transactional
-    public HeartDeleteResponse deleteHeart(final HeartCommand heartCommand) {
+    public HeartResponse deleteHeart(final HeartCommand heartCommand) {
         User user = userFinder.getUserReference(heartCommand.userId());
         Store store = storeFinder.findByIdWhereDeletedIsFalse(heartCommand.storeId());
         validateStoreHeartRemoval(user, store);
         heartDeleter.deleteHeart(user, store);
         store.decreaseHeartCount();
-        return HeartDeleteResponse.of(store);
+        return HeartResponse.of(store);
     }
 
     @Recover
-    public HeartCreateResponse recoverFromOptimisticLockFailure(final ObjectOptimisticLockingFailureException e,
-                                                                final HeartCommand heartCommand) {
+    public HeartResponse recoverFromOptimisticLockFailure(final ObjectOptimisticLockingFailureException e,
+                                                          final HeartCommand heartCommand) {
         throw new ConcurrencyException(HeartErrorCode.HEART_COUNT_CONCURRENCY_ERROR);
     }
 

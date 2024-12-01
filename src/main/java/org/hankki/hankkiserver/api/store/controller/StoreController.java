@@ -15,8 +15,7 @@ import org.hankki.hankkiserver.api.store.service.command.StoreDeleteCommand;
 import org.hankki.hankkiserver.api.store.service.command.StorePostCommand;
 import org.hankki.hankkiserver.api.store.service.command.StoreValidationCommand;
 import org.hankki.hankkiserver.api.store.service.response.CategoriesResponse;
-import org.hankki.hankkiserver.api.store.service.response.HeartCreateResponse;
-import org.hankki.hankkiserver.api.store.service.response.HeartDeleteResponse;
+import org.hankki.hankkiserver.api.store.service.response.HeartResponse;
 import org.hankki.hankkiserver.api.store.service.response.PriceCategoriesResponse;
 import org.hankki.hankkiserver.api.store.service.response.SortOptionsResponse;
 import org.hankki.hankkiserver.api.store.service.response.StoreDuplicateValidationResponse;
@@ -58,8 +57,7 @@ public class StoreController {
                                                           @RequestParam(required = false) final StoreCategory storeCategory,
                                                           @RequestParam(required = false) final PriceCategory priceCategory,
                                                           @RequestParam(required = false) final SortOption sortOption) {
-        return HankkiResponse.success(CommonSuccessCode.OK,
-                storeQueryService.getStorePins(universityId, storeCategory, priceCategory, sortOption));
+        return HankkiResponse.success(CommonSuccessCode.OK, storeQueryService.getStorePins(universityId, storeCategory, priceCategory, sortOption));
     }
 
     @GetMapping("/stores")
@@ -67,8 +65,7 @@ public class StoreController {
                                                     @RequestParam(required = false) final StoreCategory storeCategory,
                                                     @RequestParam(required = false) final PriceCategory priceCategory,
                                                     @RequestParam(required = false) final SortOption sortOption) {
-        return HankkiResponse.success(CommonSuccessCode.OK,
-                storeQueryService.getStores(universityId, storeCategory, priceCategory, sortOption));
+        return HankkiResponse.success(CommonSuccessCode.OK, storeQueryService.getStores(universityId, storeCategory, priceCategory, sortOption));
     }
 
     @GetMapping("/stores/{id}/thumbnail")
@@ -92,14 +89,14 @@ public class StoreController {
     }
 
     @PostMapping("/stores/{id}/hearts")
-    public HankkiResponse<HeartCreateResponse> createHeartStore(@UserId final Long userId,
-                                                                @PathVariable final Long id) {
+    public HankkiResponse<HeartResponse> createHeartStore(@UserId final Long userId,
+                                                          @PathVariable final Long id) {
         return HankkiResponse.success(CommonSuccessCode.CREATED, heartCommandService.createHeart(HeartCommand.of(userId, id)));
     }
 
     @DeleteMapping("/stores/{id}/hearts")
-    public HankkiResponse<HeartDeleteResponse> deleteHeartStore(@UserId final Long userId,
-                                                                @PathVariable final Long id) {
+    public HankkiResponse<HeartResponse> deleteHeartStore(@UserId final Long userId,
+                                                          @PathVariable final Long id) {
         return HankkiResponse.success(CommonSuccessCode.OK, heartCommandService.deleteHeart(HeartCommand.of(userId, id)));
     }
 
@@ -115,8 +112,7 @@ public class StoreController {
     public HankkiResponse<StorePostResponse> createStore(@RequestPart(required = false) final MultipartFile image,
                                                          @Valid @RequestPart final StorePostRequest request,
                                                          @UserId final Long userId) {
-        return HankkiResponse.success(CommonSuccessCode.CREATED,
-                storeCommandService.createStore(StorePostCommand.of(image, request, userId)));
+        return HankkiResponse.success(CommonSuccessCode.CREATED, storeCommandService.createStore(StorePostCommand.of(image, request, userId)));
     }
 
     @DeleteMapping("/stores/{id}")

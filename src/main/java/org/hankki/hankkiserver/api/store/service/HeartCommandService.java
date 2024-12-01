@@ -5,8 +5,10 @@ import org.hankki.hankkiserver.api.auth.service.UserFinder;
 import org.hankki.hankkiserver.api.store.service.command.HeartCommand;
 import org.hankki.hankkiserver.api.store.service.response.HeartResponse;
 import org.hankki.hankkiserver.common.code.HeartErrorCode;
+import org.hankki.hankkiserver.common.exception.BadRequestException;
 import org.hankki.hankkiserver.common.exception.ConcurrencyException;
 import org.hankki.hankkiserver.common.exception.ConflictException;
+import org.hankki.hankkiserver.common.exception.NotFoundException;
 import org.hankki.hankkiserver.domain.heart.model.Heart;
 import org.hankki.hankkiserver.domain.store.model.Store;
 import org.hankki.hankkiserver.domain.user.model.User;
@@ -29,6 +31,7 @@ public class HeartCommandService {
 
     @Retryable(
             retryFor = ObjectOptimisticLockingFailureException.class,
+            notRecoverable = {ConflictException.class, NotFoundException.class},
             backoff = @Backoff(delay = 100))
     @Transactional
     public HeartResponse createHeart(final HeartCommand heartCommand) {
@@ -42,6 +45,7 @@ public class HeartCommandService {
 
     @Retryable(
             retryFor = ObjectOptimisticLockingFailureException.class,
+            notRecoverable = {NotFoundException.class, ConflictException.class, BadRequestException.class},
             backoff = @Backoff(delay = 100))
     @Transactional
     public HeartResponse deleteHeart(final HeartCommand heartCommand) {

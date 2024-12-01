@@ -10,12 +10,33 @@ import org.hankki.hankkiserver.api.store.parameter.SortOption;
 import org.hankki.hankkiserver.api.store.service.HeartCommandService;
 import org.hankki.hankkiserver.api.store.service.StoreCommandService;
 import org.hankki.hankkiserver.api.store.service.StoreQueryService;
-import org.hankki.hankkiserver.api.store.service.command.*;
-import org.hankki.hankkiserver.api.store.service.response.*;
+import org.hankki.hankkiserver.api.store.service.command.HeartCommand;
+import org.hankki.hankkiserver.api.store.service.command.StoreDeleteCommand;
+import org.hankki.hankkiserver.api.store.service.command.StorePostCommand;
+import org.hankki.hankkiserver.api.store.service.command.StoreValidationCommand;
+import org.hankki.hankkiserver.api.store.service.response.CategoriesResponse;
+import org.hankki.hankkiserver.api.store.service.response.HeartCreateResponse;
+import org.hankki.hankkiserver.api.store.service.response.HeartDeleteResponse;
+import org.hankki.hankkiserver.api.store.service.response.PriceCategoriesResponse;
+import org.hankki.hankkiserver.api.store.service.response.SortOptionsResponse;
+import org.hankki.hankkiserver.api.store.service.response.StoreDuplicateValidationResponse;
+import org.hankki.hankkiserver.api.store.service.response.StoreGetResponse;
+import org.hankki.hankkiserver.api.store.service.response.StorePinsResponse;
+import org.hankki.hankkiserver.api.store.service.response.StorePostResponse;
+import org.hankki.hankkiserver.api.store.service.response.StoreThumbnailResponse;
+import org.hankki.hankkiserver.api.store.service.response.StoresResponse;
 import org.hankki.hankkiserver.auth.UserId;
 import org.hankki.hankkiserver.common.code.CommonSuccessCode;
 import org.hankki.hankkiserver.domain.store.model.StoreCategory;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -37,15 +58,17 @@ public class StoreController {
                                                           @RequestParam(required = false) final StoreCategory storeCategory,
                                                           @RequestParam(required = false) final PriceCategory priceCategory,
                                                           @RequestParam(required = false) final SortOption sortOption) {
-        return HankkiResponse.success(CommonSuccessCode.OK, storeQueryService.getStorePins(universityId, storeCategory, priceCategory, sortOption));
+        return HankkiResponse.success(CommonSuccessCode.OK,
+                storeQueryService.getStorePins(universityId, storeCategory, priceCategory, sortOption));
     }
 
     @GetMapping("/stores")
     public HankkiResponse<StoresResponse> getStores(@RequestParam(required = false) final Long universityId,
-                                                          @RequestParam(required = false) final StoreCategory storeCategory,
-                                                          @RequestParam(required = false) final PriceCategory priceCategory,
-                                                          @RequestParam(required = false) final SortOption sortOption) {
-        return HankkiResponse.success(CommonSuccessCode.OK, storeQueryService.getStores(universityId, storeCategory, priceCategory, sortOption));
+                                                    @RequestParam(required = false) final StoreCategory storeCategory,
+                                                    @RequestParam(required = false) final PriceCategory priceCategory,
+                                                    @RequestParam(required = false) final SortOption sortOption) {
+        return HankkiResponse.success(CommonSuccessCode.OK,
+                storeQueryService.getStores(universityId, storeCategory, priceCategory, sortOption));
     }
 
     @GetMapping("/stores/{id}/thumbnail")
@@ -69,25 +92,31 @@ public class StoreController {
     }
 
     @PostMapping("/stores/{id}/hearts")
-    public HankkiResponse<HeartCreateResponse> createHeartStore(@UserId final Long userId, @PathVariable final Long id) {
-        return HankkiResponse.success(CommonSuccessCode.CREATED, heartCommandService.createHeart(HeartPostCommand.of(userId, id)));
+    public HankkiResponse<HeartCreateResponse> createHeartStore(@UserId final Long userId,
+                                                                @PathVariable final Long id) {
+        return HankkiResponse.success(CommonSuccessCode.CREATED, heartCommandService.createHeart(HeartCommand.of(userId, id)));
     }
 
     @DeleteMapping("/stores/{id}/hearts")
-    public HankkiResponse<HeartDeleteResponse> deleteHeartStore(@UserId final Long userId, @PathVariable final Long id) {
-        return HankkiResponse.success(CommonSuccessCode.OK, heartCommandService.deleteHeart(HeartDeleteCommand.of(userId, id)));
+    public HankkiResponse<HeartDeleteResponse> deleteHeartStore(@UserId final Long userId,
+                                                                @PathVariable final Long id) {
+        return HankkiResponse.success(CommonSuccessCode.OK, heartCommandService.deleteHeart(HeartCommand.of(userId, id)));
     }
 
     @PostMapping("/stores/validate")
-    public HankkiResponse<StoreDuplicateValidationResponse> validateDuplicatedStore(@RequestBody @Valid final StoreDuplicateValidationRequest request) {
-        return HankkiResponse.success(CommonSuccessCode.OK, storeQueryService.validateDuplicatedStore(StoreValidationCommand.of(request.universityId(), request.latitude(), request.longitude(), request.storeName())));
+    public HankkiResponse<StoreDuplicateValidationResponse> validateDuplicatedStore(
+            @RequestBody @Valid final StoreDuplicateValidationRequest request) {
+        return HankkiResponse.success(CommonSuccessCode.OK, storeQueryService.validateDuplicatedStore(
+                StoreValidationCommand.of(request.universityId(), request.latitude(), request.longitude(),
+                        request.storeName())));
     }
 
     @PostMapping("/stores")
     public HankkiResponse<StorePostResponse> createStore(@RequestPart(required = false) final MultipartFile image,
-                                                           @Valid @RequestPart final StorePostRequest request,
+                                                         @Valid @RequestPart final StorePostRequest request,
                                                          @UserId final Long userId) {
-        return HankkiResponse.success(CommonSuccessCode.CREATED, storeCommandService.createStore(StorePostCommand.of(image, request, userId)));
+        return HankkiResponse.success(CommonSuccessCode.CREATED,
+                storeCommandService.createStore(StorePostCommand.of(image, request, userId)));
     }
 
     @DeleteMapping("/stores/{id}")

@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hankki.hankkiserver.common.code.HeartErrorCode;
+import org.hankki.hankkiserver.common.exception.BadRequestException;
 import org.hankki.hankkiserver.domain.common.BaseTimeEntity;
 import org.hankki.hankkiserver.domain.common.Point;
 import org.hankki.hankkiserver.domain.heart.model.Heart;
@@ -20,6 +22,8 @@ import org.hibernate.annotations.ColumnDefault;
 @BatchSize(size = 100)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Store extends BaseTimeEntity {
+
+    private static final int DEFAULT_HEART_COUNT = 0;
 
     @Id
     @Column(name = "store_id")
@@ -74,6 +78,7 @@ public class Store extends BaseTimeEntity {
     }
 
     public void decreaseHeartCount() {
+        validateHeartCount();
         this.heartCount--;
     }
 
@@ -91,5 +96,11 @@ public class Store extends BaseTimeEntity {
 
     public void updateLowestPrice(int lowestPrice) {
         this.lowestPrice = lowestPrice;
+    }
+
+    private void validateHeartCount() {
+        if (this.heartCount <= DEFAULT_HEART_COUNT) {
+            throw new BadRequestException(HeartErrorCode.INVALID_HEART_COUNT);
+        }
     }
 }

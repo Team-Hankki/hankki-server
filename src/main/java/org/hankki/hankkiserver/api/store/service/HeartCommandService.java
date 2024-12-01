@@ -7,16 +7,20 @@ import org.hankki.hankkiserver.api.store.service.command.HeartPostCommand;
 import org.hankki.hankkiserver.api.store.service.response.HeartCreateResponse;
 import org.hankki.hankkiserver.api.store.service.response.HeartDeleteResponse;
 import org.hankki.hankkiserver.common.code.HeartErrorCode;
+import org.hankki.hankkiserver.common.exception.ConcurrencyException;
 import org.hankki.hankkiserver.common.exception.ConflictException;
 import org.hankki.hankkiserver.domain.heart.model.Heart;
 import org.hankki.hankkiserver.domain.store.model.Store;
 import org.hankki.hankkiserver.domain.user.model.User;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class HeartCommandService {
 
     private final HeartUpdater heartUpdater;
@@ -25,6 +29,10 @@ public class HeartCommandService {
     private final UserFinder userFinder;
     private final StoreFinder storeFinder;
 
+    @Retryable(
+            retryFor = ObjectOptimisticLockingFailureException.class,
+            backoff = @Backoff(delay = 100))
+    @Transactional
     public HeartCreateResponse createHeart(final HeartPostCommand heartPostCommand) {
         User user = userFinder.getUserReference(heartPostCommand.userId());
         Store store = storeFinder.findByIdWhereDeletedIsFalse(heartPostCommand.storeId());
@@ -34,23 +42,30 @@ public class HeartCommandService {
         return HeartCreateResponse.of(store);
     }
 
+    @Transactional
     public HeartDeleteResponse deleteHeart(final HeartDeleteCommand heartDeleteCommand) {
         User user = userFinder.getUserReference(heartDeleteCommand.userId());
         Store store = storeFinder.findByIdWhereDeletedIsFalse(heartDeleteCommand.storeId());
         validateStoreHeartRemoval(user, store);
-        heartDeleter.deleteHeart(user,store);
+        heartDeleter.deleteHeart(user, store);
         store.decreaseHeartCount();
         return HeartDeleteResponse.of(store);
     }
 
+    @Recover
+    public HeartCreateResponse recoverFromOptimisticLockFailure(final ObjectOptimisticLockingFailureException e,
+                                                                final HeartPostCommand heartPostCommand) {
+        throw new ConcurrencyException(HeartErrorCode.HEART_COUNT_CONCURRENCY_ERROR);
+    }
+
     private void validateStoreHeartCreation(final User user, final Store store) {
-        if(heartFinder.existsByUserAndStore(user, store)){
+        if (heartFinder.existsByUserAndStore(user, store)) {
             throw new ConflictException(HeartErrorCode.ALREADY_EXISTED_HEART);
         }
     }
 
     private void validateStoreHeartRemoval(final User user, final Store store) {
-        if(!heartFinder.existsByUserAndStore(user, store)){
+        if (!heartFinder.existsByUserAndStore(user, store)) {
             throw new ConflictException(HeartErrorCode.ALREADY_NO_HEART);
         }
     }

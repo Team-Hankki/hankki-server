@@ -13,6 +13,7 @@ import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter
@@ -56,6 +57,10 @@ public class Store extends BaseTimeEntity {
 
     @Column(nullable = false)
     private boolean isDeleted;
+
+    @Version
+    @ColumnDefault("0L")
+    private Long version;
 
     @Builder
     private Store (String name, Point point, String address, StoreCategory category, int lowestPrice, int heartCount, boolean isDeleted) {

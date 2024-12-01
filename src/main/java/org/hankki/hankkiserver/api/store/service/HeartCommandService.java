@@ -30,7 +30,7 @@ public class HeartCommandService {
     private final StoreFinder storeFinder;
 
     @Retryable(
-            retryFor = ObjectOptimisticLockingFailureException.class,
+            noRetryFor = {ConflictException.class, NotFoundException.class},
             notRecoverable = {ConflictException.class, NotFoundException.class},
             backoff = @Backoff(delay = 100))
     @Transactional
@@ -44,7 +44,7 @@ public class HeartCommandService {
     }
 
     @Retryable(
-            retryFor = ObjectOptimisticLockingFailureException.class,
+            noRetryFor = {NotFoundException.class, ConflictException.class, BadRequestException.class},
             notRecoverable = {NotFoundException.class, ConflictException.class, BadRequestException.class},
             backoff = @Backoff(delay = 100))
     @Transactional

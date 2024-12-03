@@ -1,6 +1,17 @@
 package org.hankki.hankkiserver.domain.store.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Version;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,15 +23,14 @@ import org.hankki.hankkiserver.domain.common.Point;
 import org.hankki.hankkiserver.domain.heart.model.Heart;
 import org.hankki.hankkiserver.domain.universitystore.model.UniversityStore;
 import org.hibernate.annotations.BatchSize;
-
-import java.util.ArrayList;
-import java.util.List;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @Getter
 @BatchSize(size = 100)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@DynamicInsert
 public class Store extends BaseTimeEntity {
 
     private static final int DEFAULT_HEART_COUNT = 0;
@@ -67,7 +77,8 @@ public class Store extends BaseTimeEntity {
     private Long version;
 
     @Builder
-    private Store (String name, Point point, String address, StoreCategory category, int lowestPrice, int heartCount, boolean isDeleted) {
+    private Store(String name, Point point, String address, StoreCategory category, int lowestPrice, int heartCount,
+                  boolean isDeleted) {
         this.name = name;
         this.point = point;
         this.address = address;

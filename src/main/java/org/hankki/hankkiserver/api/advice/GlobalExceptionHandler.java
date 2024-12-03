@@ -7,6 +7,7 @@ import org.hankki.hankkiserver.common.code.BusinessErrorCode;
 import org.hankki.hankkiserver.common.code.StoreErrorCode;
 import org.hankki.hankkiserver.common.code.StoreImageErrorCode;
 import org.hankki.hankkiserver.common.exception.BadRequestException;
+import org.hankki.hankkiserver.common.exception.ConcurrencyException;
 import org.hankki.hankkiserver.common.exception.ConflictException;
 import org.hankki.hankkiserver.common.exception.NotFoundException;
 import org.hankki.hankkiserver.common.exception.UnauthorizedException;
@@ -46,6 +47,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConflictException.class)
     public HankkiResponse<Void> handleConflictException(ConflictException e) {
         log.warn("handleConflictException() in GlobalExceptionHandler throw ConflictException : {}", e.getMessage());
+        return HankkiResponse.fail(e.getErrorCode());
+    }
+
+    @ExceptionHandler(ConcurrencyException.class)
+    public HankkiResponse<Void> handleConcurrencyException(ConcurrencyException e) {
+        log.warn("handleConcurrencyException() in GlobalExceptionHandler throw ConcurrencyException : {}", e.getMessage());
         return HankkiResponse.fail(e.getErrorCode());
     }
 

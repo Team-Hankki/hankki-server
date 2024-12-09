@@ -68,7 +68,7 @@ public class FavoriteController {
   }
 
   @PostMapping("/favorites/{favoriteId}/shared")
-  public HankkiResponse<Void> createSharedFavorite(@UserId final Long userId, @PathVariable(name = "favoriteId") Long favoriteId, @RequestBody @Valid final FavoriteSharedPostRequest request) {
+  public HankkiResponse<Void> createSharedFavorite(@UserId final Long userId, @PathVariable(name = "favoriteId") long favoriteId, @RequestBody @Valid final FavoriteSharedPostRequest request) {
     favoriteCommandService.createSharedFavorite(FavoriteSharedPostCommand.of(userId, favoriteId, request.title(), request.details()));
     return HankkiResponse.success(CommonSuccessCode.CREATED);
   }

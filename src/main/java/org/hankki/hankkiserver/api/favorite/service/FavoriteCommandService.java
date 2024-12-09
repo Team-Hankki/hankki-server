@@ -39,7 +39,6 @@ public class FavoriteCommandService {
 
   @Transactional
   public void createFavorite(final FavoritePostCommand command) {
-    makeFavoriteByTitleAndDetails(command.userId(), command.title(), command.details());
     favoriteUpdater.save(makeFavoriteByTitleAndDetails(command.userId(), command.title(), command.details()));
   }
 
@@ -78,10 +77,10 @@ public class FavoriteCommandService {
   }
 
   @Transactional
-  public void createSharedFavorite(final FavoriteSharedPostCommand favoriteSharedPostCommand) {
-    Favorite favorite = makeFavoriteByTitleAndDetails(favoriteSharedPostCommand.userId(), favoriteSharedPostCommand.title(), favoriteSharedPostCommand.details());
+  public void createSharedFavorite(final FavoriteSharedPostCommand command) {
+    Favorite favorite = makeFavoriteByTitleAndDetails(command.userId(), command.title(), command.details());
     favoriteUpdater.save(favorite);
-    copySharedFavoriteStore(favoriteSharedPostCommand.sharedFavoriteId(), favorite);
+    copySharedFavoriteStore(command.sharedFavoriteId(), favorite);
   }
 
   private void validateUserAuthorization(final User findUser, final User commandUser) {

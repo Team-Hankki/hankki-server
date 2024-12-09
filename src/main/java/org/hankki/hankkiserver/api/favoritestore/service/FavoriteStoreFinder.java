@@ -27,4 +27,8 @@ public class FavoriteStoreFinder {
   public boolean isExist(final Long favoriteId, final Long storeId) {
     return favoriteStoreRepository.isExist(favoriteId, storeId);
   }
+
+  public List<FavoriteStore> findByFavoriteId(final long favoriteId) {
+    return favoriteStoreRepository.findByFavoriteId(favoriteId);
+  }
 }

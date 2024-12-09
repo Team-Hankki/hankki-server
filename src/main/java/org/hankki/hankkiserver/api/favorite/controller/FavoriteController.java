@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.dto.HankkiResponse;
 import org.hankki.hankkiserver.api.favorite.controller.request.FavoriteDeleteRequest;
 import org.hankki.hankkiserver.api.favorite.controller.request.FavoritePostRequest;
+import org.hankki.hankkiserver.api.favorite.controller.request.FavoriteSharedPostRequest;
 import org.hankki.hankkiserver.api.favorite.service.FavoriteCommandService;
 import org.hankki.hankkiserver.api.favorite.service.FavoriteQueryService;
 import org.hankki.hankkiserver.api.favorite.service.command.*;
@@ -64,5 +65,11 @@ public class FavoriteController {
   @GetMapping("/favorites")
   public HankkiResponse<FavoritesWithStatusGetResponse> getFavoritesWithStatus(@UserId Long id, @RequestParam("candidate") final Long storeId) {
     return HankkiResponse.success(CommonSuccessCode.OK, favoriteQueryService.findFavoritesWithStatus(FavoritesWithStatusGetCommand.of(id, storeId)));
+  }
+
+  @PostMapping("/favorites/{favoriteId}/shared")
+  public HankkiResponse<Void> createSharedFavorite(@UserId final Long userId, @PathVariable(name = "favoriteId") long favoriteId, @RequestBody @Valid final FavoriteSharedPostRequest request) {
+    favoriteCommandService.createSharedFavorite(FavoriteSharedPostCommand.of(userId, favoriteId, request.title(), request.details()));
+    return HankkiResponse.success(CommonSuccessCode.CREATED);
   }
 }

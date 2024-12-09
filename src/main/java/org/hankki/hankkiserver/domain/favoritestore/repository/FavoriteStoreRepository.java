@@ -23,4 +23,6 @@ public interface FavoriteStoreRepository extends JpaRepository<FavoriteStore, Lo
 
   @Query("select exists (select f from FavoriteStore f where f.favorite.id = :favoriteId and f.store.id = :storeId)")
   boolean isExist(@Param("favoriteId") Long favoriteId, @Param("storeId") Long storeId);
+
+  List<FavoriteStore> findByFavoriteId(Long favoriteId);
 }

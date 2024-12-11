@@ -99,12 +99,12 @@ public class FavoriteCommandService {
     });
   }
 
-  private void copySharedFavoriteStore(final long sharedFavoriteId, final Favorite myFavorite) {
-    findSharedStores(sharedFavoriteId).forEach(it -> favoriteStoreUpdater.save(FavoriteStore.create(it, myFavorite)));
+  private void copySharedFavoriteStore(final long sharedId, final Favorite myFavorite) {
+    findStoresById(sharedId).forEach(it -> favoriteStoreUpdater.save(FavoriteStore.create(it, myFavorite)));
   }
 
-  private List<Store> findSharedStores(final long sharedFavoriteId) {
-    return favoriteStoreFinder.findByFavoriteId(sharedFavoriteId).stream().map(FavoriteStore::getStore).toList();
+  private List<Store> findStoresById(final long id) {
+    return favoriteStoreFinder.findByFavoriteId(id).stream().map(FavoriteStore::getStore).toList();
   }
 
   private Favorite makeFavoriteByTitleAndDetails(final long userId, final String title, List<String> details) {

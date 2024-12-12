@@ -3,6 +3,7 @@ package org.hankki.hankkiserver.api.favorite.service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.auth.service.UserFinder;
+import org.hankki.hankkiserver.api.favorite.service.command.FavoriteSharedPostCommand;
 import org.hankki.hankkiserver.api.favorite.service.command.FavoriteStoreDeleteCommand;
 import org.hankki.hankkiserver.api.favorite.service.command.FavoriteStorePostCommand;
 import org.hankki.hankkiserver.api.favorite.service.command.FavoritesDeleteCommand;
@@ -37,17 +38,12 @@ public class FavoriteCommandService {
   private final FavoriteDeleter favoriteDeleter;
 
   @Transactional
-  public Long createFavorite(final FavoritePostCommand command) {
-
-    User findUser = userFinder.getUser(command.userId());
-    String title = command.title();
-    checkTitleExists(title, findUser);
-    return favoriteUpdater.save(Favorite.create(findUser, title, String.join(" ", command.details())));
+  public void createFavorite(final FavoritePostCommand command) {
+    favoriteUpdater.save(makeFavoriteByTitleAndDetails(command.userId(), command.title(), command.details()));
   }
 
   @Transactional
   public void deleteFavorites(final FavoritesDeleteCommand command) {
-
     List<Favorite> favorites = favoriteFinder.findAllByIds(command.favoriteIds());
 
     favorites.forEach(favorite -> {
@@ -60,7 +56,6 @@ public class FavoriteCommandService {
 
   @Transactional
   public Long createFavoriteStore(final FavoriteStorePostCommand command) {
-
     Favorite favorite = favoriteFinder.findByIdWithUser(command.favoriteId());
     Store store = storeFinder.findByIdWhereDeletedIsFalse(command.storeId());
 
@@ -76,11 +71,16 @@ public class FavoriteCommandService {
 
   @Transactional
   public void deleteFavoriteStore(final FavoriteStoreDeleteCommand command) {
-
     Favorite favorite = favoriteFinder.findByIdWithUser(command.favoriteId());
     favoriteStoreDeleter.delete(favoriteStoreFinder.findByFavoriteIdAndStoreId(favorite.getId(), command.storeId()));
-
     favorite.updateImageByFavoriteStoreCount(favoriteStoreFinder.countByFavorite(favorite));
+  }
+
+  @Transactional
+  public void createSharedFavorite(final FavoriteSharedPostCommand command) {
+    Favorite favorite = makeFavoriteByTitleAndDetails(command.userId(), command.title(), command.details());
+    favoriteUpdater.save(favorite);
+    copySharedFavoriteStore(command.sharedFavoriteId(), favorite);
   }
 
   private void validateUserAuthorization(final User findUser, final User commandUser) {
@@ -97,5 +97,19 @@ public class FavoriteCommandService {
     favoriteFinder.findByNameAndUser(title, user).ifPresent(f -> {
       throw new ConflictException(FavoriteErrorCode.FAVORITE_TITLE_EXISTS);
     });
+  }
+
+  private void copySharedFavoriteStore(final long sharedId, final Favorite myFavorite) {
+    findStoresById(sharedId).forEach(it -> favoriteStoreUpdater.save(FavoriteStore.create(it, myFavorite)));
+  }
+
+  private List<Store> findStoresById(final long id) {
+    return favoriteStoreFinder.findByFavoriteId(id).stream().map(FavoriteStore::getStore).toList();
+  }
+
+  private Favorite makeFavoriteByTitleAndDetails(final long userId, final String title, List<String> details) {
+    User findUser = userFinder.getUser(userId);
+    checkTitleExists(title, findUser);
+    return Favorite.create(findUser, title, String.join(" ", details));
   }
 }

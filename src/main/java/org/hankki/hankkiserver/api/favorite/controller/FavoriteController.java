@@ -10,7 +10,7 @@ import org.hankki.hankkiserver.api.favorite.service.FavoriteCommandService;
 import org.hankki.hankkiserver.api.favorite.service.FavoriteQueryService;
 import org.hankki.hankkiserver.api.favorite.service.command.*;
 import org.hankki.hankkiserver.api.favorite.service.response.FavoriteGetResponse;
-import org.hankki.hankkiserver.api.favorite.service.response.FavoriteIsOwnerGetResponse;
+import org.hankki.hankkiserver.api.favorite.service.response.FavoriteOwnershipGetResponse;
 import org.hankki.hankkiserver.api.favorite.service.response.FavoritesWithStatusGetResponse;
 import org.hankki.hankkiserver.auth.UserId;
 import org.hankki.hankkiserver.common.code.CommonSuccessCode;
@@ -74,8 +74,8 @@ public class FavoriteController {
     return HankkiResponse.success(CommonSuccessCode.CREATED);
   }
 
-  @GetMapping("/favorites/{favoriteId}/owner")
-  public HankkiResponse<FavoriteIsOwnerGetResponse> getFavoriteIsOwner(@UserId Long userId, @PathVariable("favoriteId") final long favoriteId) {
-    return HankkiResponse.success(CommonSuccessCode.OK, favoriteQueryService.findFavoriteIsOwner(FavoriteIsOwnerGetCommand.of(userId, favoriteId)));
+  @GetMapping("/favorites/{favoriteId}/ownership")
+  public HankkiResponse<FavoriteOwnershipGetResponse> checkFavoriteOwnership(@UserId Long userId, @PathVariable("favoriteId") final long favoriteId) {
+    return HankkiResponse.success(CommonSuccessCode.OK, favoriteQueryService.checkFavoriteOwnership(FavoriteOwnershipGetCommand.of(userId, favoriteId)));
   }
 }

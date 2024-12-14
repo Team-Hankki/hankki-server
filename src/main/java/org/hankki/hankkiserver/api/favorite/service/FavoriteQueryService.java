@@ -2,9 +2,11 @@ package org.hankki.hankkiserver.api.favorite.service;
 
 import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
+import org.hankki.hankkiserver.api.favorite.service.command.FavoriteIsOwnerGetCommand;
 import org.hankki.hankkiserver.api.favorite.service.command.FavoritesGetCommand;
 import org.hankki.hankkiserver.api.favorite.service.command.FavoritesWithStatusGetCommand;
 import org.hankki.hankkiserver.api.favorite.service.response.FavoriteGetResponse;
+import org.hankki.hankkiserver.api.favorite.service.response.FavoriteIsOwnerGetResponse;
 import org.hankki.hankkiserver.api.favorite.service.response.FavoritesWithStatusGetResponse;
 import org.hankki.hankkiserver.api.store.service.StoreFinder;
 import org.hankki.hankkiserver.domain.favorite.model.Favorite;
@@ -55,5 +57,9 @@ public class FavoriteQueryService {
 
   private boolean favoriteHasNoStore(final Favorite favorite) {
     return favorite.getFavoriteStores().isEmpty();
+  }
+
+  public FavoriteIsOwnerGetResponse findFavoriteIsOwner(FavoriteIsOwnerGetCommand command) {
+    return FavoriteIsOwnerGetResponse.of(favoriteFinder.findByIdAndUserId(command.favoriteId(), command.userId()));
   }
 }

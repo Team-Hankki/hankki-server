@@ -3,7 +3,6 @@ package org.hankki.hankkiserver.api.favorite.service;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.hankki.hankkiserver.api.favorite.service.response.FavoriteIsOwnerGetResponse;
 import org.hankki.hankkiserver.common.code.FavoriteErrorCode;
 import org.hankki.hankkiserver.common.exception.NotFoundException;
 import org.hankki.hankkiserver.domain.favorite.model.Favorite;
@@ -40,9 +39,5 @@ public class FavoriteFinder {
 
   protected Optional<Favorite> findByNameAndUser(final String name, final User user) {
     return favoriteRepository.findByNameAndUser(name, user);
-  }
-
-  boolean findByIdAndUserId(final long id, final long userId) {
-    return favoriteRepository.existsByIdAndAndUser(id, userId);
   }
 }

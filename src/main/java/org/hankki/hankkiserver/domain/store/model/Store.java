@@ -1,24 +1,39 @@
 package org.hankki.hankkiserver.domain.store.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Version;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hankki.hankkiserver.common.code.HeartErrorCode;
+import org.hankki.hankkiserver.common.exception.BadRequestException;
 import org.hankki.hankkiserver.domain.common.BaseTimeEntity;
 import org.hankki.hankkiserver.domain.common.Point;
 import org.hankki.hankkiserver.domain.heart.model.Heart;
 import org.hankki.hankkiserver.domain.universitystore.model.UniversityStore;
 import org.hibernate.annotations.BatchSize;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @Getter
 @BatchSize(size = 100)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@DynamicInsert
 public class Store extends BaseTimeEntity {
+
+    private static final int DEFAULT_HEART_COUNT = 0;
 
     @Id
     @Column(name = "store_id")
@@ -57,8 +72,13 @@ public class Store extends BaseTimeEntity {
     @Column(nullable = false)
     private boolean isDeleted;
 
+    @Version
+    @ColumnDefault("0L")
+    private Long version;
+
     @Builder
-    private Store (String name, Point point, String address, StoreCategory category, int lowestPrice, int heartCount, boolean isDeleted) {
+    private Store(String name, Point point, String address, StoreCategory category, int lowestPrice, int heartCount,
+                  boolean isDeleted) {
         this.name = name;
         this.point = point;
         this.address = address;
@@ -69,6 +89,7 @@ public class Store extends BaseTimeEntity {
     }
 
     public void decreaseHeartCount() {
+        validateHeartCount();
         this.heartCount--;
     }
 
@@ -86,5 +107,11 @@ public class Store extends BaseTimeEntity {
 
     public void updateLowestPrice(int lowestPrice) {
         this.lowestPrice = lowestPrice;
+    }
+
+    private void validateHeartCount() {
+        if (this.heartCount <= DEFAULT_HEART_COUNT) {
+            throw new BadRequestException(HeartErrorCode.INVALID_HEART_COUNT);
+        }
     }
 }

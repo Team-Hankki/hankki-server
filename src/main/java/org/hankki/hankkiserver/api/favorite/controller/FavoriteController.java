@@ -10,7 +10,7 @@ import org.hankki.hankkiserver.api.favorite.service.FavoriteCommandService;
 import org.hankki.hankkiserver.api.favorite.service.FavoriteQueryService;
 import org.hankki.hankkiserver.api.favorite.service.command.*;
 import org.hankki.hankkiserver.api.favorite.service.response.FavoriteGetResponse;
-import org.hankki.hankkiserver.api.favorite.service.response.FavoriteNicknameGetResponse;
+import org.hankki.hankkiserver.api.favorite.service.response.FavoriteUserNicknameGetResponse;
 import org.hankki.hankkiserver.api.favorite.service.response.FavoriteOwnershipGetResponse;
 import org.hankki.hankkiserver.api.favorite.service.response.FavoritesWithStatusGetResponse;
 import org.hankki.hankkiserver.auth.UserId;
@@ -81,7 +81,7 @@ public class FavoriteController {
   }
 
   @GetMapping("/favorites/{favoriteId}/users/me")
-  public HankkiResponse<FavoriteNicknameGetResponse> getFavoriteUserNickname(@PathVariable("favoriteId") final long id) {
+  public HankkiResponse<FavoriteUserNicknameGetResponse> getFavoriteUserNickname(@PathVariable("favoriteId") final long id) {
     return HankkiResponse.success(CommonSuccessCode.OK, favoriteQueryService.getFavoriteUserNickname(id));
   }
 }

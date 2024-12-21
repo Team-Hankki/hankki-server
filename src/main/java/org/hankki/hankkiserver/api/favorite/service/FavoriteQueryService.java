@@ -7,7 +7,7 @@ import org.hankki.hankkiserver.api.favorite.service.command.FavoriteOwnershipGet
 import org.hankki.hankkiserver.api.favorite.service.command.FavoritesGetCommand;
 import org.hankki.hankkiserver.api.favorite.service.command.FavoritesWithStatusGetCommand;
 import org.hankki.hankkiserver.api.favorite.service.response.FavoriteGetResponse;
-import org.hankki.hankkiserver.api.favorite.service.response.FavoriteNicknameGetResponse;
+import org.hankki.hankkiserver.api.favorite.service.response.FavoriteUserNicknameGetResponse;
 import org.hankki.hankkiserver.api.favorite.service.response.FavoriteOwnershipGetResponse;
 import org.hankki.hankkiserver.api.favorite.service.response.FavoritesWithStatusGetResponse;
 import org.hankki.hankkiserver.api.store.service.StoreFinder;
@@ -76,8 +76,8 @@ public class FavoriteQueryService {
   }
 
   @Transactional(readOnly = true)
-  public FavoriteNicknameGetResponse getFavoriteUserNickname(final long id) {
-    return FavoriteNicknameGetResponse.of(getNicknameByOwnerId(getOwnerIdById(id)));
+  public FavoriteUserNicknameGetResponse getFavoriteUserNickname(final long id) {
+    return FavoriteUserNicknameGetResponse.of(getNicknameByOwnerId(getOwnerIdById(id)));
   }
 
   private String getNicknameByOwnerId(final long userId) {

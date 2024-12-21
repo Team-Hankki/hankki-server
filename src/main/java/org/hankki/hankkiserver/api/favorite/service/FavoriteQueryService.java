@@ -2,10 +2,12 @@ package org.hankki.hankkiserver.api.favorite.service;
 
 import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
+import org.hankki.hankkiserver.api.auth.service.UserInfoFinder;
 import org.hankki.hankkiserver.api.favorite.service.command.FavoriteOwnershipGetCommand;
 import org.hankki.hankkiserver.api.favorite.service.command.FavoritesGetCommand;
 import org.hankki.hankkiserver.api.favorite.service.command.FavoritesWithStatusGetCommand;
 import org.hankki.hankkiserver.api.favorite.service.response.FavoriteGetResponse;
+import org.hankki.hankkiserver.api.favorite.service.response.FavoriteUserNicknameGetResponse;
 import org.hankki.hankkiserver.api.favorite.service.response.FavoriteOwnershipGetResponse;
 import org.hankki.hankkiserver.api.favorite.service.response.FavoritesWithStatusGetResponse;
 import org.hankki.hankkiserver.api.store.service.StoreFinder;
@@ -25,6 +27,7 @@ public class FavoriteQueryService {
 
   private final FavoriteFinder favoriteFinder;
   private final StoreFinder storeFinder;
+  private final UserInfoFinder userInfoFinder;
 
   @Transactional(readOnly = true)
   public FavoriteGetResponse findFavorite(final FavoritesGetCommand command) {
@@ -59,6 +62,7 @@ public class FavoriteQueryService {
     return favorite.getFavoriteStores().isEmpty();
   }
 
+  @Transactional(readOnly = true)
   public FavoriteOwnershipGetResponse checkFavoriteOwnership(final FavoriteOwnershipGetCommand command) {
      return FavoriteOwnershipGetResponse.of(isOwner(getOwnerIdById(command.favoriteId()), command.userId()));
   }
@@ -69,5 +73,14 @@ public class FavoriteQueryService {
 
   private boolean isOwner(final long ownerId, final long userId) {
     return ownerId == userId;
+  }
+
+  @Transactional(readOnly = true)
+  public FavoriteUserNicknameGetResponse getFavoriteUserNickname(final long id) {
+    return FavoriteUserNicknameGetResponse.of(getNicknameByOwnerId(getOwnerIdById(id)));
+  }
+
+  private String getNicknameByOwnerId(final long userId) {
+    return userInfoFinder.getUserInfo(userId).getNickname();
   }
 }

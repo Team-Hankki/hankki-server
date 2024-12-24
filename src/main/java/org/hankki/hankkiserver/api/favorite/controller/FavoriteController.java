@@ -12,6 +12,7 @@ import org.hankki.hankkiserver.api.favorite.service.command.*;
 import org.hankki.hankkiserver.api.favorite.service.response.FavoriteGetResponse;
 import org.hankki.hankkiserver.api.favorite.service.response.FavoriteUserNicknameGetResponse;
 import org.hankki.hankkiserver.api.favorite.service.response.FavoriteOwnershipGetResponse;
+import org.hankki.hankkiserver.api.favorite.service.response.FavoriteSharedGetResponse;
 import org.hankki.hankkiserver.api.favorite.service.response.FavoritesWithStatusGetResponse;
 import org.hankki.hankkiserver.auth.UserId;
 import org.hankki.hankkiserver.common.code.CommonSuccessCode;
@@ -69,13 +70,13 @@ public class FavoriteController {
     return HankkiResponse.success(CommonSuccessCode.OK, favoriteQueryService.findFavoritesWithStatus(FavoritesWithStatusGetCommand.of(id, storeId)));
   }
 
-  @PostMapping("/favorites/{favoriteId}/shared")
+  @PostMapping("/favorites/shared/{favoriteId}")
   public HankkiResponse<Void> createSharedFavorite(@UserId final Long userId, @PathVariable(name = "favoriteId") long favoriteId, @RequestBody @Valid final FavoriteSharedPostRequest request) {
     favoriteCommandService.createSharedFavorite(FavoriteSharedPostCommand.of(userId, favoriteId, request.title(), request.details()));
     return HankkiResponse.success(CommonSuccessCode.CREATED);
   }
 
-  @GetMapping("/favorites/{favoriteId}/ownership")
+  @GetMapping("/favorites/shared/{favoriteId}/ownership")
   public HankkiResponse<FavoriteOwnershipGetResponse> checkFavoriteOwnership(@UserId Long userId, @PathVariable("favoriteId") final long favoriteId) {
     return HankkiResponse.success(CommonSuccessCode.OK, favoriteQueryService.checkFavoriteOwnership(FavoriteOwnershipGetCommand.of(userId, favoriteId)));
   }
@@ -83,5 +84,10 @@ public class FavoriteController {
   @GetMapping("/favorites/{favoriteId}/users/me")
   public HankkiResponse<FavoriteUserNicknameGetResponse> getFavoriteUserNickname(@PathVariable("favoriteId") final long id) {
     return HankkiResponse.success(CommonSuccessCode.OK, favoriteQueryService.getFavoriteUserNickname(id));
+  }
+
+  @GetMapping("/favorites/shared/{favoriteId}")
+  public HankkiResponse<FavoriteSharedGetResponse> getSharedFavorite(@PathVariable(name = "favoriteId") final long id) {
+    return HankkiResponse.success(CommonSuccessCode.OK, favoriteQueryService.findSharedFavorite(id));
   }
 }

@@ -7,6 +7,7 @@ import org.hankki.hankkiserver.api.favorite.service.command.FavoriteOwnershipGet
 import org.hankki.hankkiserver.api.favorite.service.command.FavoritesGetCommand;
 import org.hankki.hankkiserver.api.favorite.service.command.FavoritesWithStatusGetCommand;
 import org.hankki.hankkiserver.api.favorite.service.response.FavoriteGetResponse;
+import org.hankki.hankkiserver.api.favorite.service.response.FavoriteSharedGetResponse;
 import org.hankki.hankkiserver.api.favorite.service.response.FavoriteUserNicknameGetResponse;
 import org.hankki.hankkiserver.api.favorite.service.response.FavoriteOwnershipGetResponse;
 import org.hankki.hankkiserver.api.favorite.service.response.FavoritesWithStatusGetResponse;
@@ -44,6 +45,12 @@ public class FavoriteQueryService {
                 favorite -> isStoreAlreadyAdded(favorite.getFavoriteStores(),  command.storeId()),
                 (oldValue, newValue) -> oldValue,
                 LinkedHashMap::new)));
+  }
+
+  @Transactional(readOnly = true)
+  public FavoriteSharedGetResponse findSharedFavorite(final long id) {
+    Favorite favorite = favoriteFinder.findByIdWithFavoriteStore(id);
+    return FavoriteSharedGetResponse.of(favorite, getNicknameByOwnerId(getOwnerIdById(id)), findStoresInFavorite(favorite));
   }
 
   private boolean isStoreAlreadyAdded(final List<FavoriteStore> favoriteStore, final Long commandStoreId) {

@@ -9,6 +9,9 @@ public record StoreGetResponse(
         String category,
         int heartCount,
         boolean isLiked,
+        double latitude,
+        double longitude,
+        String categoryImageUrl,
         List<String> imageUrls,
         List<MenuResponse> menus
 ) {
@@ -17,6 +20,9 @@ public record StoreGetResponse(
                 store.getCategory().getName(),
                 store.getHeartCount(),
                 isLiked,
+                store.getPoint().getLatitude(),
+                store.getPoint().getLongitude(),
+                store.getCategory().getUrl(),
                 imageUrls,
                 menus);
     }

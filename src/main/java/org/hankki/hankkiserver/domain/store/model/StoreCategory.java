@@ -15,7 +15,8 @@ public enum StoreCategory {
     BUNSIK("분식"),
     SALADSANDWICH("샐러드"),
     FASTFOOD("패스트푸드"),
-    WORLD("세계음식");
+    WORLD("세계음식"),
+    ALL("전체");
 
     private final String name;
     private String url;

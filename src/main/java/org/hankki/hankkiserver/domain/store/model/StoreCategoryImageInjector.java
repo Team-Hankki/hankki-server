@@ -34,6 +34,9 @@ public class StoreCategoryImageInjector {
   @Value("${store.category-image.western}")
   private String western;
 
+  @Value("${store.category-image.all}")
+  private String all;
+
   @PostConstruct
   public void init() {
     StoreCategory.BUNSIK.setUrl(boonsickUrl);
@@ -45,5 +48,6 @@ public class StoreCategoryImageInjector {
     StoreCategory.CONVENIENCEFOOD.setUrl(conveniencefoodUrl);
     StoreCategory.JAPANESE.setUrl(japaneseUrl);
     StoreCategory.WESTERN.setUrl(western);
+    StoreCategory.ALL.setUrl(all);
   }
 }

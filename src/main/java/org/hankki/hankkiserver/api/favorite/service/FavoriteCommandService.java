@@ -100,7 +100,9 @@ public class FavoriteCommandService {
   }
 
   private void copySharedFavoriteStore(final long sharedId, final Favorite myFavorite) {
-    findStoresById(sharedId).forEach(it -> favoriteStoreUpdater.save(FavoriteStore.create(it, myFavorite)));
+    List<Store> storesInFavoriteStore = findStoresById(sharedId);
+    storesInFavoriteStore.forEach(it -> favoriteStoreUpdater.save(FavoriteStore.create(it, myFavorite)));
+    myFavorite.updateImageByFavoriteStoreCount(storesInFavoriteStore.size());
   }
 
   private List<Store> findStoresById(final long id) {

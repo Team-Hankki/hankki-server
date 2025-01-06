@@ -1,4 +1,4 @@
-package org.hankki.hankkiserver.api.advice;
+package org.hankki.hankkiserver.api.common.advice;
 
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;

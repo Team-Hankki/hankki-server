@@ -14,7 +14,7 @@ import org.hankki.hankkiserver.api.favorite.service.response.FavoriteUserNicknam
 import org.hankki.hankkiserver.api.favorite.service.response.FavoriteOwnershipGetResponse;
 import org.hankki.hankkiserver.api.favorite.service.response.FavoriteSharedGetResponse;
 import org.hankki.hankkiserver.api.favorite.service.response.FavoritesWithStatusGetResponse;
-import org.hankki.hankkiserver.auth.UserId;
+import org.hankki.hankkiserver.api.common.annotation.UserId;
 import org.hankki.hankkiserver.common.code.CommonSuccessCode;
 import org.springframework.web.bind.annotation.*;
 

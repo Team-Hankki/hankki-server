@@ -3,7 +3,7 @@ package org.hankki.hankkiserver.api.auth.controller;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.hankki.hankkiserver.auth.UserId;
+import org.hankki.hankkiserver.api.common.annotation.UserId;
 import org.hankki.hankkiserver.api.dto.HankkiResponse;
 import org.hankki.hankkiserver.common.code.CommonSuccessCode;
 import org.hankki.hankkiserver.api.auth.service.AuthService;

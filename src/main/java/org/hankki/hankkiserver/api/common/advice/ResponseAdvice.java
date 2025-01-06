@@ -1,4 +1,4 @@
-package org.hankki.hankkiserver.api.advice;
+package org.hankki.hankkiserver.api.common.advice;
 
 import org.hankki.hankkiserver.api.dto.HankkiResponse;
 import org.springframework.core.MethodParameter;
@@ -19,10 +19,8 @@ public class ResponseAdvice implements ResponseBodyAdvice<Object> {
 
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
-        if (returnType.getParameterType() == HankkiResponse.class) {
-            HttpStatus status = HttpStatus.valueOf(((HankkiResponse<?>) body).getCode());
-            response.setStatusCode(status);
-        }
+        HttpStatus status = HttpStatus.valueOf(((HankkiResponse<?>) body).getCode());
+        response.setStatusCode(status);
         return body;
     }
 }

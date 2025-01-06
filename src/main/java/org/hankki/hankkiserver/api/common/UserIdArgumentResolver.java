@@ -1,5 +1,6 @@
-package org.hankki.hankkiserver.auth;
+package org.hankki.hankkiserver.api.common;
 
+import org.hankki.hankkiserver.api.common.annotation.UserId;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;

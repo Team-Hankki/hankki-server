@@ -12,7 +12,7 @@ import org.hankki.hankkiserver.api.store.service.StoreCommandService;
 import org.hankki.hankkiserver.api.store.service.StoreQueryService;
 import org.hankki.hankkiserver.api.store.service.command.*;
 import org.hankki.hankkiserver.api.store.service.response.*;
-import org.hankki.hankkiserver.auth.UserId;
+import org.hankki.hankkiserver.api.common.annotation.UserId;
 import org.hankki.hankkiserver.common.code.CommonSuccessCode;
 import org.hankki.hankkiserver.domain.store.model.StoreCategory;
 import org.springframework.web.bind.annotation.*;

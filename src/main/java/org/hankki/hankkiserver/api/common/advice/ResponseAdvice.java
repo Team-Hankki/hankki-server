@@ -1,4 +1,4 @@
-package org.hankki.hankkiserver.api.advice;
+package org.hankki.hankkiserver.api.common.advice;
 
 import org.hankki.hankkiserver.api.dto.HankkiResponse;
 import org.springframework.core.MethodParameter;

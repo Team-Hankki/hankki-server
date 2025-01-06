@@ -12,7 +12,6 @@ public class PriceCategoryConverter implements Converter<String, PriceCategory> 
     @Override
     public PriceCategory convert(String source) {
         if (source.toUpperCase().equals(PriceCategory.ALL.toString())) {
-            log.warn(String.valueOf(source.toUpperCase().equals(PriceCategory.ALL.getName())));
             return null;
         }
         return PriceCategory.valueOf(source.toUpperCase());

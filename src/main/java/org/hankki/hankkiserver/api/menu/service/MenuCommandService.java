@@ -49,8 +49,9 @@ public class MenuCommandService {
     @Transactional
     public MenusPostResponse createMenus(final MenusPostCommand command) {
         Store findStore = storeFinder.findByIdWhereDeletedIsFalse(command.storeId());
+        List<Menu> allMenus = menuFinder.findAllByStore(findStore);
         List<Menu> menus = command.menu().stream()
-                .filter(c -> !validateMenuConflict(findStore, c.name()))
+                .filter(c -> !validateMenuConflict(allMenus, c.name()))
                 .map(c -> Menu.create(findStore, c.name(), c.price()))
                 .toList();
         menuUpdater.saveAll(menus);
@@ -69,8 +70,8 @@ public class MenuCommandService {
         findStore.updateLowestPrice(menuFinder.findLowestPriceByStore(findStore));
     }
 
-    private boolean validateMenuConflict(final Store store, final String menuName) {
-        return menuFinder.existsByStoreAndName(store, menuName);
+    private boolean validateMenuConflict(final List<Menu> menus, final String menuName) {
+        return menus.stream().anyMatch(menu -> menu.getName().equals(menuName));
     }
 
     private void checkNoMenuInStore(final Store store, final long userId) {

@@ -19,10 +19,8 @@ public class ResponseAdvice implements ResponseBodyAdvice<Object> {
 
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
-        if (returnType.getParameterType() == HankkiResponse.class) {
-            HttpStatus status = HttpStatus.valueOf(((HankkiResponse<?>) body).getCode());
-            response.setStatusCode(status);
-        }
+        HttpStatus status = HttpStatus.valueOf(((HankkiResponse<?>) body).getCode());
+        response.setStatusCode(status);
         return body;
     }
 }

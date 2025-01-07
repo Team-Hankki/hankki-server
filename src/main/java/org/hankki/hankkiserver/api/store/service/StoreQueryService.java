@@ -45,13 +45,18 @@ public class StoreQueryService {
 
     @Transactional(readOnly = true)
     public StorePinsResponse getStorePins(final Long universityId, final StoreCategory storeCategory, final PriceCategory priceCategory, final SortOption sortOption) {
-        return StorePinsResponse.of(storeFinder.findAllDynamicQuery(universityId, storeCategory, priceCategory, sortOption)
+        return StorePinsResponse.of(storeFinder.findAllWithUniversityStoreByDynamicQuery(universityId, storeCategory, priceCategory, sortOption)
                 .stream().map(PinResponse::of).toList());
     }
 
     @Transactional(readOnly = true)
     public StoresResponse getStores(final Long universityId, final StoreCategory storeCategory, final PriceCategory priceCategory, final SortOption sortOption) {
-        return StoresResponse.of(storeFinder.findAllDynamicQuery(universityId, storeCategory, priceCategory, sortOption)
+        if (universityId == null) {
+            return StoresResponse.of(storeFinder.findAllByDynamicQueryWithPaging(storeCategory, priceCategory, sortOption)
+                    .stream().map(StoreResponse::of).toList());
+        }
+        //중간테이블 기준으로 갖고옴
+        return StoresResponse.of(universityStoreFinder.findAllWithStoreByDynamicQueryWithPaging(universityId, storeCategory, priceCategory, sortOption)
                 .stream().map(StoreResponse::of).toList());
     }
 

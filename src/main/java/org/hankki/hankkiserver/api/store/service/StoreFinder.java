@@ -1,5 +1,6 @@
 package org.hankki.hankkiserver.api.store.service;
 
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.store.parameter.PriceCategory;
 import org.hankki.hankkiserver.api.store.parameter.SortOption;
@@ -38,11 +39,15 @@ public class StoreFinder {
         return storeRepository.existsByPoint_LatitudeAndPoint_LongitudeAndNameAndIsDeleted(latitude, longitude, name, isDeleted);
     }
 
-    public List<Store> findAllDynamicQuery(final Long universityId, final StoreCategory storeCategory, final PriceCategory priceCategory, final SortOption sortOption) {
-        return storeRepository.findStoreByCategoryAndLowestPriceAndUniversityIdAndIsDeletedFalseOrderBySortOptions(storeCategory, priceCategory, universityId, sortOption);
+    public List<Store> findAllWithUniversityStoreByDynamicQuery(final Long universityId, final StoreCategory storeCategory, final PriceCategory priceCategory, final SortOption sortOption) {
+        return storeRepository.findStoreWithUniversityStoreByCategoryAndLowestPriceAndUniversityIdAndIsDeletedFalseOrderBySortOptionsWithPaging(storeCategory, priceCategory, universityId, sortOption);
     }
 
     public List<Store> findAllByFavoriteStoresAndDeletedIsFalseOrderByFavoriteStoreId(final List<FavoriteStore> favoriteStores) {
         return storeRepository.findAllByFavoriteStoresAndIsDeletedIsFalseOrderByFavoriteStoreId(favoriteStores);
+    }
+
+    public List<Store> findAllByDynamicQueryWithPaging(StoreCategory storeCategory, PriceCategory priceCategory, SortOption sortOption) {
+        return null;
     }
 }

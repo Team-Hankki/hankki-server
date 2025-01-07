@@ -2,6 +2,7 @@ package org.hankki.hankkiserver.api.store.service;
 
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.auth.service.UserFinder;
+import org.hankki.hankkiserver.api.common.annotation.Retry;
 import org.hankki.hankkiserver.api.store.service.command.HeartDeleteCommand;
 import org.hankki.hankkiserver.api.store.service.command.HeartPostCommand;
 import org.hankki.hankkiserver.api.store.service.response.HeartCreateResponse;
@@ -16,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class HeartCommandService {
 
     private final HeartUpdater heartUpdater;
@@ -25,6 +25,8 @@ public class HeartCommandService {
     private final UserFinder userFinder;
     private final StoreFinder storeFinder;
 
+    @Retry
+    @Transactional
     public HeartCreateResponse createHeart(final HeartPostCommand heartPostCommand) {
         User user = userFinder.getUserReference(heartPostCommand.userId());
         Store store = storeFinder.findByIdWhereDeletedIsFalse(heartPostCommand.storeId());
@@ -34,6 +36,8 @@ public class HeartCommandService {
         return HeartCreateResponse.of(store);
     }
 
+    @Retry
+    @Transactional
     public HeartDeleteResponse deleteHeart(final HeartDeleteCommand heartDeleteCommand) {
         User user = userFinder.getUserReference(heartDeleteCommand.userId());
         Store store = storeFinder.findByIdWhereDeletedIsFalse(heartDeleteCommand.storeId());

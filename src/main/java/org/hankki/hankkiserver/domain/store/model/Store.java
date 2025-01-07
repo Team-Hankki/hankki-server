@@ -66,7 +66,7 @@ public class Store extends BaseTimeEntity {
     private boolean isDeleted;
 
     @Version
-    private Long version;
+    private Long version = 0L;
 
     @Builder
     private Store (String name, Point point, String address, StoreCategory category, int lowestPrice, int heartCount, boolean isDeleted) {

@@ -23,8 +23,14 @@ public class CustomStoreRepositoryImpl implements CustomStoreRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<Store> findStoreByCategoryAndLowestPriceAndUniversityIdAndIsDeletedFalseOrderBySortOptions(StoreCategory category, PriceCategory priceCategory, Long universityId, SortOption sortOptions) {
+    public List<Store> findStoreWithUniversityStoreByCategoryAndLowestPriceAndUniversityIdAndIsDeletedFalseOrderBySortOptionsWithPaging(
+            StoreCategory category,
+            PriceCategory priceCategory,
+            Long universityId,
+            SortOption sortOptions) {
+
         OrderSpecifier[] orderSpecifiers = createOrderSpecifier(sortOptions);
+        //이거 쿼리 문제점 대학 필터 없을 때 조인 필요없는데 조인 돼서 나감
         return jpaQueryFactory
                 .select(store)
                 .from(store)

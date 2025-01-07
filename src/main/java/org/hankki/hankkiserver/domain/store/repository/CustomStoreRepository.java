@@ -8,5 +8,5 @@ import org.hankki.hankkiserver.domain.store.model.StoreCategory;
 import java.util.List;
 
 public interface CustomStoreRepository {
-    List<Store> findStoreByCategoryAndLowestPriceAndUniversityIdAndIsDeletedFalseOrderBySortOptions(StoreCategory category, PriceCategory priceCategory, Long universityId, SortOption sortOptions);
+    List<Store> findStoreWithUniversityStoreByCategoryAndLowestPriceAndUniversityIdAndIsDeletedFalseOrderBySortOptionsWithPaging(StoreCategory category, PriceCategory priceCategory, Long universityId, SortOption sortOptions);
 }

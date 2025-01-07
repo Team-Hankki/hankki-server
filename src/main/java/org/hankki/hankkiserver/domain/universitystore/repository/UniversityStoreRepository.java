@@ -4,7 +4,8 @@ import org.hankki.hankkiserver.domain.store.model.Store;
 import org.hankki.hankkiserver.domain.universitystore.model.UniversityStore;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UniversityStoreRepository extends JpaRepository<UniversityStore, Long> {
+public interface UniversityStoreRepository extends JpaRepository<UniversityStore, Long>, CustomUniversityStoreRepository {
 
     boolean existsByUniversityIdAndStore(Long universityId, Store store);
+
 }

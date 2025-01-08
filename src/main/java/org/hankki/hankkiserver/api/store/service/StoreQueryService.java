@@ -1,12 +1,30 @@
 package org.hankki.hankkiserver.api.store.service;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hankki.hankkiserver.api.menu.service.MenuFinder;
 import org.hankki.hankkiserver.api.store.parameter.PriceCategory;
 import org.hankki.hankkiserver.api.store.parameter.SortOption;
 import org.hankki.hankkiserver.api.store.service.command.StoreValidationCommand;
-import org.hankki.hankkiserver.api.store.service.response.*;
+import org.hankki.hankkiserver.api.store.service.response.CategoriesResponse;
+import org.hankki.hankkiserver.api.store.service.response.CategoryResponse;
+import org.hankki.hankkiserver.api.store.service.response.CustomCursor;
+import org.hankki.hankkiserver.api.store.service.response.MenuResponse;
+import org.hankki.hankkiserver.api.store.service.response.PinResponse;
+import org.hankki.hankkiserver.api.store.service.response.PriceCategoriesResponse;
+import org.hankki.hankkiserver.api.store.service.response.PriceCategoryResponse;
+import org.hankki.hankkiserver.api.store.service.response.SortOptionResponse;
+import org.hankki.hankkiserver.api.store.service.response.SortOptionsResponse;
+import org.hankki.hankkiserver.api.store.service.response.StoreDuplicateValidationResponse;
+import org.hankki.hankkiserver.api.store.service.response.StoreGetResponse;
+import org.hankki.hankkiserver.api.store.service.response.StorePageResponse;
+import org.hankki.hankkiserver.api.store.service.response.StorePinsResponse;
+import org.hankki.hankkiserver.api.store.service.response.StoreResponse;
+import org.hankki.hankkiserver.api.store.service.response.StoreThumbnailResponse;
+import org.hankki.hankkiserver.api.store.service.response.StoresResponse;
 import org.hankki.hankkiserver.domain.heart.model.Heart;
 import org.hankki.hankkiserver.domain.store.model.Store;
 import org.hankki.hankkiserver.domain.store.model.StoreCategory;
@@ -14,14 +32,12 @@ import org.hankki.hankkiserver.domain.store.model.StoreImage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class StoreQueryService {
+
+    private static final int PAGE_SIZE = 10;
 
     private final StoreFinder storeFinder;
     private final UniversityStoreFinder universityStoreFinder;
@@ -51,13 +67,46 @@ public class StoreQueryService {
 
     @Transactional(readOnly = true)
     public StoresResponse getStores(final Long universityId, final StoreCategory storeCategory, final PriceCategory priceCategory, final SortOption sortOption) {
+        return StoresResponse.of(storeFinder.findAllWithUniversityStoreByDynamicQuery(universityId, storeCategory, priceCategory, sortOption)
+                .stream().map(StoreResponse::of).toList());
+    }
+
+    @Transactional(readOnly = true)
+    public StorePageResponse getStoresV2(final Long universityId, final StoreCategory storeCategory, final PriceCategory priceCategory, final SortOption sortOption, final CustomCursor cursor) {
         if (universityId == null) {
-            return StoresResponse.of(storeFinder.findAllByDynamicQueryWithPaging(storeCategory, priceCategory, sortOption)
-                    .stream().map(StoreResponse::of).toList());
+            List<Store> stores = storeFinder.findAllByDynamicQueryWithPaging(storeCategory, priceCategory, sortOption, cursor);
+            List<StoreResponse> storeResponse = stores.stream().map(StoreResponse::of).toList();
+
+            Store lastStore = stores.get(stores.size() - 1);
+
+            CustomCursor resultCursor = CustomCursor.builder()
+                    .nextId(lastStore.getId())
+                    .build();
+            if (sortOption != null) {
+                switch (sortOption) {
+                    case LATEST -> resultCursor = CustomCursor.builder()
+                            .nextId(lastStore.getId())
+                            .build();
+                    case RECOMMENDED -> resultCursor = CustomCursor.builder()
+                            .nextId(lastStore.getId())
+                            .nextHeartCount(lastStore.getHearts().size())
+                            .build();
+                    case LOWESTPRICE -> resultCursor = CustomCursor.builder()
+                            .nextId(lastStore.getId())
+                            .nextLowestPrice(lastStore.getLowestPrice())
+                            .build();
+                }
+            }
+            return StorePageResponse.of(storeResponse, hasNextPage(stores), resultCursor);
         }
         //중간테이블 기준으로 갖고옴
-        return StoresResponse.of(universityStoreFinder.findAllWithStoreByDynamicQueryWithPaging(universityId, storeCategory, priceCategory, sortOption)
-                .stream().map(StoreResponse::of).toList());
+        return null;
+//        return StoresResponse.of(universityStoreFinder.findAllWithStoreByDynamicQueryWithPaging(universityId, storeCategory, priceCategory, sortOption)
+//                .stream().map(StoreResponse::of).toList());
+    }
+
+    private boolean hasNextPage(List<Store> stores) {
+        return stores.size() == 10;
     }
 
     public CategoriesResponse getCategoriesV1() {

@@ -1,9 +1,11 @@
 package org.hankki.hankkiserver.api.store.service;
 
-import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.store.parameter.PriceCategory;
 import org.hankki.hankkiserver.api.store.parameter.SortOption;
+import org.hankki.hankkiserver.api.store.service.response.CustomCursor;
 import org.hankki.hankkiserver.common.code.StoreErrorCode;
 import org.hankki.hankkiserver.common.exception.NotFoundException;
 import org.hankki.hankkiserver.domain.favoritestore.model.FavoriteStore;
@@ -11,9 +13,6 @@ import org.hankki.hankkiserver.domain.store.model.Store;
 import org.hankki.hankkiserver.domain.store.model.StoreCategory;
 import org.hankki.hankkiserver.domain.store.repository.StoreRepository;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -40,14 +39,15 @@ public class StoreFinder {
     }
 
     public List<Store> findAllWithUniversityStoreByDynamicQuery(final Long universityId, final StoreCategory storeCategory, final PriceCategory priceCategory, final SortOption sortOption) {
-        return storeRepository.findStoreWithUniversityStoreByCategoryAndLowestPriceAndUniversityIdAndIsDeletedFalseOrderBySortOptionsWithPaging(storeCategory, priceCategory, universityId, sortOption);
+        return storeRepository.findAllWithUniversityStoreByCategoryAndLowestPriceAndUniversityIdAndIsDeletedFalseOrderBySortOptions(storeCategory, priceCategory, universityId, sortOption);
+    }
+
+    public List<Store> findAllByDynamicQueryWithPaging(StoreCategory storeCategory, PriceCategory priceCategory, SortOption sortOption, CustomCursor cursor) {
+        return storeRepository.findAllByCategoryAndLowestPriceAndUniversityIdAndIsDeletedFalseOrderBySortOptionsWithPaging(storeCategory, priceCategory, sortOption, cursor);
+
     }
 
     public List<Store> findAllByFavoriteStoresAndDeletedIsFalseOrderByFavoriteStoreId(final List<FavoriteStore> favoriteStores) {
         return storeRepository.findAllByFavoriteStoresAndIsDeletedIsFalseOrderByFavoriteStoreId(favoriteStores);
-    }
-
-    public List<Store> findAllByDynamicQueryWithPaging(StoreCategory storeCategory, PriceCategory priceCategory, SortOption sortOption) {
-        return null;
     }
 }

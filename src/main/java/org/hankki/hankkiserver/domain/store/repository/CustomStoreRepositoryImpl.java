@@ -1,43 +1,58 @@
 package org.hankki.hankkiserver.domain.store.repository;
 
-import com.querydsl.core.types.Order;
-import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
-import org.hankki.hankkiserver.api.store.parameter.PriceCategory;
-import org.hankki.hankkiserver.api.store.parameter.SortOption;
-import org.hankki.hankkiserver.domain.store.model.Store;
-import org.hankki.hankkiserver.domain.store.model.StoreCategory;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 import static org.hankki.hankkiserver.domain.store.model.QStore.store;
 import static org.hankki.hankkiserver.domain.universitystore.model.QUniversityStore.universityStore;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.hankki.hankkiserver.api.store.parameter.PriceCategory;
+import org.hankki.hankkiserver.api.store.parameter.SortOption;
+import org.hankki.hankkiserver.api.store.service.response.CustomCursor;
+import org.hankki.hankkiserver.domain.store.model.Store;
+import org.hankki.hankkiserver.domain.store.model.StoreCategory;
+import org.springframework.stereotype.Component;
+
+@Component
 @RequiredArgsConstructor
 public class CustomStoreRepositoryImpl implements CustomStoreRepository {
+    private static final int PAGE_SIZE = 10;
 
     private final JPAQueryFactory jpaQueryFactory;
+    private final OrderSpecifierProvider orderSpecifierProvider;
+    private final CursorProvider cursorProvider;
 
     @Override
-    public List<Store> findStoreWithUniversityStoreByCategoryAndLowestPriceAndUniversityIdAndIsDeletedFalseOrderBySortOptionsWithPaging(
+    public List<Store> findAllWithUniversityStoreByCategoryAndLowestPriceAndUniversityIdAndIsDeletedFalseOrderBySortOptions(
             StoreCategory category,
             PriceCategory priceCategory,
             Long universityId,
             SortOption sortOptions) {
-
-        OrderSpecifier[] orderSpecifiers = createOrderSpecifier(sortOptions);
-        //이거 쿼리 문제점 대학 필터 없을 때 조인 필요없는데 조인 돼서 나감
         return jpaQueryFactory
                 .select(store)
                 .from(store)
                 .join(store.universityStores, universityStore).fetchJoin()
                 .where(eqCategory(category),eqUniversity(universityId), evaluatePriceCategory(priceCategory))
                 .where(store.isDeleted.isFalse())
-                .orderBy(orderSpecifiers)
+                .orderBy(orderSpecifierProvider.createOrderSpecifier(sortOptions))
+                .fetch();
+    }
+
+    @Override
+    public List<Store> findAllByCategoryAndLowestPriceAndUniversityIdAndIsDeletedFalseOrderBySortOptionsWithPaging(
+            StoreCategory category,
+            PriceCategory priceCategory,
+            SortOption sortOptions,
+            CustomCursor cursor) {
+        return jpaQueryFactory
+                .select(store)
+                .from(store)
+                .where(cursorProvider.createCursorCondition(cursor, sortOptions))
+                .where(eqCategory(category), evaluatePriceCategory(priceCategory)) // 필터
+                .where(store.isDeleted.isFalse())
+                .orderBy(orderSpecifierProvider.createOrderSpecifierForPaging(sortOptions))//정렬
+                .limit(PAGE_SIZE)
                 .fetch();
     }
 
@@ -61,22 +76,5 @@ public class CustomStoreRepositoryImpl implements CustomStoreRepository {
         }
         return store.lowestPrice.goe(priceCategory.getMinPrice())
                 .and(store.lowestPrice.loe(priceCategory.getMaxPrice()));
-    }
-
-    private OrderSpecifier[] createOrderSpecifier(SortOption sortOption) {
-        List<OrderSpecifier> orderSpecifiers = new ArrayList<>();
-        if (Objects.isNull(sortOption)){
-            orderSpecifiers.add(new OrderSpecifier(Order.DESC, store.createdAt));
-        }
-        else if (SortOption.LATEST == sortOption){
-            orderSpecifiers.add(new OrderSpecifier(Order.DESC, store.createdAt));
-        }
-        else if (SortOption.LOWESTPRICE == sortOption){
-            orderSpecifiers.add(new OrderSpecifier(Order.ASC, store.lowestPrice));
-        }
-        else if (SortOption.RECOMMENDED == sortOption){
-            orderSpecifiers.add(new OrderSpecifier(Order.DESC, store.heartCount));
-        }
-        return orderSpecifiers.toArray(new OrderSpecifier[orderSpecifiers.size()]);
     }
 }

@@ -1,6 +1,8 @@
 package org.hankki.hankkiserver.api.store.service.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import org.hankki.hankkiserver.api.store.parameter.SortOption;
+import org.hankki.hankkiserver.domain.store.model.Store;
 
 public record CustomCursor(
         @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -10,8 +12,38 @@ public record CustomCursor(
         @JsonInclude(JsonInclude.Include.NON_NULL)
         Integer nextHeartCount) {
 
+    public static CustomCursor createNextCursor(SortOption sortOption, Store store) {
+
+        if (sortOption == null) {
+            return CustomCursor.builder()
+                    .nextId(store.getId())
+                    .build();
+        }
+
+        switch (sortOption) {
+            case RECOMMENDED -> {
+                return CustomCursor.builder()
+                        .nextId(store.getId())
+                        .nextHeartCount(store.getHearts().size())
+                        .build();
+            }
+            case LOWESTPRICE -> {
+                return CustomCursor.builder()
+                        .nextId(store.getId())
+                        .nextLowestPrice(store.getLowestPrice())
+                        .build();
+            }
+            default -> {
+                return CustomCursor.builder()
+                        .nextId(store.getId())
+                        .build();
+            }
+        }
+    }
+
     public static CustomCursorBuilder builder() {
         return new CustomCursorBuilder();
+
     }
 
     public static class CustomCursorBuilder {

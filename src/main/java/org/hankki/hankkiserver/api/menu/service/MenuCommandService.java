@@ -37,7 +37,7 @@ public class MenuCommandService {
         Menu menu = menuFinder.findByStoreIdAndId(findStore.getId(), command.id());
         menuDeleter.deleteMenu(menu);
         saveToDeletedMenu(menu, findStore.getId());
-        updateLowestPriceInStore(storeFinder.findByIdWhereDeletedIsFalse(command.storeId()));
+        updateLowestPriceInStore(findStore);
         checkNoMenuInStore(findStore, command.userId());
     }
 

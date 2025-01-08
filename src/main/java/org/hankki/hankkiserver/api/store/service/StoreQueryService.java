@@ -89,7 +89,7 @@ public class StoreQueryService {
     }
 
     private <T>boolean isNextPageAvailable(List<T> elements) {
-        return elements.size() == 10;
+        return elements.size() == PAGE_SIZE;
     }
 
     public CategoriesResponse getCategoriesV1() {

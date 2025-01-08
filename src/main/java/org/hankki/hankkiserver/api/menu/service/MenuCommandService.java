@@ -1,6 +1,8 @@
 package org.hankki.hankkiserver.api.menu.service;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.menu.service.command.MenuDeleteCommand;
 import org.hankki.hankkiserver.api.menu.service.command.MenuPatchCommand;
@@ -49,11 +51,7 @@ public class MenuCommandService {
     @Transactional
     public MenusPostResponse createMenus(final MenusPostCommand command) {
         Store findStore = storeFinder.findByIdWhereDeletedIsFalse(command.storeId());
-        List<Menu> allMenus = menuFinder.findAllByStore(findStore);
-        List<Menu> menus = command.menu().stream()
-                .filter(c -> !validateMenuConflict(allMenus, c.name()))
-                .map(c -> Menu.create(findStore, c.name(), c.price()))
-                .toList();
+        List<Menu> menus = filterNewMenu(command, findStore);
         menuUpdater.saveAll(menus);
         updateLowestPriceInStore(findStore);
         return MenusPostResponse.of(menus);
@@ -70,8 +68,22 @@ public class MenuCommandService {
         findStore.updateLowestPrice(menuFinder.findLowestPriceByStore(findStore));
     }
 
-    private boolean validateMenuConflict(final List<Menu> menus, final String menuName) {
-        return menus.stream().anyMatch(menu -> menu.getName().equals(menuName));
+    private List<Menu> filterNewMenu(final MenusPostCommand command, final Store store) {
+        Set<String> allMenuNames = parseAllMenuNames(store);
+        return command.menu().stream()
+                .filter(c -> !validateMenuConflict(allMenuNames, c.name()))
+                .map(c -> Menu.create(store, c.name(), c.price()))
+                .toList();
+    }
+
+    private Set<String> parseAllMenuNames(final Store store) {
+        return menuFinder.findAllByStore(store).stream()
+                .map(Menu::getName)
+                .collect(Collectors.toSet());
+    }
+
+    private boolean validateMenuConflict(final Set<String> menus, final String menuName) {
+        return menus.contains(menuName);
     }
 
     private void checkNoMenuInStore(final Store store, final long userId) {

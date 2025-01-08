@@ -24,7 +24,7 @@ public record CustomCursor(
             case RECOMMENDED -> {
                 return CustomCursor.builder()
                         .nextId(store.getId())
-                        .nextHeartCount(store.getHearts().size())
+                        .nextHeartCount(store.getHeartCount())
                         .build();
             }
             case LOWESTPRICE -> {

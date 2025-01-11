@@ -1,4 +1,4 @@
-package org.hankki.hankkiserver.api.store.aspect;
+package org.hankki.hankkiserver.common.aspect;
 
 import jakarta.persistence.OptimisticLockException;
 import org.aspectj.lang.ProceedingJoinPoint;

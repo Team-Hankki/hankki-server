@@ -6,7 +6,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.hankki.hankkiserver.api.common.annotation.Retry;
 import org.hankki.hankkiserver.common.code.HeartErrorCode;
-import org.hankki.hankkiserver.common.exception.BadRequestException;
+import org.hankki.hankkiserver.common.exception.ConflictException;
 import org.hibernate.StaleObjectStateException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -27,6 +27,6 @@ public class RetryAspect {
                 Thread.sleep(retry.backoff());
             }
         }
-        throw new BadRequestException(HeartErrorCode.HEART_COUNT_CONCURRENCY_ERROR);
+        throw new ConflictException(HeartErrorCode.HEART_COUNT_CONCURRENCY_ERROR);
     }
 }

@@ -48,12 +48,12 @@ public class AuthService {
         return UserLoginResponse.of(issuedToken, isRegistered);
     }
 
-    public void logout(final Long userId) {
+    public void logout(final long userId) {
         UserInfo findUserInfo = userInfoFinder.getUserInfo(userId);
         findUserInfo.updateRefreshToken(null);
     }
 
-    public void withdraw(final Long userId, final String code) {
+    public void withdraw(final long userId, final String code) {
         User user = userFinder.getUser(userId);
         Platform platform = user.getPlatform();
         OAuthProvider oAuthProvider = oAuthProviderFactory.findProvider(platform);
@@ -71,14 +71,14 @@ public class AuthService {
         return UserReissueResponse.of(issuedTokens);
     }
 
-    private Token generateTokens(final Long userId) {
+    private Token generateTokens(final long userId) {
         Token issuedTokens = jwtProvider.issueTokens(userId, getUserRole(userId));
         UserInfo findUserInfo = userInfoFinder.getUserInfo(userId);
         findUserInfo.updateRefreshToken(issuedTokens.refreshToken());
         return issuedTokens;
     }
 
-    private String getUserRole(final Long userId) {
+    private String getUserRole(final long userId) {
         return userFinder.getUser(userId).getRole().getValue();
     }
 
@@ -117,7 +117,7 @@ public class AuthService {
         return user;
     }
 
-    private String getRefreshToken(final Long userId) {
+    private String getRefreshToken(final long userId) {
         return userInfoFinder.getUserInfo(userId).getRefreshToken();
     }
 

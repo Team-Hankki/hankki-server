@@ -72,6 +72,9 @@ dependencies {
 
 	// Discord Webhook
 	implementation 'com.github.napstr:logback-discord-appender:1.0.0'
+
+	// aop
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
 }
 
 tasks.named('test') {

@@ -25,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class AuthService {
 
@@ -38,6 +37,7 @@ public class AuthService {
     private final OAuthProviderFactory oAuthProviderFactory;
     private final EventPublisher eventPublisher;
 
+    @Transactional
     public UserLoginResponse login(final String token, final UserLoginRequest request) {
         Platform platform = Platform.getEnumPlatformFromStringPlatform(request.platform());
         SocialInfoDto socialInfo = getSocialInfo(token, platform, request.name());
@@ -48,11 +48,13 @@ public class AuthService {
         return UserLoginResponse.of(issuedToken, isRegistered);
     }
 
+    @Transactional
     public void logout(final long userId) {
         UserInfo findUserInfo = userInfoFinder.getUserInfo(userId);
         findUserInfo.updateRefreshToken(null);
     }
 
+    @Transactional
     public void withdraw(final long userId, final String code) {
         User user = userFinder.getUser(userId);
         Platform platform = user.getPlatform();
@@ -62,6 +64,7 @@ public class AuthService {
         userInfoFinder.getUserInfo(userId).softDelete();
     }
 
+    @Transactional
     public UserReissueResponse reissue(final String refreshToken) {
         Long userId = jwtProvider.getSubject(refreshToken.substring(BEARER.length()));
         validateRefreshToken(refreshToken, userId);

@@ -25,7 +25,8 @@ public class AppleOAuthProvider implements OAuthProvider {
     @Value("${oauth.apple.client-id}")
     private String clientId;
 
-    private static final String TOKEN_TYPE_HINT = "refresh_token";
+    private static final String TOKEN_TYPE = "refresh_token";
+    private static final String GRANT_TYPE = "authorization_code";
 
     @Override
     public SocialInfoDto getUserInfo(final String identityToken, final String name) {
@@ -44,7 +45,7 @@ public class AppleOAuthProvider implements OAuthProvider {
         try {
             String clientSecret = appleClientSecretGenerator.generateClientSecret();
             String refreshToken = getAppleRefreshToken(authorizationCode, clientSecret);
-            appleFeignClient.revoke(refreshToken, clientId, clientSecret, TOKEN_TYPE_HINT);
+            appleFeignClient.revoke(refreshToken, clientId, clientSecret, TOKEN_TYPE);
         } catch (Exception e) {
             throw new BadRequestException(AuthErrorCode.APPLE_REVOKE_FAILED);
         }
@@ -52,7 +53,7 @@ public class AppleOAuthProvider implements OAuthProvider {
 
     private String getAppleRefreshToken(final String code, final String clientSecret) {
         try {
-            AppleTokenResponse appleTokenResponse = appleFeignClient.getAppleTokens(code, clientId, clientSecret, "authorization_code");
+            AppleTokenResponse appleTokenResponse = appleFeignClient.getAppleTokens(code, clientId, clientSecret, GRANT_TYPE);
             return appleTokenResponse.refreshToken();
         } catch (Exception e) {
             throw new BadRequestException(AuthErrorCode.FAILED_TO_LOAD_PRIVATE_KEY);

@@ -82,39 +82,39 @@ public class AuthService {
         return userFinder.getUser(userId).getRole().getValue();
     }
 
+    private boolean isRegistered(final Optional<User> user) {
+        return user.map(u -> u.getStatus() == ACTIVE)
+                .orElse(false);
+    }
+
     private SocialInfoDto getSocialInfo(final String providerToken, final Platform platform, final String name) {
         OAuthProvider oAuthProvider = oAuthProviderFactory.findProvider(platform);
         return oAuthProvider.getUserInfo(providerToken, name);
     }
 
-    private User loadOrCreateUser(final Optional<User> findUser, final Platform platform,
-                                  final SocialInfoDto socialInfo) {
-        return findUser.map(user -> updateOrFindUserInfo(user, user.getStatus(), socialInfo))
-                .orElseGet(() -> {
-                    User newUser = createUser(socialInfo.name(), socialInfo.email(), socialInfo.serialId(), platform);
-                    saveUserAndUserInfo(newUser);
-                    eventPublisher.publish(
-                            CreateUserEvent.of(newUser.getId(), newUser.getName(), newUser.getPlatform().toString()));
-                    return newUser;
-                });
+    private User loadOrCreateUser(final Optional<User> findUser, final Platform platform, final SocialInfoDto socialInfo) {
+        return findUser.map(user -> updateOrGetUserInfo(user, user.getStatus(), socialInfo))
+                .orElseGet(() -> createNewUser(socialInfo, platform));
     }
 
-    private User updateOrFindUserInfo(final User user, final UserStatus status, final SocialInfoDto socialInfo) {
+    private User updateOrGetUserInfo(final User user, final UserStatus status, final SocialInfoDto socialInfo) {
         if (status == ACTIVE) {
             return user;
         }
         return updateUserInfo(user, socialInfo);
     }
 
-    private boolean isRegistered(final Optional<User> user) {
-        return user.map(u -> u.getStatus() == ACTIVE)
-                .orElse(false);
-    }
-
     private User updateUserInfo(final User user, final SocialInfoDto socialInfo) {
         user.rejoin(socialInfo);
         userInfoFinder.getUserInfo(user.getId()).updateNickname(socialInfo.name());
         return user;
+    }
+
+    private User createNewUser(final SocialInfoDto socialInfo, final Platform platform) {
+        User newUser = createUser(socialInfo.name(), socialInfo.email(), socialInfo.serialId(), platform);
+        saveUserAndUserInfo(newUser);
+        eventPublisher.publish(CreateUserEvent.of(newUser.getId(), newUser.getName(), newUser.getPlatform().toString()));
+        return newUser;
     }
 
     private String getRefreshToken(final long userId) {

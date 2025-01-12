@@ -28,7 +28,7 @@ public class AppleClientSecretGenerator {
     private String clientId;
 
     public String generateClientSecret() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-        Date expirationDate = Date.from(LocalDateTime.now().plusDays(5)
+        Date expirationDate = Date.from(LocalDateTime.now().plusMinutes(5)
                 .atZone(ZoneId.systemDefault()).toInstant());
         return Jwts.builder()
                 .setHeaderParam("alg", SignatureAlgorithm.ES256)

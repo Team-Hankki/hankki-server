@@ -1,12 +1,12 @@
-package org.hankki.hankkiserver.external.openfeign.apple;
+package org.hankki.hankkiserver.external.openfeign.login.apple;
 
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.common.code.AuthErrorCode;
 import org.hankki.hankkiserver.common.exception.BadRequestException;
-import org.hankki.hankkiserver.external.openfeign.apple.dto.ApplePublicKeys;
-import org.hankki.hankkiserver.external.openfeign.apple.dto.AppleTokenResponse;
-import org.hankki.hankkiserver.external.openfeign.dto.SocialInfoDto;
+import org.hankki.hankkiserver.external.openfeign.login.apple.dto.ApplePublicKeys;
+import org.hankki.hankkiserver.external.openfeign.login.apple.dto.AppleTokenResponse;
+import org.hankki.hankkiserver.external.openfeign.login.dto.SocialInfoDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

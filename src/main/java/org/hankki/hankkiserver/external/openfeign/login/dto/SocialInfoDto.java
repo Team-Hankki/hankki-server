@@ -1,4 +1,4 @@
-package org.hankki.hankkiserver.external.openfeign.dto;
+package org.hankki.hankkiserver.external.openfeign.login.dto;
 
 public record SocialInfoDto(
         String serialId,

@@ -1,12 +1,12 @@
-package org.hankki.hankkiserver.external.openfeign.kakao;
+package org.hankki.hankkiserver.external.openfeign.login.kakao;
+
+import static org.hankki.hankkiserver.external.openfeign.login.kakao.KakaoAccessToken.createKakaoAccessToken;
 
 import lombok.RequiredArgsConstructor;
-import org.hankki.hankkiserver.external.openfeign.dto.SocialInfoDto;
-import org.hankki.hankkiserver.external.openfeign.kakao.dto.KakaoUnlinkRequest;
-import org.hankki.hankkiserver.external.openfeign.kakao.dto.KakaoUserInfo;
+import org.hankki.hankkiserver.external.openfeign.login.dto.SocialInfoDto;
+import org.hankki.hankkiserver.external.openfeign.login.kakao.dto.KakaoUnlinkRequest;
+import org.hankki.hankkiserver.external.openfeign.login.kakao.dto.KakaoUserInfo;
 import org.springframework.stereotype.Component;
-
-import static org.hankki.hankkiserver.external.openfeign.kakao.KakaoAccessToken.createKakaoAccessToken;
 
 @Component
 @RequiredArgsConstructor

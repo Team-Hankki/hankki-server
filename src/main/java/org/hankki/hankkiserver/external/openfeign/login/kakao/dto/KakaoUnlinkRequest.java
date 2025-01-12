@@ -1,4 +1,4 @@
-package org.hankki.hankkiserver.external.openfeign.kakao.dto;
+package org.hankki.hankkiserver.external.openfeign.login.kakao.dto;
 
 public record KakaoUnlinkRequest(
         String targetIdType,

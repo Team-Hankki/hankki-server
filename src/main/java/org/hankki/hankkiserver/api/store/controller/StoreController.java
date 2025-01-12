@@ -60,7 +60,7 @@ public class StoreController {
 
     @GetMapping("/v2/stores/categories")
     public HankkiResponse<CategoriesResponse> getCategoriesV2() {
-        return HankkiResponse.success(CommonSuccessCode.OK, storeQueryService.getCategoriesV2());ㅁ
+        return HankkiResponse.success(CommonSuccessCode.OK, storeQueryService.getCategoriesV2());
     }
 
     @GetMapping("/v1/stores/sort-options")

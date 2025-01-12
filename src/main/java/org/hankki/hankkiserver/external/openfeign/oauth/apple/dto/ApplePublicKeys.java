@@ -1,4 +1,4 @@
-package org.hankki.hankkiserver.external.openfeign.login.apple.dto;
+package org.hankki.hankkiserver.external.openfeign.oauth.apple.dto;
 
 import org.hankki.hankkiserver.common.code.AuthErrorCode;
 import org.hankki.hankkiserver.common.exception.UnauthorizedException;

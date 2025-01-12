@@ -1,7 +1,7 @@
-package org.hankki.hankkiserver.external.openfeign.login.apple;
+package org.hankki.hankkiserver.external.openfeign.oauth.apple;
 
-import org.hankki.hankkiserver.external.openfeign.login.apple.dto.ApplePublicKeys;
-import org.hankki.hankkiserver.external.openfeign.login.apple.dto.AppleTokenResponse;
+import org.hankki.hankkiserver.external.openfeign.oauth.apple.dto.ApplePublicKeys;
+import org.hankki.hankkiserver.external.openfeign.oauth.apple.dto.AppleTokenResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;

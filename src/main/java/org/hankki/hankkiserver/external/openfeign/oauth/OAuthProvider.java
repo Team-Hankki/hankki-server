@@ -1,6 +1,4 @@
-package org.hankki.hankkiserver.external.openfeign.login;
-
-import org.hankki.hankkiserver.external.openfeign.login.dto.SocialInfoDto;
+package org.hankki.hankkiserver.external.openfeign.oauth;
 
 public interface OAuthProvider {
 

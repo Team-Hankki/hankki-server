@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 import lombok.*;
 import org.hankki.hankkiserver.domain.common.BaseTimeEntity;
-import org.hankki.hankkiserver.external.openfeign.login.dto.SocialInfoDto;
+import org.hankki.hankkiserver.external.openfeign.oauth.SocialInfoDto;
 
 import java.time.LocalDateTime;
 

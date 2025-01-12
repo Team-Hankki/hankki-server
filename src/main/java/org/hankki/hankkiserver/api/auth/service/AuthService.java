@@ -19,8 +19,8 @@ import org.hankki.hankkiserver.domain.user.model.UserInfo;
 import org.hankki.hankkiserver.domain.user.model.UserStatus;
 import org.hankki.hankkiserver.event.EventPublisher;
 import org.hankki.hankkiserver.event.user.CreateUserEvent;
-import org.hankki.hankkiserver.external.openfeign.login.OAuthProvider;
-import org.hankki.hankkiserver.external.openfeign.login.dto.SocialInfoDto;
+import org.hankki.hankkiserver.external.openfeign.oauth.OAuthProvider;
+import org.hankki.hankkiserver.external.openfeign.oauth.SocialInfoDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

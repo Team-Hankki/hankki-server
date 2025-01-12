@@ -1,4 +1,4 @@
-package org.hankki.hankkiserver.external.openfeign.login.apple;
+package org.hankki.hankkiserver.external.openfeign.oauth.apple;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

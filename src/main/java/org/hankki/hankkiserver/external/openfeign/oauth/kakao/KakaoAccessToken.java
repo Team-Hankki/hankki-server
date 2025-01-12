@@ -1,4 +1,4 @@
-package org.hankki.hankkiserver.external.openfeign.login.kakao;
+package org.hankki.hankkiserver.external.openfeign.oauth.kakao;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

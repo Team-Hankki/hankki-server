@@ -1,4 +1,4 @@
-package org.hankki.hankkiserver.external.openfeign.login.apple;
+package org.hankki.hankkiserver.external.openfeign.oauth.apple;
 
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;

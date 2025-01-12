@@ -22,13 +22,13 @@ public class ApplePublicKeyGenerator {
     private static final String KEY_ID_HEADER_KEY = "kid";
     private static final String SIGN_ALGORITHM_HEADER_KEY = "alg";
 
-    protected PublicKey generatePublicKey(Map<String, String> headers, ApplePublicKeys applePublicKeys) {
+    protected PublicKey generatePublicKey(final Map<String, String> headers, final ApplePublicKeys applePublicKeys) {
         ApplePublicKey applePublicKey = applePublicKeys
                 .getMatchedPublicKey(headers.get(KEY_ID_HEADER_KEY), headers.get(SIGN_ALGORITHM_HEADER_KEY));
         return getPublicKey(applePublicKey);
     }
 
-    private PublicKey getPublicKey(ApplePublicKey applePublicKey) {
+    private PublicKey getPublicKey(final ApplePublicKey applePublicKey) {
 
         byte[] nBytes = Base64.getUrlDecoder().decode(applePublicKey.n());
         byte[] eBytes = Base64.getUrlDecoder().decode(applePublicKey.e());

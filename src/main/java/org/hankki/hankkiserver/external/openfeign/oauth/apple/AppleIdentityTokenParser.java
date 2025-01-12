@@ -20,7 +20,7 @@ public class AppleIdentityTokenParser {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    protected Map<String, String> parseHeaders(String identityToken) {
+    protected Map<String, String> parseHeaders(final String identityToken) {
         try {
             String encodedHeader = identityToken.split("\\.")[0];
             String decodedHeader = new String(Base64.getUrlDecoder().decode(encodedHeader));
@@ -31,7 +31,7 @@ public class AppleIdentityTokenParser {
         }
     }
 
-    protected Claims parsePublicKeyAndGetClaims(String identityToken, PublicKey publicKey) {
+    protected Claims parsePublicKeyAndGetClaims(final String identityToken, final PublicKey publicKey) {
         try {
             return Jwts.parserBuilder()
                     .setSigningKey(publicKey)

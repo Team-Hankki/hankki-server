@@ -55,7 +55,14 @@ public class StoreQueryService {
                 .stream().map(StoreResponse::of).toList());
     }
 
-    public CategoriesResponse getCategories() {
+    public CategoriesResponse getCategoriesV1() {
+        return new CategoriesResponse(Arrays.stream(StoreCategory.values())
+                .filter(category -> !category.equals(StoreCategory.ALL))
+                .map(CategoryResponse::of)
+                .toList());
+    }
+
+    public CategoriesResponse getCategoriesV2() {
         return new CategoriesResponse(Arrays.stream(StoreCategory.values())
                 .map(CategoryResponse::of)
                 .toList());

@@ -1,5 +1,10 @@
 package org.hankki.hankkiserver.api.auth.service;
 
+import static org.hankki.hankkiserver.auth.filter.JwtAuthenticationFilter.BEARER;
+import static org.hankki.hankkiserver.domain.user.model.User.createUser;
+import static org.hankki.hankkiserver.domain.user.model.UserStatus.ACTIVE;
+
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.auth.controller.request.UserLoginRequest;
 import org.hankki.hankkiserver.api.auth.service.response.UserLoginResponse;
@@ -7,8 +12,6 @@ import org.hankki.hankkiserver.api.auth.service.response.UserReissueResponse;
 import org.hankki.hankkiserver.auth.jwt.JwtProvider;
 import org.hankki.hankkiserver.auth.jwt.JwtValidator;
 import org.hankki.hankkiserver.auth.jwt.Token;
-import org.hankki.hankkiserver.common.code.AuthErrorCode;
-import org.hankki.hankkiserver.common.exception.BadRequestException;
 import org.hankki.hankkiserver.common.exception.UnauthorizedException;
 import org.hankki.hankkiserver.domain.user.model.Platform;
 import org.hankki.hankkiserver.domain.user.model.User;
@@ -16,30 +19,15 @@ import org.hankki.hankkiserver.domain.user.model.UserInfo;
 import org.hankki.hankkiserver.domain.user.model.UserStatus;
 import org.hankki.hankkiserver.event.EventPublisher;
 import org.hankki.hankkiserver.event.user.CreateUserEvent;
-import org.hankki.hankkiserver.external.openfeign.login.apple.AppleClientSecretGenerator;
-import org.hankki.hankkiserver.external.openfeign.login.apple.AppleOAuthProvider;
+import org.hankki.hankkiserver.external.openfeign.login.OAuthProvider;
 import org.hankki.hankkiserver.external.openfeign.login.dto.SocialInfoDto;
-import org.hankki.hankkiserver.external.openfeign.login.kakao.KakaoOAuthProvider;
-import org.hankki.hankkiserver.external.openfeign.login.kakao.dto.KakaoUnlinkRequest;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
-
-import static org.hankki.hankkiserver.auth.filter.JwtAuthenticationFilter.BEARER;
-import static org.hankki.hankkiserver.domain.user.model.UserStatus.ACTIVE;
-import static org.hankki.hankkiserver.domain.user.model.Platform.APPLE;
-import static org.hankki.hankkiserver.domain.user.model.Platform.KAKAO;
-import static org.hankki.hankkiserver.domain.user.model.User.createUser;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class AuthService {
-
-    @Value("${oauth.kakao.key}")
-    private String adminKey;
 
     private final UserFinder userFinder;
     private final UserUpdater userUpdater;
@@ -47,9 +35,7 @@ public class AuthService {
     private final UserInfoUpdater userInfoUpdater;
     private final JwtProvider jwtProvider;
     private final JwtValidator jwtValidator;
-    private final KakaoOAuthProvider kakaoOAuthProvider;
-    private final AppleOAuthProvider appleOAuthProvider;
-    private final AppleClientSecretGenerator appleClientSecretGenerator;
+    private final OAuthProviderFactory oAuthProviderFactory;
     private final EventPublisher eventPublisher;
 
     public UserLoginResponse login(final String token, final UserLoginRequest request) {
@@ -69,18 +55,9 @@ public class AuthService {
 
     public void withdraw(final Long userId, final String code) {
         User user = userFinder.getUser(userId);
-        if (APPLE == user.getPlatform()){
-            try {
-                String clientSecret = appleClientSecretGenerator.generateClientSecret();
-                String refreshToken = appleOAuthProvider.getAppleRefreshToken(code, clientSecret);
-                appleOAuthProvider.requestRevoke(refreshToken, clientSecret);
-            } catch (Exception e) {
-                throw new BadRequestException(AuthErrorCode.APPLE_REVOKE_FAILED);
-            }
-        }
-        if (KAKAO == user.getPlatform()) {
-            kakaoOAuthProvider.unlinkKakaoServer(adminKey, KakaoUnlinkRequest.of(user.getSerialId()));
-        }
+        Platform platform = user.getPlatform();
+        OAuthProvider oAuthProvider = oAuthProviderFactory.findProvider(platform);
+        oAuthProvider.requestRevoke(code, user.getSerialId()); // code는 apple이 필요, serialId는 카카오가 필요
         user.softDelete();
         userInfoFinder.getUserInfo(userId).softDelete();
     }
@@ -106,18 +83,18 @@ public class AuthService {
     }
 
     private SocialInfoDto getSocialInfo(final String providerToken, final Platform platform, final String name) {
-        if (KAKAO == platform){
-            return kakaoOAuthProvider.getKakaoUserInfo(providerToken);
-        }
-        return appleOAuthProvider.getAppleUserInfo(providerToken, name);
+        OAuthProvider oAuthProvider = oAuthProviderFactory.findProvider(platform);
+        return oAuthProvider.getUserInfo(providerToken, name);
     }
 
-    private User loadOrCreateUser(final Optional<User> findUser, final Platform platform, final SocialInfoDto socialInfo) {
+    private User loadOrCreateUser(final Optional<User> findUser, final Platform platform,
+                                  final SocialInfoDto socialInfo) {
         return findUser.map(user -> updateOrFindUserInfo(user, user.getStatus(), socialInfo))
                 .orElseGet(() -> {
                     User newUser = createUser(socialInfo.name(), socialInfo.email(), socialInfo.serialId(), platform);
                     saveUserAndUserInfo(newUser);
-                    eventPublisher.publish(CreateUserEvent.of(newUser.getId(), newUser.getName(), newUser.getPlatform().toString()));
+                    eventPublisher.publish(
+                            CreateUserEvent.of(newUser.getId(), newUser.getName(), newUser.getPlatform().toString()));
                     return newUser;
                 });
     }
@@ -125,16 +102,14 @@ public class AuthService {
     private User updateOrFindUserInfo(final User user, final UserStatus status, final SocialInfoDto socialInfo) {
         if (status == ACTIVE) {
             return user;
-        } else {
-            return updateUserInfo(user, socialInfo);
         }
+        return updateUserInfo(user, socialInfo);
     }
 
     private boolean isRegistered(final Optional<User> user) {
         return user.map(u -> u.getStatus() == ACTIVE)
                 .orElse(false);
     }
-
 
     private User updateUserInfo(final User user, final SocialInfoDto socialInfo) {
         user.rejoin(socialInfo);

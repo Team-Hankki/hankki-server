@@ -11,11 +11,11 @@ public class KakaoAccessToken {
     private static final String TOKEN_TYPE = "Bearer ";
     private String accessToken;
 
-    public static KakaoAccessToken createKakaoAccessToken(String accessToken) {
+    protected static KakaoAccessToken createKakaoAccessToken(String accessToken) {
         return new KakaoAccessToken(accessToken);
     }
 
-    public String getAccessTokenWithTokenType() {
+    protected String getAccessTokenWithTokenType() {
         return TOKEN_TYPE + accessToken;
     }
 }

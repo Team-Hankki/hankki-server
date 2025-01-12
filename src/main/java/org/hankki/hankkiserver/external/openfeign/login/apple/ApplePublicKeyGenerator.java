@@ -22,7 +22,7 @@ public class ApplePublicKeyGenerator {
     private static final String KEY_ID_HEADER_KEY = "kid";
     private static final String SIGN_ALGORITHM_HEADER_KEY = "alg";
 
-    public PublicKey generatePublicKey(Map<String, String> headers, ApplePublicKeys applePublicKeys) {
+    protected PublicKey generatePublicKey(Map<String, String> headers, ApplePublicKeys applePublicKeys) {
         ApplePublicKey applePublicKey = applePublicKeys
                 .getMatchedPublicKey(headers.get(KEY_ID_HEADER_KEY), headers.get(SIGN_ALGORITHM_HEADER_KEY));
         return getPublicKey(applePublicKey);

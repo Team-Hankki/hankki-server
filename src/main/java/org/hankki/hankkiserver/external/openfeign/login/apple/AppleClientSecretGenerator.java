@@ -2,16 +2,14 @@ package org.hankki.hankkiserver.external.openfeign.login.apple;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
@@ -27,7 +25,7 @@ public class AppleClientSecretGenerator {
     @Value("${oauth.apple.client-id}")
     private String clientId;
 
-    public String generateClientSecret() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+    protected String generateClientSecret() throws NoSuchAlgorithmException, InvalidKeySpecException {
         Date expirationDate = Date.from(LocalDateTime.now().plusMinutes(5)
                 .atZone(ZoneId.systemDefault()).toInstant());
         return Jwts.builder()

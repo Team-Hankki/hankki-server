@@ -1,8 +1,10 @@
 package org.hankki.hankkiserver.api.common.advice;
 
+import feign.FeignException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.hankki.hankkiserver.api.dto.HankkiResponse;
+import org.hankki.hankkiserver.common.code.AuthErrorCode;
 import org.hankki.hankkiserver.common.code.BusinessErrorCode;
 import org.hankki.hankkiserver.common.code.StoreErrorCode;
 import org.hankki.hankkiserver.common.code.StoreImageErrorCode;
@@ -107,5 +109,11 @@ public class GlobalExceptionHandler {
     public HankkiResponse<Void> handleConstraintViolationException(ConstraintViolationException e) {
         log.warn("handleConstraintViolationException() in GlobalExceptionHandler throw ConstraintViolationException : {}", e.getMessage());
         return HankkiResponse.fail(BusinessErrorCode.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(FeignException.class)
+    public HankkiResponse<Void> handleFeignException(FeignException e) {
+        log.warn("handleFeignException() in GlobalExceptionHandler throw FeignException : {}", e.getMessage());
+        return HankkiResponse.fail(AuthErrorCode.INTERNAL_SERVER_ERROR);
     }
 }

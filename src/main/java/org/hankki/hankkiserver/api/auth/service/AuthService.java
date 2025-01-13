@@ -29,18 +29,15 @@ public class AuthService {
         Platform platform = Platform.getEnumPlatformFromStringPlatform(request.platform());
         OAuthProvider oAuthProvider = oAuthProviderFactory.findProvider(platform);
         SocialInfoResponse response = oAuthProvider.getUserInfo(token, request.name());
-        UserInfoResponse userInfoResponse = UserInfoResponse.of(platform, response.serialId(), response.name(),
-                response.email());
+        UserInfoResponse userInfoResponse = UserInfoResponse.of(platform, response.serialId(), response.name(), response.email());
         return authFacade.saveOrGetUser(userInfoResponse);
     }
 
-    @Transactional
     public void logout(final long userId) {
         UserInfo findUserInfo = userInfoFinder.getUserInfo(userId);
         findUserInfo.updateRefreshToken(null);
     }
 
-    @Transactional
     public UserReissueResponse reissue(final String refreshToken) {
         long userId = authFacade.parseUserId(refreshToken);
         validateRefreshToken(refreshToken, userId);

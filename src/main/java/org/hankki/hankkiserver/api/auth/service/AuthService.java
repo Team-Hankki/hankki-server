@@ -7,6 +7,7 @@ import static org.hankki.hankkiserver.domain.user.model.UserStatus.ACTIVE;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.auth.controller.request.UserLoginRequest;
+import org.hankki.hankkiserver.api.auth.service.response.UserInfoResponse;
 import org.hankki.hankkiserver.api.auth.service.response.UserLoginResponse;
 import org.hankki.hankkiserver.api.auth.service.response.UserReissueResponse;
 import org.hankki.hankkiserver.auth.jwt.JwtProvider;
@@ -36,13 +37,18 @@ public class AuthService {
     private final OAuthProviderFactory oAuthProviderFactory;
     private final EventPublisher eventPublisher;
 
-    @Transactional
-    public UserLoginResponse login(final String token, final UserLoginRequest request) {
+    public UserInfoResponse getSocialInfo(final String token, final UserLoginRequest request) {
         Platform platform = Platform.getEnumPlatformFromStringPlatform(request.platform());
-        SocialInfoResponse socialInfo = getSocialInfo(token, platform, request.name());
-        Optional<User> user = userFinder.findUserByPlatFormAndSeralId(platform, socialInfo.serialId());
+        OAuthProvider oAuthProvider = oAuthProviderFactory.findProvider(platform);
+        SocialInfoResponse response = oAuthProvider.getUserInfo(token, request.name());
+        return UserInfoResponse.of(platform, response.serialId(), response.name(), response.email());
+    }
+
+    @Transactional
+    public UserLoginResponse login(final UserInfoResponse userInfo) {
+        Optional<User> user = userFinder.findUserByPlatFormAndSeralId(userInfo.platform(), userInfo.serialId());
         boolean isRegistered = isRegistered(user);
-        User findUser = loadOrCreateUser(user, platform, socialInfo);
+        User findUser = loadOrCreateUser(user, userInfo.platform(), userInfo);
         Token issuedToken = generateTokens(findUser.getId());
         return UserLoginResponse.of(issuedToken, isRegistered);
     }
@@ -89,31 +95,26 @@ public class AuthService {
                 .orElse(false);
     }
 
-    private SocialInfoResponse getSocialInfo(final String providerToken, final Platform platform, final String name) {
-        OAuthProvider oAuthProvider = oAuthProviderFactory.findProvider(platform);
-        return oAuthProvider.getUserInfo(providerToken, name);
+    private User loadOrCreateUser(final Optional<User> findUser, final Platform platform, final UserInfoResponse userInfo) {
+        return findUser.map(user -> updateOrGetUserInfo(user, user.getStatus(), userInfo))
+                .orElseGet(() -> createNewUser(userInfo, platform));
     }
 
-    private User loadOrCreateUser(final Optional<User> findUser, final Platform platform, final SocialInfoResponse socialInfo) {
-        return findUser.map(user -> updateOrGetUserInfo(user, user.getStatus(), socialInfo))
-                .orElseGet(() -> createNewUser(socialInfo, platform));
-    }
-
-    private User updateOrGetUserInfo(final User user, final UserStatus status, final SocialInfoResponse socialInfo) {
+    private User updateOrGetUserInfo(final User user, final UserStatus status, final UserInfoResponse userInfo) {
         if (status == ACTIVE) {
             return user;
         }
-        return updateUserInfo(user, socialInfo);
+        return updateUserInfo(user, userInfo);
     }
 
-    private User updateUserInfo(final User user, final SocialInfoResponse socialInfo) {
-        user.rejoin(socialInfo);
-        userInfoFinder.getUserInfo(user.getId()).updateNickname(socialInfo.name());
+    private User updateUserInfo(final User user, final UserInfoResponse userInfo) {
+        user.rejoin(userInfo.name(), userInfo.email());
+        userInfoFinder.getUserInfo(user.getId()).updateNickname(userInfo.name());
         return user;
     }
 
-    private User createNewUser(final SocialInfoResponse socialInfo, final Platform platform) {
-        User newUser = createUser(socialInfo.name(), socialInfo.email(), socialInfo.serialId(), platform);
+    private User createNewUser(final UserInfoResponse userInfo, final Platform platform) {
+        User newUser = createUser(userInfo.name(), userInfo.email(), userInfo.serialId(), platform);
         saveUserAndUserInfo(newUser);
         eventPublisher.publish(CreateUserEvent.of(newUser.getId(), newUser.getName(), newUser.getPlatform().toString()));
         return newUser;

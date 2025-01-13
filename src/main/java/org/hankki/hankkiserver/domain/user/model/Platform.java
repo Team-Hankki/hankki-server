@@ -14,6 +14,7 @@ public enum Platform {
     KAKAO("KAKAO"),
     APPLE("APPLE");
 
+    private static final String SUFFIX = "OAuthProvider";
     private final String loginPlatform;
 
     public static Platform getEnumPlatformFromStringPlatform(String loginPlatform) {
@@ -21,5 +22,9 @@ public enum Platform {
                 .filter(platform -> platform.loginPlatform.equals(loginPlatform))
                 .findFirst()
                 .orElseThrow(() -> new BadRequestException(AuthErrorCode.INVALID_PLATFORM_TYPE));
+    }
+
+    public String getBeanName() {
+        return loginPlatform.toLowerCase() + SUFFIX;
     }
 }

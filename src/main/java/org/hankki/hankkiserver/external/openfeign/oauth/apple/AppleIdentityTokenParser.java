@@ -1,32 +1,37 @@
-package org.hankki.hankkiserver.external.openfeign.apple;
+package org.hankki.hankkiserver.external.openfeign.oauth.apple;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.*;
-import org.hankki.hankkiserver.common.code.AuthErrorCode;
-import org.hankki.hankkiserver.common.exception.UnauthorizedException;
-import org.springframework.stereotype.Component;
-
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import java.security.PublicKey;
 import java.util.Base64;
 import java.util.Map;
+import org.hankki.hankkiserver.common.code.AuthErrorCode;
+import org.hankki.hankkiserver.common.exception.UnauthorizedException;
+import org.springframework.stereotype.Component;
 
 @Component
 public class AppleIdentityTokenParser {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    public Map<String, String> parseHeaders(String identityToken) {
+    protected Map<String, String> parseHeaders(final String identityToken) {
         try {
             String encodedHeader = identityToken.split("\\.")[0];
             String decodedHeader = new String(Base64.getUrlDecoder().decode(encodedHeader));
-            return OBJECT_MAPPER.readValue(decodedHeader, Map.class);
+            return OBJECT_MAPPER.readValue(decodedHeader, new TypeReference<>() {
+            });
         } catch (JsonProcessingException | ArrayIndexOutOfBoundsException e) {
             throw new UnauthorizedException(AuthErrorCode.INVALID_APPLE_IDENTITY_TOKEN);
         }
     }
 
-    public Claims parsePublicKeyAndGetClaims(String identityToken, PublicKey publicKey) {
+    protected Claims parsePublicKeyAndGetClaims(final String identityToken, final PublicKey publicKey) {
         try {
             return Jwts.parserBuilder()
                     .setSigningKey(publicKey)

@@ -1,4 +1,4 @@
-package org.hankki.hankkiserver.external.openfeign.apple.dto;
+package org.hankki.hankkiserver.external.openfeign.oauth.apple.dto;
 
 public record ApplePublicKey(
         String kty,

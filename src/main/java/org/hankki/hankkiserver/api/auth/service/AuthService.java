@@ -19,8 +19,7 @@ import org.hankki.hankkiserver.domain.user.model.UserInfo;
 import org.hankki.hankkiserver.domain.user.model.UserStatus;
 import org.hankki.hankkiserver.event.EventPublisher;
 import org.hankki.hankkiserver.event.user.CreateUserEvent;
-import org.hankki.hankkiserver.external.openfeign.oauth.OAuthProvider;
-import org.hankki.hankkiserver.external.openfeign.oauth.SocialInfoDto;
+import org.hankki.hankkiserver.external.openfeign.oauth.SocialInfoResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,7 +39,7 @@ public class AuthService {
     @Transactional
     public UserLoginResponse login(final String token, final UserLoginRequest request) {
         Platform platform = Platform.getEnumPlatformFromStringPlatform(request.platform());
-        SocialInfoDto socialInfo = getSocialInfo(token, platform, request.name());
+        SocialInfoResponse socialInfo = getSocialInfo(token, platform, request.name());
         Optional<User> user = userFinder.findUserByPlatFormAndSeralId(platform, socialInfo.serialId());
         boolean isRegistered = isRegistered(user);
         User findUser = loadOrCreateUser(user, platform, socialInfo);
@@ -59,7 +58,7 @@ public class AuthService {
         User user = userFinder.getUser(userId);
         Platform platform = user.getPlatform();
         OAuthProvider oAuthProvider = oAuthProviderFactory.findProvider(platform);
-        oAuthProvider.requestRevoke(code, user.getSerialId()); // code는 apple이 필요, serialId는 카카오가 필요
+        oAuthProvider.requestRevoke(code, user.getSerialId());
         user.softDelete();
         userInfoFinder.getUserInfo(userId).softDelete();
     }
@@ -90,30 +89,30 @@ public class AuthService {
                 .orElse(false);
     }
 
-    private SocialInfoDto getSocialInfo(final String providerToken, final Platform platform, final String name) {
+    private SocialInfoResponse getSocialInfo(final String providerToken, final Platform platform, final String name) {
         OAuthProvider oAuthProvider = oAuthProviderFactory.findProvider(platform);
         return oAuthProvider.getUserInfo(providerToken, name);
     }
 
-    private User loadOrCreateUser(final Optional<User> findUser, final Platform platform, final SocialInfoDto socialInfo) {
+    private User loadOrCreateUser(final Optional<User> findUser, final Platform platform, final SocialInfoResponse socialInfo) {
         return findUser.map(user -> updateOrGetUserInfo(user, user.getStatus(), socialInfo))
                 .orElseGet(() -> createNewUser(socialInfo, platform));
     }
 
-    private User updateOrGetUserInfo(final User user, final UserStatus status, final SocialInfoDto socialInfo) {
+    private User updateOrGetUserInfo(final User user, final UserStatus status, final SocialInfoResponse socialInfo) {
         if (status == ACTIVE) {
             return user;
         }
         return updateUserInfo(user, socialInfo);
     }
 
-    private User updateUserInfo(final User user, final SocialInfoDto socialInfo) {
+    private User updateUserInfo(final User user, final SocialInfoResponse socialInfo) {
         user.rejoin(socialInfo);
         userInfoFinder.getUserInfo(user.getId()).updateNickname(socialInfo.name());
         return user;
     }
 
-    private User createNewUser(final SocialInfoDto socialInfo, final Platform platform) {
+    private User createNewUser(final SocialInfoResponse socialInfo, final Platform platform) {
         User newUser = createUser(socialInfo.name(), socialInfo.email(), socialInfo.serialId(), platform);
         saveUserAndUserInfo(newUser);
         eventPublisher.publish(CreateUserEvent.of(newUser.getId(), newUser.getName(), newUser.getPlatform().toString()));

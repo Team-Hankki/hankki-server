@@ -3,8 +3,8 @@ package org.hankki.hankkiserver.external.openfeign.oauth.kakao;
 import static org.hankki.hankkiserver.external.openfeign.oauth.kakao.KakaoAccessToken.createKakaoAccessToken;
 
 import lombok.RequiredArgsConstructor;
-import org.hankki.hankkiserver.external.openfeign.oauth.OAuthProvider;
-import org.hankki.hankkiserver.external.openfeign.oauth.SocialInfoDto;
+import org.hankki.hankkiserver.api.auth.service.OAuthProvider;
+import org.hankki.hankkiserver.external.openfeign.oauth.SocialInfoResponse;
 import org.hankki.hankkiserver.external.openfeign.oauth.kakao.dto.KakaoUserInfo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -20,11 +20,11 @@ public class KakaoOAuthProvider implements OAuthProvider {
     private static final String TARGET_ID_TYPE = "user_id";
 
     @Override
-    public SocialInfoDto getUserInfo(final String providerToken, final String name) {
+    public SocialInfoResponse getUserInfo(final String providerToken, final String name) {
         KakaoAccessToken kakaoAccessToken = createKakaoAccessToken(providerToken);
         String accessTokenWithTokenType = kakaoAccessToken.getAccessTokenWithTokenType();
         KakaoUserInfo kakaoUserInfo = kakaoFeignClient.getUserInfo(accessTokenWithTokenType);
-        return SocialInfoDto.of(
+        return SocialInfoResponse.of(
                 kakaoUserInfo.id().toString(),
                 kakaoUserInfo.kakaoAccount().kakaoUserProfile().nickname(),
                 kakaoUserInfo.kakaoAccount().email());

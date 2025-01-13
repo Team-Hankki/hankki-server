@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 import lombok.*;
 import org.hankki.hankkiserver.domain.common.BaseTimeEntity;
-import org.hankki.hankkiserver.external.openfeign.oauth.SocialInfoDto;
+import org.hankki.hankkiserver.external.openfeign.oauth.SocialInfoResponse;
 
 import java.time.LocalDateTime;
 
@@ -66,7 +66,7 @@ public class User extends BaseTimeEntity {
         this.email = "알 수 없음";
     }
 
-    public void rejoin(final SocialInfoDto socialInfo) {
+    public void rejoin(final SocialInfoResponse socialInfo) {
         updateStatus(ACTIVE);
         updateDeletedAt(null);
         this.name = socialInfo.name();

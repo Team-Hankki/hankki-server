@@ -6,10 +6,10 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.common.code.AuthErrorCode;
 import org.hankki.hankkiserver.common.exception.BadRequestException;
-import org.hankki.hankkiserver.external.openfeign.oauth.OAuthProvider;
+import org.hankki.hankkiserver.api.auth.service.OAuthProvider;
 import org.hankki.hankkiserver.external.openfeign.oauth.apple.dto.ApplePublicKeys;
 import org.hankki.hankkiserver.external.openfeign.oauth.apple.dto.AppleTokenResponse;
-import org.hankki.hankkiserver.external.openfeign.oauth.SocialInfoDto;
+import org.hankki.hankkiserver.external.openfeign.oauth.SocialInfoResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -29,12 +29,12 @@ public class AppleOAuthProvider implements OAuthProvider {
     private static final String GRANT_TYPE = "authorization_code";
 
     @Override
-    public SocialInfoDto getUserInfo(final String identityToken, final String name) {
+    public SocialInfoResponse getUserInfo(final String identityToken, final String name) {
         Map<String, String> headers = appleIdentityTokenParser.parseHeaders(identityToken);
         ApplePublicKeys applePublicKeys = appleFeignClient.getApplePublicKey();
         PublicKey applePublicKey = applePublicKeyGenerator.generatePublicKey(headers, applePublicKeys);
         Claims claims = appleIdentityTokenParser.parsePublicKeyAndGetClaims(identityToken, applePublicKey);
-        return SocialInfoDto.of(
+        return SocialInfoResponse.of(
                 claims.get("sub").toString(),
                 name,
                 claims.get("email").toString());

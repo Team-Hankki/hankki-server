@@ -3,7 +3,6 @@ package org.hankki.hankkiserver.api.auth.service;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.domain.user.model.Platform;
-import org.hankki.hankkiserver.external.openfeign.oauth.OAuthProvider;
 import org.springframework.stereotype.Component;
 
 @Component

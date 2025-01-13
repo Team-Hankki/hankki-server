@@ -10,12 +10,12 @@ public class JwtProvider {
 
     private final JwtGenerator jwtGenerator;
 
-    public Token issueTokens(Long userId, String role) {
+    public Token issueTokens(final Long userId, final String role) {
         return Token.of(jwtGenerator.generateToken(userId, role, true),
                 jwtGenerator.generateToken(userId, role, false));
     }
 
-    public Long getSubject(String token) {
+    public Long getSubject(final String token) {
         JwtParser jwtParser = jwtGenerator.getJwtParser();
         return Long.valueOf(jwtParser.parseClaimsJws(token)
                 .getBody()

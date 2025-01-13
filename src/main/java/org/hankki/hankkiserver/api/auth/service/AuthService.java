@@ -42,11 +42,13 @@ public class AuthService {
         userInfoFinder.getUserInfo(userId).softDelete();
     }
 
+    @Transactional
     public void logout(final long userId) {
         UserInfo findUserInfo = userInfoFinder.getUserInfo(userId);
         findUserInfo.updateRefreshToken(null);
     }
 
+    @Transactional
     public UserReissueResponse reissue(final String refreshToken) {
         long userId = authFacade.parseUserId(refreshToken);
         validateRefreshToken(refreshToken, userId);

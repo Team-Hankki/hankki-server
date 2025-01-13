@@ -79,8 +79,7 @@ public class AuthFacade {
     private User createNewUser(final UserInfoResponse userInfo, final Platform platform) {
         User newUser = createUser(userInfo.name(), userInfo.email(), userInfo.serialId(), platform);
         saveUserAndUserInfo(newUser);
-        eventPublisher.publish(
-                CreateUserEvent.of(newUser.getId(), newUser.getName(), newUser.getPlatform().toString()));
+        eventPublisher.publish(CreateUserEvent.of(newUser.getId(), newUser.getName(), newUser.getPlatform().toString()));
         return newUser;
     }
 

@@ -5,7 +5,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.auth.controller.request.UserLoginRequest;
 import org.hankki.hankkiserver.api.auth.service.AuthService;
-import org.hankki.hankkiserver.api.auth.service.response.UserInfoResponse;
 import org.hankki.hankkiserver.api.auth.service.response.UserLoginResponse;
 import org.hankki.hankkiserver.api.auth.service.response.UserReissueResponse;
 import org.hankki.hankkiserver.api.common.annotation.UserId;
@@ -30,8 +29,7 @@ public class AuthController {
     @PostMapping("/auth/login")
     public HankkiResponse<UserLoginResponse> login(@RequestHeader(HttpHeaders.AUTHORIZATION) final String token,
                                                    @Valid @RequestBody final UserLoginRequest request) {
-        UserInfoResponse userInfoResponse = authService.getSocialInfo(token, request);
-        UserLoginResponse response = authService.login(userInfoResponse);
+        UserLoginResponse response = authService.login(token, request);
         return HankkiResponse.success(CommonSuccessCode.OK, response);
     }
 
@@ -49,9 +47,8 @@ public class AuthController {
     }
 
     @PostMapping("/auth/reissue")
-    public HankkiResponse<UserReissueResponse> reissue(
-            @RequestHeader(HttpHeaders.AUTHORIZATION) final String refreshToken) {
-        UserReissueResponse response = authService.reissue(refreshToken);
+    public HankkiResponse<UserReissueResponse> reissue(@RequestHeader(HttpHeaders.AUTHORIZATION) final String token) {
+        UserReissueResponse response = authService.reissue(token);
         return HankkiResponse.success(CommonSuccessCode.OK, response);
     }
 }

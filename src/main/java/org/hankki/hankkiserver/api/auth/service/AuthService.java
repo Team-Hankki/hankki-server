@@ -7,7 +7,6 @@ import org.hankki.hankkiserver.api.auth.service.response.UserLoginResponse;
 import org.hankki.hankkiserver.api.auth.service.response.UserReissueResponse;
 import org.hankki.hankkiserver.auth.jwt.JwtValidator;
 import org.hankki.hankkiserver.auth.jwt.Token;
-import org.hankki.hankkiserver.common.exception.UnauthorizedException;
 import org.hankki.hankkiserver.domain.user.model.Platform;
 import org.hankki.hankkiserver.domain.user.model.User;
 import org.hankki.hankkiserver.domain.user.model.UserInfo;
@@ -33,6 +32,16 @@ public class AuthService {
         return authFacade.saveOrGetUser(userInfoResponse);
     }
 
+    @Transactional
+    public void withdraw(final long userId, final String code) {
+        User user = userFinder.getUser(userId);
+        Platform platform = user.getPlatform();
+        OAuthProvider oAuthProvider = oAuthProviderFactory.findProvider(platform);
+        oAuthProvider.requestRevoke(code, user.getSerialId());
+        user.softDelete();
+        userInfoFinder.getUserInfo(userId).softDelete();
+    }
+
     public void logout(final long userId) {
         UserInfo findUserInfo = userInfoFinder.getUserInfo(userId);
         findUserInfo.updateRefreshToken(null);
@@ -45,25 +54,10 @@ public class AuthService {
         return UserReissueResponse.of(issuedTokens);
     }
 
-    @Transactional
-    public void withdraw(final long userId, final String code) {
-        User user = userFinder.getUser(userId);
-        Platform platform = user.getPlatform();
-        OAuthProvider oAuthProvider = oAuthProviderFactory.findProvider(platform);
-        oAuthProvider.requestRevoke(code, user.getSerialId());
-        user.softDelete();
-        userInfoFinder.getUserInfo(userId).softDelete();
-    }
-
     private void validateRefreshToken(final String refreshToken, final Long userId) {
-        try {
-            jwtValidator.validateRefreshToken(refreshToken);
-            String storedRefreshToken = getRefreshToken(userId);
-            jwtValidator.equalsRefreshToken(refreshToken, storedRefreshToken);
-        } catch (UnauthorizedException e) {
-            logout(userId);
-            throw e;
-        }
+        jwtValidator.validateRefreshToken(refreshToken);
+        String storedRefreshToken = getRefreshToken(userId);
+        jwtValidator.equalsRefreshToken(refreshToken, storedRefreshToken);
     }
 
     private String getRefreshToken(final long userId) {

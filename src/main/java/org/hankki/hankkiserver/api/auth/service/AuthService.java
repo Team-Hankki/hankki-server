@@ -1,16 +1,21 @@
 package org.hankki.hankkiserver.api.auth.service;
 
+import static org.hankki.hankkiserver.auth.filter.JwtAuthenticationFilter.BEARER;
+import static org.hankki.hankkiserver.domain.user.model.User.createUser;
+import static org.hankki.hankkiserver.domain.user.model.UserStatus.ACTIVE;
+
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.hankki.hankkiserver.api.auth.controller.request.UserLoginRequest;
 import org.hankki.hankkiserver.api.auth.service.response.UserInfoResponse;
 import org.hankki.hankkiserver.api.auth.service.response.UserLoginResponse;
-import org.hankki.hankkiserver.api.auth.service.response.UserReissueResponse;
-import org.hankki.hankkiserver.auth.jwt.JwtValidator;
+import org.hankki.hankkiserver.auth.jwt.JwtProvider;
 import org.hankki.hankkiserver.auth.jwt.Token;
 import org.hankki.hankkiserver.domain.user.model.Platform;
 import org.hankki.hankkiserver.domain.user.model.User;
 import org.hankki.hankkiserver.domain.user.model.UserInfo;
-import org.hankki.hankkiserver.external.openfeign.oauth.SocialInfoResponse;
+import org.hankki.hankkiserver.domain.user.model.UserStatus;
+import org.hankki.hankkiserver.event.EventPublisher;
+import org.hankki.hankkiserver.event.user.CreateUserEvent;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,48 +24,78 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
 
     private final UserFinder userFinder;
+    private final UserUpdater userUpdater;
     private final UserInfoFinder userInfoFinder;
-    private final JwtValidator jwtValidator;
-    private final OAuthProviderFactory oAuthProviderFactory;
-    private final AuthFacade authFacade;
+    private final UserInfoUpdater userInfoUpdater;
+    private final JwtProvider jwtProvider;
+    private final EventPublisher eventPublisher;
 
-    public UserLoginResponse login(final String token, final UserLoginRequest request) {
-        Platform platform = Platform.getEnumPlatformFromStringPlatform(request.platform());
-        OAuthProvider oAuthProvider = oAuthProviderFactory.findProvider(platform);
-        SocialInfoResponse response = oAuthProvider.getUserInfo(token, request.name());
-        UserInfoResponse userInfoResponse = UserInfoResponse.of(platform, response.serialId(), response.name(), response.email());
-        return authFacade.saveOrGetUser(userInfoResponse);
-    }
+    private static final String NONE = null;
 
-    public void withdraw(final long userId, final String code) {
-        User user = userFinder.getUser(userId);
-        Platform platform = user.getPlatform();
-        OAuthProvider oAuthProvider = oAuthProviderFactory.findProvider(platform);
-        oAuthProvider.requestRevoke(code, user.getSerialId());
-        authFacade.deleteUser(user);
+    @Transactional
+    protected UserLoginResponse saveOrGetUser(final UserInfoResponse userInfo) {
+        Optional<User> user = userFinder.findUserByPlatFormAndSeralId(userInfo.platform(), userInfo.serialId());
+        boolean isRegistered = isRegistered(user);
+        User findUser = loadOrCreateUser(user, userInfo.platform(), userInfo);
+        Token issuedToken = generateTokens(findUser.getId());
+        return UserLoginResponse.of(issuedToken, isRegistered);
     }
 
     @Transactional
-    public void logout(final long userId) {
+    protected void deleteUser(final User user) {
+        user.softDelete();
+        userInfoFinder.getUserInfo(user.getId()).softDelete();
+    }
+
+    protected Token generateTokens(final long userId) {
+        Token issuedTokens = jwtProvider.issueTokens(userId, getUserRole(userId));
         UserInfo findUserInfo = userInfoFinder.getUserInfo(userId);
-        findUserInfo.updateRefreshToken(null);
+        findUserInfo.updateRefreshToken(issuedTokens.refreshToken());
+        return issuedTokens;
     }
 
-    @Transactional
-    public UserReissueResponse reissue(final String refreshToken) {
-        long userId = authFacade.parseUserId(refreshToken);
-        validateRefreshToken(refreshToken, userId);
-        Token issuedTokens = authFacade.generateTokens(userId);
-        return UserReissueResponse.of(issuedTokens);
+    protected long parseUserId(final String refreshToken) {
+        return jwtProvider.getSubject(refreshToken.substring(BEARER.length()));
     }
 
-    private void validateRefreshToken(final String refreshToken, final Long userId) {
-        jwtValidator.validateRefreshToken(refreshToken);
-        String storedRefreshToken = getRefreshToken(userId);
-        jwtValidator.equalsRefreshToken(refreshToken, storedRefreshToken);
+    private boolean isRegistered(final Optional<User> user) {
+        return user.map(u -> u.getStatus() == ACTIVE)
+                .orElse(false);
     }
 
-    private String getRefreshToken(final long userId) {
-        return userInfoFinder.getUserInfo(userId).getRefreshToken();
+    private User loadOrCreateUser(final Optional<User> findUser, final Platform platform,
+                                  final UserInfoResponse userInfo) {
+        return findUser.map(user -> updateOrGetUserInfo(user, user.getStatus(), userInfo))
+                .orElseGet(() -> createNewUser(userInfo, platform));
+    }
+
+    private User updateOrGetUserInfo(final User user, final UserStatus status, final UserInfoResponse userInfo) {
+        if (status == ACTIVE) {
+            return user;
+        }
+        return updateUserInfo(user, userInfo);
+    }
+
+    private User updateUserInfo(final User user, final UserInfoResponse userInfo) {
+        user.rejoin(userInfo.name(), userInfo.email());
+        userInfoFinder.getUserInfo(user.getId()).updateNickname(userInfo.name());
+        return user;
+    }
+
+    private User createNewUser(final UserInfoResponse userInfo, final Platform platform) {
+        User newUser = createUser(userInfo.name(), userInfo.email(), userInfo.serialId(), platform);
+        saveUserAndUserInfo(newUser);
+        eventPublisher.publish(CreateUserEvent.of(newUser.getId(), newUser.getName(), newUser.getPlatform().toString()));
+        return newUser;
+    }
+
+    private String getUserRole(final long userId) {
+        return userFinder.getUser(userId).getRole().getValue();
+    }
+
+    private void saveUserAndUserInfo(final User user) {
+        userUpdater.saveUser(user);
+        UserInfo userInfo = UserInfo.createMemberInfo(user, NONE);
+        userInfoUpdater.saveUserInfo(userInfo);
     }
 }

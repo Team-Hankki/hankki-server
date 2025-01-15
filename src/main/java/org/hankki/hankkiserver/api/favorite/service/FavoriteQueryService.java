@@ -2,7 +2,7 @@ package org.hankki.hankkiserver.api.favorite.service;
 
 import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
-import org.hankki.hankkiserver.api.auth.service.UserInfoFinder;
+import org.hankki.hankkiserver.api.user.service.UserInfoFinder;
 import org.hankki.hankkiserver.api.favorite.service.command.FavoriteOwnershipGetCommand;
 import org.hankki.hankkiserver.api.favorite.service.command.FavoritesGetCommand;
 import org.hankki.hankkiserver.api.favorite.service.command.FavoritesWithStatusGetCommand;

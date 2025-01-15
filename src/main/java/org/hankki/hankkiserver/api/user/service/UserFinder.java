@@ -1,4 +1,4 @@
-package org.hankki.hankkiserver.api.auth.service;
+package org.hankki.hankkiserver.api.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.common.code.UserErrorCode;
@@ -25,7 +25,7 @@ public class UserFinder {
         return userRepository.getReferenceById(id);
     }
 
-    protected Optional<User> findUserByPlatFormAndSeralId(final Platform platform, final String serialId) {
+    public Optional<User> findUserByPlatFormAndSeralId(final Platform platform, final String serialId) {
         return userRepository.findByPlatformAndSerialId(platform, serialId);
     }
 }

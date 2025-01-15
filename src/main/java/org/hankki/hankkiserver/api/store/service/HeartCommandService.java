@@ -1,7 +1,7 @@
 package org.hankki.hankkiserver.api.store.service;
 
 import lombok.RequiredArgsConstructor;
-import org.hankki.hankkiserver.api.auth.service.UserFinder;
+import org.hankki.hankkiserver.api.user.service.UserFinder;
 import org.hankki.hankkiserver.api.common.annotation.Retry;
 import org.hankki.hankkiserver.api.store.service.command.HeartDeleteCommand;
 import org.hankki.hankkiserver.api.store.service.command.HeartPostCommand;

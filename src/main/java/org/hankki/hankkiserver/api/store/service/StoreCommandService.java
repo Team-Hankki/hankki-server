@@ -1,7 +1,7 @@
 package org.hankki.hankkiserver.api.store.service;
 
 import lombok.RequiredArgsConstructor;
-import org.hankki.hankkiserver.api.auth.service.UserFinder;
+import org.hankki.hankkiserver.api.user.service.UserFinder;
 import org.hankki.hankkiserver.api.store.service.command.StoreDeleteCommand;
 import org.hankki.hankkiserver.event.store.CreateStoreEvent;
 import org.hankki.hankkiserver.api.menu.service.MenuUpdater;

@@ -5,6 +5,8 @@ import org.hankki.hankkiserver.api.auth.controller.request.UserLoginRequest;
 import org.hankki.hankkiserver.api.auth.service.response.UserInfoResponse;
 import org.hankki.hankkiserver.api.auth.service.response.UserLoginResponse;
 import org.hankki.hankkiserver.api.auth.service.response.UserReissueResponse;
+import org.hankki.hankkiserver.api.user.service.UserFinder;
+import org.hankki.hankkiserver.api.user.service.UserInfoFinder;
 import org.hankki.hankkiserver.auth.jwt.JwtValidator;
 import org.hankki.hankkiserver.auth.jwt.Token;
 import org.hankki.hankkiserver.domain.user.model.Platform;

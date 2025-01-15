@@ -32,14 +32,12 @@ public class AuthService {
         return authFacade.saveOrGetUser(userInfoResponse);
     }
 
-    @Transactional
     public void withdraw(final long userId, final String code) {
         User user = userFinder.getUser(userId);
         Platform platform = user.getPlatform();
         OAuthProvider oAuthProvider = oAuthProviderFactory.findProvider(platform);
         oAuthProvider.requestRevoke(code, user.getSerialId());
-        user.softDelete();
-        userInfoFinder.getUserInfo(userId).softDelete();
+        authFacade.deleteUser(user);
     }
 
     @Transactional

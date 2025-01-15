@@ -33,12 +33,18 @@ public class AuthFacade {
     private static final String NONE = null;
 
     @Transactional
-    public UserLoginResponse saveOrGetUser(final UserInfoResponse userInfo) {
+    protected UserLoginResponse saveOrGetUser(final UserInfoResponse userInfo) {
         Optional<User> user = userFinder.findUserByPlatFormAndSeralId(userInfo.platform(), userInfo.serialId());
         boolean isRegistered = isRegistered(user);
         User findUser = loadOrCreateUser(user, userInfo.platform(), userInfo);
         Token issuedToken = generateTokens(findUser.getId());
         return UserLoginResponse.of(issuedToken, isRegistered);
+    }
+
+    @Transactional
+    protected void deleteUser(final User user) {
+        user.softDelete();
+        userInfoFinder.getUserInfo(user.getId()).softDelete();
     }
 
     protected Token generateTokens(final long userId) {

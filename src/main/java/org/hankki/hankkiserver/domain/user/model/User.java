@@ -56,6 +56,8 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private UserStatus status;
 
+    private static final String DELETED_USER_DEFAULT_INFO = "알 수 없음";
+
     public static User createUser(final String name, final String email, final String serialId, final Platform platform) {
         return User.builder()
                 .name(name)
@@ -70,8 +72,8 @@ public class User extends BaseTimeEntity {
     public void softDelete() {
         updateStatus(INACTIVE);
         updateDeletedAt(LocalDateTime.now());
-        this.name = "알 수 없음";
-        this.email = "알 수 없음";
+        this.name = DELETED_USER_DEFAULT_INFO;
+        this.email = DELETED_USER_DEFAULT_INFO;
     }
 
     public void rejoin(final String name, final String email) {

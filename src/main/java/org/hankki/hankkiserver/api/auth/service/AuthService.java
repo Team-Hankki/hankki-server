@@ -38,7 +38,7 @@ public class AuthService {
     protected UserLoginResponse saveOrGetUser(final UserInfoResponse userInfo) {
         Optional<User> user = userFinder.findUserByPlatFormAndSeralId(userInfo.platform(), userInfo.serialId());
         boolean isRegistered = isRegistered(user);
-        User findUser = loadOrCreateUser(user, userInfo.platform(), userInfo);
+        User findUser = loadOrCreateUser(user, userInfo);
         Token issuedToken = generateTokens(findUser.getId());
         return UserLoginResponse.of(issuedToken, isRegistered);
     }
@@ -65,10 +65,9 @@ public class AuthService {
                 .orElse(false);
     }
 
-    private User loadOrCreateUser(final Optional<User> findUser, final Platform platform,
-                                  final UserInfoResponse userInfo) {
+    private User loadOrCreateUser(final Optional<User> findUser, final UserInfoResponse userInfo) {
         return findUser.map(user -> updateOrGetUserInfo(user, user.getStatus(), userInfo))
-                .orElseGet(() -> createNewUser(userInfo, platform));
+                .orElseGet(() -> createNewUser(userInfo, userInfo.platform()));
     }
 
     private User updateOrGetUserInfo(final User user, final UserStatus status, final UserInfoResponse userInfo) {

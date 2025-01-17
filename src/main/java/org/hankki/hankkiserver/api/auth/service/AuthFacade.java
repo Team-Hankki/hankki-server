@@ -7,9 +7,7 @@ import org.hankki.hankkiserver.api.auth.service.response.UserLoginResponse;
 import org.hankki.hankkiserver.api.auth.service.response.UserReissueResponse;
 import org.hankki.hankkiserver.api.user.service.UserFinder;
 import org.hankki.hankkiserver.api.user.service.UserInfoFinder;
-import org.hankki.hankkiserver.auth.jwt.JwtValidator;
 import org.hankki.hankkiserver.auth.jwt.Token;
-import org.hankki.hankkiserver.domain.user.model.Platform;
 import org.hankki.hankkiserver.domain.user.model.User;
 import org.hankki.hankkiserver.domain.user.model.UserInfo;
 import org.hankki.hankkiserver.external.openfeign.oauth.SocialInfoResponse;
@@ -22,22 +20,20 @@ public class AuthFacade {
 
     private final UserFinder userFinder;
     private final UserInfoFinder userInfoFinder;
-    private final JwtValidator jwtValidator;
-    private final OAuthProviderFactory oAuthProviderFactory;
+    private final ExternalService externalService;
     private final AuthService authService;
+    private final AuthValidator authValidator;
 
     public UserLoginResponse login(final String token, final UserLoginRequest request) {
-        OAuthProvider oAuthProvider = oAuthProviderFactory.findProvider(request.platform());
-        SocialInfoResponse response = oAuthProvider.getUserInfo(token, request.name());
-        UserInfoResponse userInfoResponse = UserInfoResponse.of(request.platform(), response.serialId(), response.name(), response.email());
+        SocialInfoResponse response = externalService.getUserInfo(token, request.platform(), request.name());
+        UserInfoResponse userInfoResponse = UserInfoResponse.of(request.platform(), response.serialId(),
+                response.name(), response.email());
         return authService.saveOrGetUser(userInfoResponse);
     }
 
     public void withdraw(final long userId, final String code) {
         User user = userFinder.getUser(userId);
-        Platform platform = user.getPlatform();
-        OAuthProvider oAuthProvider = oAuthProviderFactory.findProvider(platform);
-        oAuthProvider.requestRevoke(code, user.getSerialId());
+        externalService.revoke(user.getPlatform(), code, user.getSerialId());
         authService.deleteUser(user);
     }
 
@@ -50,18 +46,8 @@ public class AuthFacade {
     @Transactional
     public UserReissueResponse reissue(final String refreshToken) {
         long userId = authService.parseUserId(refreshToken);
-        validateRefreshToken(refreshToken, userId);
+        authValidator.validateRefreshToken(refreshToken, userId);
         Token issuedTokens = authService.generateTokens(userId);
         return UserReissueResponse.of(issuedTokens);
-    }
-
-    private void validateRefreshToken(final String refreshToken, final Long userId) {
-        jwtValidator.validateRefreshToken(refreshToken);
-        String storedRefreshToken = getRefreshToken(userId);
-        jwtValidator.equalsRefreshToken(refreshToken, storedRefreshToken);
-    }
-
-    private String getRefreshToken(final long userId) {
-        return userInfoFinder.getUserInfo(userId).getRefreshToken();
     }
 }

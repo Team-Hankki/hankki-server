@@ -34,8 +34,6 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final EventPublisher eventPublisher;
 
-    private static final String NONE = null;
-
     @Transactional
     protected UserLoginResponse saveOrGetUser(final UserInfoResponse userInfo) {
         Optional<User> user = userFinder.findUserByPlatFormAndSeralId(userInfo.platform(), userInfo.serialId());
@@ -99,7 +97,7 @@ public class AuthService {
 
     private void saveUserAndUserInfo(final User user) {
         userUpdater.saveUser(user);
-        UserInfo userInfo = UserInfo.createMemberInfo(user, NONE);
+        UserInfo userInfo = UserInfo.createMemberInfo(user, null);
         userInfoUpdater.saveUserInfo(userInfo);
     }
 }

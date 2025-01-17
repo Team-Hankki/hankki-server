@@ -30,7 +30,6 @@ public class JwtValidator {
 
     public void validateRefreshToken(final String refreshToken) {
         try {
-            System.out.println("refreshToken" + refreshToken);
             parseToken(getToken(refreshToken));
         } catch (ExpiredJwtException e) {
             throw new UnauthorizedException(AuthErrorCode.EXPIRED_REFRESH_TOKEN);
@@ -39,7 +38,7 @@ public class JwtValidator {
         }
     }
 
-    public void equalsRefreshToken(final String refreshToken, final String storedRefreshToken) {
+    public void checkTokenEquality(final String refreshToken, final String storedRefreshToken) {
         if (!getToken(refreshToken).equals(storedRefreshToken)) {
             throw new UnauthorizedException(AuthErrorCode.MISMATCH_REFRESH_TOKEN);
         }

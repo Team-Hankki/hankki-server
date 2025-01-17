@@ -27,10 +27,9 @@ public class AuthFacade {
     private final AuthService authService;
 
     public UserLoginResponse login(final String token, final UserLoginRequest request) {
-        Platform platform = Platform.getEnumPlatformFromStringPlatform(request.platform());
-        OAuthProvider oAuthProvider = oAuthProviderFactory.findProvider(platform);
+        OAuthProvider oAuthProvider = oAuthProviderFactory.findProvider(request.platform());
         SocialInfoResponse response = oAuthProvider.getUserInfo(token, request.name());
-        UserInfoResponse userInfoResponse = UserInfoResponse.of(platform, response.serialId(), response.name(), response.email());
+        UserInfoResponse userInfoResponse = UserInfoResponse.of(request.platform(), response.serialId(), response.name(), response.email());
         return authService.saveOrGetUser(userInfoResponse);
     }
 

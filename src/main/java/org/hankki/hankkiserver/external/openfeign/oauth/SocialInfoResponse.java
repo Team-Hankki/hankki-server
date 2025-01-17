@@ -8,7 +8,7 @@ public record SocialInfoResponse(
     private static final String DEFAULT_NAME = "한끼";
 
     public static SocialInfoResponse of(final String serialId, String name, final String email) {
-        if (name == null || name.isBlank()) {
+        if (name.isBlank()) {
             name = DEFAULT_NAME;
         }
         return new SocialInfoResponse(serialId, name, email);

@@ -34,6 +34,7 @@ public class AppleOAuthProvider implements OAuthProvider {
         ApplePublicKeys applePublicKeys = appleFeignClient.getApplePublicKey();
         PublicKey applePublicKey = applePublicKeyGenerator.generatePublicKey(headers, applePublicKeys);
         Claims claims = appleIdentityTokenParser.parsePublicKeyAndGetClaims(identityToken, applePublicKey);
+        validateNullName(name);
         return SocialInfoResponse.of(
                 claims.get("sub").toString(),
                 name,
@@ -57,6 +58,12 @@ public class AppleOAuthProvider implements OAuthProvider {
             return appleTokenResponse.refreshToken();
         } catch (Exception e) {
             throw new BadRequestException(AuthErrorCode.FAILED_TO_LOAD_PRIVATE_KEY);
+        }
+    }
+
+    private void validateNullName(final String name) {
+        if (name == null) {
+            throw new BadRequestException(AuthErrorCode.UNSUPPORTED_NULL_NAME);
         }
     }
 }

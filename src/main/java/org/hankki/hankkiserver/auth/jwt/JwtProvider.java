@@ -11,8 +11,15 @@ public class JwtProvider {
     private final JwtGenerator jwtGenerator;
 
     public Token issueTokens(final Long userId, final String role) {
-        return Token.of(jwtGenerator.generateToken(userId, role, true),
-                jwtGenerator.generateToken(userId, role, false));
+        return Token.of(generateAccessToken(userId, role), generateRefreshToken(userId, role));
+    }
+
+    public String generateAccessToken(final Long userId, final String role) {
+        return jwtGenerator.generateToken(userId, role, true);
+    }
+
+    private String generateRefreshToken(final Long userId, final String role) {
+        return jwtGenerator.generateToken(userId, role, false);
     }
 
     public Long getSubject(final String token) {

@@ -13,6 +13,7 @@ import org.hankki.hankkiserver.api.user.service.UserInfoFinder;
 import org.hankki.hankkiserver.api.user.service.UserInfoUpdater;
 import org.hankki.hankkiserver.api.user.service.UserUpdater;
 import org.hankki.hankkiserver.auth.jwt.JwtProvider;
+import org.hankki.hankkiserver.auth.jwt.JwtValidator;
 import org.hankki.hankkiserver.auth.jwt.Token;
 import org.hankki.hankkiserver.domain.user.model.Platform;
 import org.hankki.hankkiserver.domain.user.model.User;
@@ -32,6 +33,7 @@ public class AuthService {
     private final UserInfoFinder userInfoFinder;
     private final UserInfoUpdater userInfoUpdater;
     private final JwtProvider jwtProvider;
+    private final JwtValidator jwtValidator;
     private final EventPublisher eventPublisher;
 
     @Transactional
@@ -49,15 +51,25 @@ public class AuthService {
         userInfoFinder.getUserInfo(user.getId()).softDelete();
     }
 
-    protected Token generateTokens(final long userId) {
+    protected Token generateAccessToken(final String refreshToken) {
+        String strippedToken = refreshToken.substring(BEARER.length());
+        long userId = jwtProvider.getSubject(strippedToken);
+        validateRefreshToken(refreshToken, userId);
+        String accessToken = jwtProvider.generateAccessToken(userId, getUserRole(userId));
+        return Token.of(accessToken, strippedToken);
+    }
+
+    private Token generateTokens(final long userId) {
         Token issuedTokens = jwtProvider.issueTokens(userId, getUserRole(userId));
         UserInfo findUserInfo = userInfoFinder.getUserInfo(userId);
         findUserInfo.updateRefreshToken(issuedTokens.refreshToken());
         return issuedTokens;
     }
 
-    protected long parseUserId(final String refreshToken) {
-        return jwtProvider.getSubject(refreshToken.substring(BEARER.length()));
+    private void validateRefreshToken(final String refreshToken, final long userId) {
+        jwtValidator.validateRefreshToken(refreshToken);
+        String storedRefreshToken = userInfoFinder.getUserInfo(userId).getRefreshToken();
+        jwtValidator.checkTokenEquality(refreshToken, storedRefreshToken);
     }
 
     private boolean isRegistered(final Optional<User> user) {

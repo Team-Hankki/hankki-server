@@ -7,7 +7,6 @@ import org.hankki.hankkiserver.api.auth.service.response.UserLoginResponse;
 import org.hankki.hankkiserver.api.auth.service.response.UserReissueResponse;
 import org.hankki.hankkiserver.api.user.service.UserFinder;
 import org.hankki.hankkiserver.api.user.service.UserInfoFinder;
-import org.hankki.hankkiserver.auth.jwt.JwtValidator;
 import org.hankki.hankkiserver.auth.jwt.Token;
 import org.hankki.hankkiserver.domain.user.model.User;
 import org.hankki.hankkiserver.domain.user.model.UserInfo;
@@ -21,7 +20,6 @@ public class AuthFacade {
 
     private final UserFinder userFinder;
     private final UserInfoFinder userInfoFinder;
-    private final JwtValidator jwtValidator;
     private final ExternalService externalService;
     private final AuthService authService;
 
@@ -46,15 +44,7 @@ public class AuthFacade {
 
     @Transactional
     public UserReissueResponse reissue(final String refreshToken) {
-        long userId = authService.parseUserId(refreshToken);
-        validateRefreshToken(refreshToken, userId);
-        Token issuedTokens = authService.generateTokens(userId);
+        Token issuedTokens = authService.generateAccessToken(refreshToken);
         return UserReissueResponse.of(issuedTokens);
-    }
-
-    private void validateRefreshToken(final String refreshToken, final Long userId) {
-        jwtValidator.validateRefreshToken(refreshToken);
-        String storedRefreshToken = userInfoFinder.getUserInfo(userId).getRefreshToken();
-        jwtValidator.checkTokenEquality(refreshToken, storedRefreshToken);
     }
 }

@@ -37,7 +37,7 @@ public class AuthService {
     private final EventPublisher eventPublisher;
 
     @Transactional
-    protected UserLoginResponse saveOrGetUser(final UserInfoResponse userInfo) {
+    public UserLoginResponse saveOrGetUser(final UserInfoResponse userInfo) {
         Optional<User> user = userFinder.findUserByPlatFormAndSeralId(userInfo.platform(), userInfo.serialId());
         boolean isRegistered = isRegistered(user);
         User findUser = loadOrCreateUser(user, userInfo);
@@ -46,7 +46,7 @@ public class AuthService {
     }
 
     @Transactional
-    protected void deleteUser(final User user) {
+    public void deleteUser(final User user) {
         user.softDelete();
         userInfoFinder.getUserInfo(user.getId()).softDelete();
     }

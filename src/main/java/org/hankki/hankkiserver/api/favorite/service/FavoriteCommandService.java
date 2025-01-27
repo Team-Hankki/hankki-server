@@ -2,7 +2,7 @@ package org.hankki.hankkiserver.api.favorite.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.hankki.hankkiserver.api.auth.service.UserFinder;
+import org.hankki.hankkiserver.api.user.service.UserFinder;
 import org.hankki.hankkiserver.api.favorite.service.command.FavoriteSharedPostCommand;
 import org.hankki.hankkiserver.api.favorite.service.command.FavoriteStoreDeleteCommand;
 import org.hankki.hankkiserver.api.favorite.service.command.FavoriteStorePostCommand;

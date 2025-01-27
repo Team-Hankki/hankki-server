@@ -1,4 +1,4 @@
-package org.hankki.hankkiserver.api.auth.service;
+package org.hankki.hankkiserver.api.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.domain.user.model.User;

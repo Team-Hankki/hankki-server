@@ -28,7 +28,7 @@
 
 
 # 🏗️Architecture
-![한끼아키텍쳐](https://github.com/user-attachments/assets/e2c71966-893a-478e-bb68-26f66ecd17de)
+![한끼아키텍쳐](https://github.com/user-attachments/assets/3ed4c337-3e4f-426b-999e-8f1c0c796cd8)
 
 <br><br>
 # 📍ERD

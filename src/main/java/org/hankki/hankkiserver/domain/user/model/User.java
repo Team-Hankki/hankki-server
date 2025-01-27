@@ -1,16 +1,24 @@
 package org.hankki.hankkiserver.domain.user.model;
 
-import jakarta.persistence.*;
-
-import lombok.*;
-import org.hankki.hankkiserver.domain.common.BaseTimeEntity;
-import org.hankki.hankkiserver.external.openfeign.oauth.SocialInfoResponse;
-
-import java.time.LocalDateTime;
-
+import static org.hankki.hankkiserver.domain.user.model.UserRole.USER;
 import static org.hankki.hankkiserver.domain.user.model.UserStatus.ACTIVE;
 import static org.hankki.hankkiserver.domain.user.model.UserStatus.INACTIVE;
-import static org.hankki.hankkiserver.domain.user.model.UserRole.USER;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hankki.hankkiserver.domain.common.BaseTimeEntity;
 
 @Entity
 @Getter
@@ -48,6 +56,8 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private UserStatus status;
 
+    private static final String DELETED_USER_DEFAULT_INFO = "알 수 없음";
+
     public static User createUser(final String name, final String email, final String serialId, final Platform platform) {
         return User.builder()
                 .name(name)
@@ -62,15 +72,15 @@ public class User extends BaseTimeEntity {
     public void softDelete() {
         updateStatus(INACTIVE);
         updateDeletedAt(LocalDateTime.now());
-        this.name = "알 수 없음";
-        this.email = "알 수 없음";
+        this.name = DELETED_USER_DEFAULT_INFO;
+        this.email = DELETED_USER_DEFAULT_INFO;
     }
 
-    public void rejoin(final SocialInfoResponse socialInfo) {
+    public void rejoin(final String name, final String email) {
         updateStatus(ACTIVE);
         updateDeletedAt(null);
-        this.name = socialInfo.name();
-        this.email = socialInfo.email();
+        this.name = name;
+        this.email = email;
     }
 
     private void updateStatus(final UserStatus userStatus) {

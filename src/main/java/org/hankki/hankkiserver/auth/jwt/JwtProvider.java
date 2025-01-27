@@ -10,12 +10,19 @@ public class JwtProvider {
 
     private final JwtGenerator jwtGenerator;
 
-    public Token issueTokens(Long userId, String role) {
-        return Token.of(jwtGenerator.generateToken(userId, role, true),
-                jwtGenerator.generateToken(userId, role, false));
+    public Token issueTokens(final Long userId, final String role) {
+        return Token.of(generateAccessToken(userId, role), generateRefreshToken(userId, role));
     }
 
-    public Long getSubject(String token) {
+    public String generateAccessToken(final Long userId, final String role) {
+        return jwtGenerator.generateToken(userId, role, true);
+    }
+
+    private String generateRefreshToken(final Long userId, final String role) {
+        return jwtGenerator.generateToken(userId, role, false);
+    }
+
+    public Long getSubject(final String token) {
         JwtParser jwtParser = jwtGenerator.getJwtParser();
         return Long.valueOf(jwtParser.parseClaimsJws(token)
                 .getBody()

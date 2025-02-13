@@ -18,6 +18,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     private final UserIdArgumentResolver userIdArgumentResolver;
     private final PriceCategoryConverter priceCategoryConverter;
+    private final SortOptionConverter sortOptionConverter;
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
@@ -26,8 +27,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addFormatters(FormatterRegistry registry) {
-        registry.addConverter(new PriceCategoryConverter());
-        registry.addConverter(new SortOptionConverter());
+        registry.addConverter(sortOptionConverter);
         registry.addConverter(priceCategoryConverter);
     }
 }

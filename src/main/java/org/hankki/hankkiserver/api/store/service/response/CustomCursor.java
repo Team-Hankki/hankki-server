@@ -1,8 +1,8 @@
 package org.hankki.hankkiserver.api.store.service.response;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import org.hankki.hankkiserver.api.store.parameter.SortOption;
 import org.hankki.hankkiserver.domain.store.model.Store;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 public record CustomCursor(
         @JsonInclude(JsonInclude.Include.NON_NULL)

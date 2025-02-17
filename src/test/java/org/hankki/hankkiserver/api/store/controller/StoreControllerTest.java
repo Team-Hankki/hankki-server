@@ -72,8 +72,56 @@ class StoreControllerTest {
                 .andExpect(jsonPath("$.data.stores[0].category").value(store.getCategory().getName()));
 
     }
+
     @Test
-    @DisplayName("정렬 옵션에 맞지 않는 커서로 요청하면 실패한다")
+    @DisplayName("최초 요청시에는 커서값을 주지 않아도 조회에 성공한다.")
+    void getStoresWithoutCursor() throws Exception {
+        Store store = StoreFixture.create("name", StoreCategory.KOREAN, 3000, 6000);
+        StorePageResponse storePageResponse = StorePageResponse.of(List.of(new StoreResponse(1, "imageUrl", StoreCategory.KOREAN.getName(), "name", 3000, 6000)),
+                false,
+                CustomCursor.createNextCursor(SortOption.LOWESTPRICE, store));
+
+        when(storeQueryService.getStoresV2(any(), any(), any(), any(), any()))
+                .thenReturn(storePageResponse);
+
+        mockMvc.perform(get("/api/v2/stores")
+                        .param("storeCategory", "KOREAN")
+                        .param("priceCategory", "K8")
+                        .param("sortOption", "LOWESTPRICE"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(HttpStatus.OK.value()))
+                .andExpect(jsonPath("$.data.hasNext").value(false))
+                .andExpect(jsonPath("$.data.stores[0].name").value(store.getName()))
+                .andExpect(jsonPath("$.data.stores[0].lowestPrice").value(store.getLowestPrice()))
+                .andExpect(jsonPath("$.data.stores[0].heartCount").value(store.getHeartCount()))
+                .andExpect(jsonPath("$.data.stores[0].category").value(store.getCategory().getName()));
+    }
+
+    @Test
+    @DisplayName("정렬값을 주지 않아도 페이징된 결과를 반환한다.")
+    void failGetStoresWithoutInvalidSortOption() throws Exception {
+        Store store = StoreFixture.create("name", StoreCategory.KOREAN, 3000, 6000);
+        StorePageResponse storePageResponse = StorePageResponse.of(List.of(new StoreResponse(1, "imageUrl", StoreCategory.KOREAN.getName(), "name", 3000, 6000)),
+                false,
+                CustomCursor.createNextCursor(SortOption.LOWESTPRICE, store));
+
+        when(storeQueryService.getStoresV2(any(), any(), any(), any(), any()))
+                .thenReturn(storePageResponse);
+
+        mockMvc.perform(get("/api/v2/stores")
+                        .param("storeCategory", "KOREAN")
+                        .param("priceCategory", "K8"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(HttpStatus.OK.value()))
+                .andExpect(jsonPath("$.data.hasNext").value(false))
+                .andExpect(jsonPath("$.data.stores[0].name").value(store.getName()))
+                .andExpect(jsonPath("$.data.stores[0].lowestPrice").value(store.getLowestPrice()))
+                .andExpect(jsonPath("$.data.stores[0].heartCount").value(store.getHeartCount()))
+                .andExpect(jsonPath("$.data.stores[0].category").value(store.getCategory().getName()));
+    }
+
+    @Test
+    @DisplayName("정렬 옵션에 맞지 않는 커서로 요청하면 실패한다.")
     void failGetStoresWithInvalidCursor() throws Exception {
         mockMvc.perform(get("/api/v2/stores")
                         .param("storeCategory", "KOREAN")

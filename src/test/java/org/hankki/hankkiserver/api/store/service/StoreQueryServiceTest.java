@@ -95,7 +95,6 @@ class StoreQueryServiceTest extends ServiceSliceTest {
                 Assertions.assertThat(storesV2.stores()).hasSize(0);
                 Assertions.assertThat(storesV2.hasNext()).isFalse();
                 Assertions.assertThat(storesV2.cursor()).isNull();
-
             }
 
             @Test
@@ -306,7 +305,6 @@ class StoreQueryServiceTest extends ServiceSliceTest {
                 Assertions.assertThat(storesV2.cursor()).isNull();
             }
         }
-
     }
 
     @Nested
@@ -381,9 +379,7 @@ class StoreQueryServiceTest extends ServiceSliceTest {
                 // then
                 Assertions.assertThat(storesV2.stores()).hasSize(0);
                 Assertions.assertThat(storesV2.hasNext()).isFalse();
-                Assertions.assertThat(storesV2.cursor().nextId()).isNull();
-                Assertions.assertThat(storesV2.cursor().nextHeartCount()).isNull();
-                Assertions.assertThat(storesV2.cursor().nextLowestPrice()).isNull();
+                Assertions.assertThat(storesV2.cursor()).isNull();
             }
 
             @Test
@@ -502,9 +498,7 @@ class StoreQueryServiceTest extends ServiceSliceTest {
                 // then
                 Assertions.assertThat(storesV2.stores()).hasSize(0);
                 Assertions.assertThat(storesV2.hasNext()).isFalse();
-                Assertions.assertThat(storesV2.cursor().nextId()).isNull();
-                Assertions.assertThat(storesV2.cursor().nextHeartCount()).isNull();
-                Assertions.assertThat(storesV2.cursor().nextLowestPrice()).isNull();
+                Assertions.assertThat(storesV2.cursor()).isNull();
             }
 
             @Test
@@ -621,9 +615,7 @@ class StoreQueryServiceTest extends ServiceSliceTest {
                 // then
                 Assertions.assertThat(storesV2.stores()).hasSize(0);
                 Assertions.assertThat(storesV2.hasNext()).isFalse();
-                Assertions.assertThat(storesV2.cursor().nextId()).isNull();
-                Assertions.assertThat(storesV2.cursor().nextHeartCount()).isNull();
-                Assertions.assertThat(storesV2.cursor().nextLowestPrice()).isNull();
+                Assertions.assertThat(storesV2.cursor()).isNull();
             }
         }
 

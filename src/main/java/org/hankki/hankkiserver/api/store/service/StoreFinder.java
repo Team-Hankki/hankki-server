@@ -2,7 +2,6 @@ package org.hankki.hankkiserver.api.store.service;
 
 import java.util.List;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.store.parameter.PriceCategory;
 import org.hankki.hankkiserver.api.store.parameter.SortOption;
 import org.hankki.hankkiserver.api.store.service.response.CustomCursor;
@@ -13,6 +12,7 @@ import org.hankki.hankkiserver.domain.store.model.Store;
 import org.hankki.hankkiserver.domain.store.model.StoreCategory;
 import org.hankki.hankkiserver.domain.store.repository.StoreRepository;
 import org.springframework.stereotype.Component;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor

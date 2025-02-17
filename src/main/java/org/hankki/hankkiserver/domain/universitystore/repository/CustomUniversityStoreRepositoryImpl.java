@@ -1,11 +1,6 @@
 package org.hankki.hankkiserver.domain.universitystore.repository;
 
-import static org.hankki.hankkiserver.domain.store.model.QStore.store;
-import static org.hankki.hankkiserver.domain.universitystore.model.QUniversityStore.universityStore;
-
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.store.parameter.PriceCategory;
 import org.hankki.hankkiserver.api.store.parameter.SortOption;
 import org.hankki.hankkiserver.api.store.service.response.CustomCursor;
@@ -15,6 +10,11 @@ import org.hankki.hankkiserver.domain.store.repository.DynamicQueryProvider;
 import org.hankki.hankkiserver.domain.store.repository.OrderSpecifierProvider;
 import org.hankki.hankkiserver.domain.universitystore.model.UniversityStore;
 import org.springframework.stereotype.Component;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.RequiredArgsConstructor;
+
+import static org.hankki.hankkiserver.domain.store.model.QStore.store;
+import static org.hankki.hankkiserver.domain.universitystore.model.QUniversityStore.universityStore;
 
 @Component
 @RequiredArgsConstructor

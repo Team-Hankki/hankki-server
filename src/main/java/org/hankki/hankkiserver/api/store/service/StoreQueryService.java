@@ -3,8 +3,6 @@ package org.hankki.hankkiserver.api.store.service;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.hankki.hankkiserver.api.menu.service.MenuFinder;
 import org.hankki.hankkiserver.api.store.parameter.PriceCategory;
 import org.hankki.hankkiserver.api.store.parameter.SortOption;
@@ -32,6 +30,8 @@ import org.hankki.hankkiserver.domain.store.model.StoreImage;
 import org.hankki.hankkiserver.domain.universitystore.model.UniversityStore;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor

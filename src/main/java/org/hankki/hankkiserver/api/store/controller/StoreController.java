@@ -34,6 +34,7 @@ import org.hankki.hankkiserver.domain.store.model.StoreCategory;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -79,7 +80,7 @@ public class StoreController {
                                                     @RequestParam(required = false) final StoreCategory storeCategory,
                                                     @RequestParam(required = false) final PriceCategory priceCategory,
                                                     @RequestParam(required = false) final SortOption sortOption,
-                                                       @CustomCursorValidation CustomCursor cursor) {
+                                                       @ModelAttribute @CustomCursorValidation CustomCursor cursor) {
         return HankkiResponse.success(CommonSuccessCode.OK, storeQueryService.getStoresV2(universityId, storeCategory, priceCategory, sortOption, cursor));
     }
 

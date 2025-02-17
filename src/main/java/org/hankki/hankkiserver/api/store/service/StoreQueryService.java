@@ -1,27 +1,46 @@
 package org.hankki.hankkiserver.api.store.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 import org.hankki.hankkiserver.api.menu.service.MenuFinder;
 import org.hankki.hankkiserver.api.store.parameter.PriceCategory;
 import org.hankki.hankkiserver.api.store.parameter.SortOption;
 import org.hankki.hankkiserver.api.store.service.command.StoreValidationCommand;
-import org.hankki.hankkiserver.api.store.service.response.*;
+import org.hankki.hankkiserver.api.store.service.response.CategoriesResponse;
+import org.hankki.hankkiserver.api.store.service.response.CategoryResponse;
+import org.hankki.hankkiserver.api.store.service.response.CustomCursor;
+import org.hankki.hankkiserver.api.store.service.response.MenuResponse;
+import org.hankki.hankkiserver.api.store.service.response.PinResponse;
+import org.hankki.hankkiserver.api.store.service.response.PriceCategoriesResponse;
+import org.hankki.hankkiserver.api.store.service.response.PriceCategoryResponse;
+import org.hankki.hankkiserver.api.store.service.response.SortOptionResponse;
+import org.hankki.hankkiserver.api.store.service.response.SortOptionsResponse;
+import org.hankki.hankkiserver.api.store.service.response.StoreDuplicateValidationResponse;
+import org.hankki.hankkiserver.api.store.service.response.StoreGetResponse;
+import org.hankki.hankkiserver.api.store.service.response.StorePageResponse;
+import org.hankki.hankkiserver.api.store.service.response.StorePinsResponse;
+import org.hankki.hankkiserver.api.store.service.response.StoreResponse;
+import org.hankki.hankkiserver.api.store.service.response.StoreThumbnailResponse;
+import org.hankki.hankkiserver.api.store.service.response.StoresResponse;
 import org.hankki.hankkiserver.domain.heart.model.Heart;
 import org.hankki.hankkiserver.domain.store.model.Store;
 import org.hankki.hankkiserver.domain.store.model.StoreCategory;
 import org.hankki.hankkiserver.domain.store.model.StoreImage;
+import org.hankki.hankkiserver.domain.universitystore.model.UniversityStore;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class StoreQueryService {
+
+    private static final int PAGE_SIZE = 10;
 
     private final StoreFinder storeFinder;
     private final UniversityStoreFinder universityStoreFinder;
@@ -45,14 +64,46 @@ public class StoreQueryService {
 
     @Transactional(readOnly = true)
     public StorePinsResponse getStorePins(final Long universityId, final StoreCategory storeCategory, final PriceCategory priceCategory, final SortOption sortOption) {
-        return StorePinsResponse.of(storeFinder.findAllDynamicQuery(universityId, storeCategory, priceCategory, sortOption)
+        return StorePinsResponse.of(storeFinder.findAllWithUniversityStoreByDynamicQuery(universityId, storeCategory, priceCategory, sortOption)
                 .stream().map(PinResponse::of).toList());
     }
 
     @Transactional(readOnly = true)
     public StoresResponse getStores(final Long universityId, final StoreCategory storeCategory, final PriceCategory priceCategory, final SortOption sortOption) {
-        return StoresResponse.of(storeFinder.findAllDynamicQuery(universityId, storeCategory, priceCategory, sortOption)
+        return StoresResponse.of(storeFinder.findAllWithUniversityStoreByDynamicQuery(universityId, storeCategory, priceCategory, sortOption)
                 .stream().map(StoreResponse::of).toList());
+    }
+
+    @Transactional(readOnly = true)
+    public StorePageResponse getStoresV2(final Long universityId, final StoreCategory storeCategory, final PriceCategory priceCategory, final SortOption sortOption, final CustomCursor cursor) {
+        if (universityId == null) {
+            List<Store> stores = storeFinder.findAllByDynamicQueryWithPaging(storeCategory, priceCategory, sortOption, cursor, PAGE_SIZE + 1);
+            return createPageResponse(stores, Function.identity(), sortOption);
+
+        }
+        List<UniversityStore> universityStores = universityStoreFinder.findAllWithStoreByDynamicQueryWithPaging(
+                universityId, storeCategory, priceCategory, sortOption, cursor, PAGE_SIZE + 1);
+        return createPageResponse(universityStores, UniversityStore::getStore, sortOption);
+    }
+
+    private <T> StorePageResponse createPageResponse(List<T> elements, Function<T, Store> storeExtractor, SortOption sortOption) {
+        if (elements.isEmpty()) {
+            return StorePageResponse.of(Collections.emptyList(), false, null);
+        }
+
+        boolean nextPageAvailable = elements.size() == PAGE_SIZE + 1;
+        if (nextPageAvailable) {
+            elements.remove(elements.size() - 1);
+        }
+
+        List<StoreResponse> storeResponses = elements.stream()
+                .map(storeExtractor)
+                .map(StoreResponse::of)
+                .toList();
+
+        Store lastStore = storeExtractor.apply(elements.get(elements.size() - 1));
+
+        return StorePageResponse.of(storeResponses, nextPageAvailable, CustomCursor.createNextCursor(sortOption, lastStore));
     }
 
     public CategoriesResponse getCategoriesV1() {

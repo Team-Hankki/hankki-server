@@ -2,6 +2,8 @@ package org.hankki.hankkiserver.api.common;
 
 import lombok.extern.slf4j.Slf4j;
 import org.hankki.hankkiserver.api.store.parameter.PriceCategory;
+import org.hankki.hankkiserver.common.code.StoreErrorCode;
+import org.hankki.hankkiserver.common.exception.BadRequestException;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +16,10 @@ public class PriceCategoryConverter implements Converter<String, PriceCategory> 
         if (source.toUpperCase().equals(PriceCategory.ALL.toString())) {
             return null;
         }
-        return PriceCategory.valueOf(source.toUpperCase());
+        try {
+            return PriceCategory.valueOf(source.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException(StoreErrorCode.INVALID_PRICE_CATEGORY);
+        }
     }
 }

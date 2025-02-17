@@ -1,8 +1,10 @@
 package org.hankki.hankkiserver.api.store.service;
 
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+import java.util.Optional;
 import org.hankki.hankkiserver.api.store.parameter.PriceCategory;
 import org.hankki.hankkiserver.api.store.parameter.SortOption;
+import org.hankki.hankkiserver.api.store.service.response.CustomCursor;
 import org.hankki.hankkiserver.common.code.StoreErrorCode;
 import org.hankki.hankkiserver.common.exception.NotFoundException;
 import org.hankki.hankkiserver.domain.favoritestore.model.FavoriteStore;
@@ -10,9 +12,7 @@ import org.hankki.hankkiserver.domain.store.model.Store;
 import org.hankki.hankkiserver.domain.store.model.StoreCategory;
 import org.hankki.hankkiserver.domain.store.repository.StoreRepository;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
@@ -38,8 +38,13 @@ public class StoreFinder {
         return storeRepository.existsByPoint_LatitudeAndPoint_LongitudeAndNameAndIsDeleted(latitude, longitude, name, isDeleted);
     }
 
-    public List<Store> findAllDynamicQuery(final Long universityId, final StoreCategory storeCategory, final PriceCategory priceCategory, final SortOption sortOption) {
-        return storeRepository.findStoreByCategoryAndLowestPriceAndUniversityIdAndIsDeletedFalseOrderBySortOptions(storeCategory, priceCategory, universityId, sortOption);
+    public List<Store> findAllWithUniversityStoreByDynamicQuery(final Long universityId, final StoreCategory storeCategory, final PriceCategory priceCategory, final SortOption sortOption) {
+        return storeRepository.findAllWithUniversityStoreByCategoryAndLowestPriceAndUniversityIdAndIsDeletedFalseOrderBySortOptions(storeCategory, priceCategory, universityId, sortOption);
+    }
+
+    public List<Store> findAllByDynamicQueryWithPaging(StoreCategory storeCategory, PriceCategory priceCategory, SortOption sortOption, CustomCursor cursor, int limitSize) {
+        return storeRepository.findAllByCategoryAndLowestPriceAndUniversityIdAndIsDeletedFalseOrderBySortOptionsWithPaging(storeCategory, priceCategory, sortOption, cursor, limitSize);
+
     }
 
     public List<Store> findAllByFavoriteStoresAndDeletedIsFalseOrderByFavoriteStoreId(final List<FavoriteStore> favoriteStores) {

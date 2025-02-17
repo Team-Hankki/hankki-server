@@ -79,7 +79,7 @@ public class StoreController {
                                                     @RequestParam(required = false) final StoreCategory storeCategory,
                                                     @RequestParam(required = false) final PriceCategory priceCategory,
                                                     @RequestParam(required = false) final SortOption sortOption,
-                                                       @Validated @CustomCursorValidation CustomCursor cursor) {
+                                                       @CustomCursorValidation CustomCursor cursor) {
         return HankkiResponse.success(CommonSuccessCode.OK, storeQueryService.getStoresV2(universityId, storeCategory, priceCategory, sortOption, cursor));
     }
 

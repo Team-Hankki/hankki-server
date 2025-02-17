@@ -16,8 +16,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class CustomStoreRepositoryImpl implements CustomStoreRepository {
-    private static final int PAGE_SIZE = 10;
-
     private final JPAQueryFactory jpaQueryFactory;
     private final OrderSpecifierProvider orderSpecifierProvider;
     private final CursorProvider cursorProvider;
@@ -46,15 +44,19 @@ public class CustomStoreRepositoryImpl implements CustomStoreRepository {
             StoreCategory category,
             PriceCategory priceCategory,
             SortOption sortOptions,
-            CustomCursor cursor) {
+            CustomCursor cursor,
+            int PAGE_SIZE) {
         return jpaQueryFactory
                 .select(store)
                 .from(store)
+                // 커서
                 .where(cursorProvider.createCursorCondition(cursor, sortOptions))
+                // 필터
                 .where(dynamicQueryProvider.eqCategory(category),
-                        dynamicQueryProvider.evaluatePriceCategory(priceCategory)) // 필터
+                        dynamicQueryProvider.evaluatePriceCategory(priceCategory))
                 .where(store.isDeleted.isFalse())
-                .orderBy(orderSpecifierProvider.createOrderSpecifierForPaging(sortOptions))//정렬
+                // 정렬
+                .orderBy(orderSpecifierProvider.createOrderSpecifierForPaging(sortOptions))
                 .limit(PAGE_SIZE)
                 .fetch();
     }

@@ -42,8 +42,8 @@ public class StoreFinder {
         return storeRepository.findAllWithUniversityStoreByCategoryAndLowestPriceAndUniversityIdAndIsDeletedFalseOrderBySortOptions(storeCategory, priceCategory, universityId, sortOption);
     }
 
-    public List<Store> findAllByDynamicQueryWithPaging(StoreCategory storeCategory, PriceCategory priceCategory, SortOption sortOption, CustomCursor cursor) {
-        return storeRepository.findAllByCategoryAndLowestPriceAndUniversityIdAndIsDeletedFalseOrderBySortOptionsWithPaging(storeCategory, priceCategory, sortOption, cursor);
+    public List<Store> findAllByDynamicQueryWithPaging(StoreCategory storeCategory, PriceCategory priceCategory, SortOption sortOption, CustomCursor cursor, int PAGE_SIZE) {
+        return storeRepository.findAllByCategoryAndLowestPriceAndUniversityIdAndIsDeletedFalseOrderBySortOptionsWithPaging(storeCategory, priceCategory, sortOption, cursor, PAGE_SIZE);
 
     }
 

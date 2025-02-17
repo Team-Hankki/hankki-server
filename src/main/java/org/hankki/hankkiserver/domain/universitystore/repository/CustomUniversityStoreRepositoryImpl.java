@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class CustomUniversityStoreRepositoryImpl implements CustomUniversityStoreRepository {
-    private static final int PAGE_SIZE = 10;
 
     private final JPAQueryFactory jpaQueryFactory;
     private final OrderSpecifierProvider orderSpecifierProvider;
@@ -27,7 +26,7 @@ public class CustomUniversityStoreRepositoryImpl implements CustomUniversityStor
     private final DynamicQueryProvider dynamicQueryProvider;
     @Override
     public List<UniversityStore> findAllWithStoreByCategoryAndLowestPriceAndUniversityIdAndIsDeletedFalseOrderBySortOptionsWithPaging(
-            StoreCategory category, PriceCategory priceCategory, Long universityId, SortOption sortOptions, CustomCursor cursor) {
+            StoreCategory category, PriceCategory priceCategory, Long universityId, SortOption sortOptions, CustomCursor cursor, int PAGE_SIZE) {
         return jpaQueryFactory
                 .select(universityStore)
                 .from(universityStore)

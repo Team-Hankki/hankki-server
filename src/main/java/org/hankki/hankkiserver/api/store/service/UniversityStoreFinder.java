@@ -21,8 +21,9 @@ public class UniversityStoreFinder {
                                                                           final StoreCategory storeCategory,
                                                                           final PriceCategory priceCategory,
                                                                           final SortOption sortOption,
-                                                                          final CustomCursor cursor) {
-        return universityStoreRepository.findAllWithStoreByCategoryAndLowestPriceAndUniversityIdAndIsDeletedFalseOrderBySortOptionsWithPaging(storeCategory, priceCategory, universityId, sortOption, cursor);
+                                                                          final CustomCursor cursor,
+                                                                          final int PAGE_SIZE) {
+        return universityStoreRepository.findAllWithStoreByCategoryAndLowestPriceAndUniversityIdAndIsDeletedFalseOrderBySortOptionsWithPaging(storeCategory, priceCategory, universityId, sortOption, cursor, PAGE_SIZE);
     }
 
     protected boolean existsByUniversityIdAndStore(final Long universityId, final Store store) {

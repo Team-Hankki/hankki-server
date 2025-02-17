@@ -86,7 +86,7 @@ class StoreControllerTest {
     }
 
     @Test
-    @DisplayName("옳바른 카테고리 필터값을 주지 않으면 실패한다.")
+    @DisplayName("올바른 카테고리 필터값을 주지 않으면 실패한다.")
     void failGetStoresWithInvalidCategoryOption() throws Exception {
         mockMvc.perform(get("/api/v2/stores")
                         .param("storeCategory", "aa"))
@@ -95,7 +95,7 @@ class StoreControllerTest {
     }
 
     @Test
-    @DisplayName("옳바른 가격대 필터값을 주지 않으면 실패한다.")
+    @DisplayName("올바른 가격대 필터값을 주지 않으면 실패한다.")
     void failGetStoresWithInvalidPriceOption() throws Exception {
         mockMvc.perform(get("/api/v2/stores")
                         .param("priceCategory", "aa"))
@@ -104,7 +104,7 @@ class StoreControllerTest {
     }
 
     @Test
-    @DisplayName("옳바른 정렬값을 주지 않으면 실패한다.")
+    @DisplayName("올바른 정렬값을 주지 않으면 실패한다.")
     void failGetStoresWithInvalidSortOption() throws Exception {
         mockMvc.perform(get("/api/v2/stores")
                         .param("sortOption", "aa"))

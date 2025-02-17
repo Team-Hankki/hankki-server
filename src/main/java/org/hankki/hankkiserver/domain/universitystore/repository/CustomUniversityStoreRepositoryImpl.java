@@ -26,7 +26,7 @@ public class CustomUniversityStoreRepositoryImpl implements CustomUniversityStor
     private final DynamicQueryProvider dynamicQueryProvider;
     @Override
     public List<UniversityStore> findAllWithStoreByCategoryAndLowestPriceAndUniversityIdAndIsDeletedFalseOrderBySortOptionsWithPaging(
-            StoreCategory category, PriceCategory priceCategory, Long universityId, SortOption sortOptions, CustomCursor cursor, int PAGE_SIZE) {
+            StoreCategory category, PriceCategory priceCategory, Long universityId, SortOption sortOptions, CustomCursor cursor, int limitSize) {
         return jpaQueryFactory
                 .select(universityStore)
                 .from(universityStore)
@@ -37,7 +37,7 @@ public class CustomUniversityStoreRepositoryImpl implements CustomUniversityStor
                         dynamicQueryProvider.evaluatePriceCategory(priceCategory))
                 .where(universityStore.store.isDeleted.isFalse())
                 .orderBy(orderSpecifierProvider.createOrderSpecifierForPaging(sortOptions))
-                .limit(PAGE_SIZE)
+                .limit(limitSize)
                 .fetch();
     }
  }

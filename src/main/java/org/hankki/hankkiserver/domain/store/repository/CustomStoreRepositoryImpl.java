@@ -45,7 +45,7 @@ public class CustomStoreRepositoryImpl implements CustomStoreRepository {
             PriceCategory priceCategory,
             SortOption sortOptions,
             CustomCursor cursor,
-            int PAGE_SIZE) {
+            int limitSize) {
         return jpaQueryFactory
                 .select(store)
                 .from(store)
@@ -57,7 +57,7 @@ public class CustomStoreRepositoryImpl implements CustomStoreRepository {
                 .where(store.isDeleted.isFalse())
                 // 정렬
                 .orderBy(orderSpecifierProvider.createOrderSpecifierForPaging(sortOptions))
-                .limit(PAGE_SIZE)
+                .limit(limitSize)
                 .fetch();
     }
 }

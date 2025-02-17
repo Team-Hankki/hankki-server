@@ -16,6 +16,5 @@ public class SortOptionConverter implements Converter<String, SortOption> {
         } catch (IllegalArgumentException e) {
             throw new BadRequestException(StoreErrorCode.INVALID_SORT_OPTION);
         }
-
     }
 }

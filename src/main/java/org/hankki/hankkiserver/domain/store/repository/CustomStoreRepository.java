@@ -9,6 +9,6 @@ import org.hankki.hankkiserver.domain.store.model.StoreCategory;
 
 public interface CustomStoreRepository {
     List<Store> findAllWithUniversityStoreByCategoryAndLowestPriceAndUniversityIdAndIsDeletedFalseOrderBySortOptions(StoreCategory category, PriceCategory priceCategory, Long universityId, SortOption sortOptions);
-    List<Store> findAllByCategoryAndLowestPriceAndUniversityIdAndIsDeletedFalseOrderBySortOptionsWithPaging(StoreCategory category, PriceCategory priceCategory, SortOption sortOptions, CustomCursor cursor, int PAGE_SIZE);
+    List<Store> findAllByCategoryAndLowestPriceAndUniversityIdAndIsDeletedFalseOrderBySortOptionsWithPaging(StoreCategory category, PriceCategory priceCategory, SortOption sortOptions, CustomCursor cursor, int limitSize);
 
 }

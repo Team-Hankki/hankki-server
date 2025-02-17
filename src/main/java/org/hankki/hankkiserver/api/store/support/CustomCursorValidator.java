@@ -8,27 +8,22 @@ import org.hankki.hankkiserver.api.store.service.response.CustomCursor;
 import org.hankki.hankkiserver.common.code.StoreErrorCode;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import io.micrometer.observation.annotation.Observed;
 
 public class CustomCursorValidator implements ConstraintValidator<CustomCursorValidation, CustomCursor> {
 
     @Override
-    public void initialize(CustomCursorValidation constraintAnnotation) {
-    }
-
-    @Override
     public boolean isValid(CustomCursor cursor, ConstraintValidatorContext context) {
-        if (cursor == null) {
+        if (isFirstRequest(cursor)) {
             return true;
         }
 
         SortOption sortOption = getSortOptionFromRequest();
         if (sortOption == null) {
-            return true;
+            return cursor.nextHeartCount() == null && cursor.nextLowestPrice() == null;
         }
 
         boolean isValid = switch(sortOption)  {
-            case RECOMMENDED -> cursor.nextHeartCount() != null && cursor.nextId() != null;
+            case RECOMMENDED -> (cursor.nextHeartCount() != null && cursor.nextId() != null);
             case LOWESTPRICE -> cursor.nextLowestPrice() != null && cursor.nextId() != null;
             case LATEST -> cursor.nextHeartCount() == null && cursor.nextLowestPrice() == null;
         };
@@ -49,5 +44,9 @@ public class CustomCursorValidator implements ConstraintValidator<CustomCursorVa
             return sortOption != null ? SortOption.valueOf(sortOption.toUpperCase()) : null;
         }
         return null;
+    }
+
+    private boolean isFirstRequest(CustomCursor cursor) {
+        return (cursor.nextHeartCount() == null && cursor.nextLowestPrice() == null && cursor.nextId() == null);
     }
 }

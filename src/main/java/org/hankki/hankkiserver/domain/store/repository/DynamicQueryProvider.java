@@ -26,7 +26,7 @@ public class DynamicQueryProvider {
     }
 
     public BooleanExpression evaluatePriceCategory(PriceCategory priceCategory) {
-        if (priceCategory == null) {
+        if (priceCategory == null || priceCategory == PriceCategory.ALL) {
             return null;
         }
         return store.lowestPrice.goe(priceCategory.getMinPrice())

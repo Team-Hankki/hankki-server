@@ -133,7 +133,7 @@ public class GlobalExceptionHandler {
         return cause.getMessage();
     }
 
-    private static String getDefaultMessage(HandlerMethodValidationException e) {
+    private String getDefaultMessage(HandlerMethodValidationException e) {
         return e.getAllValidationResults().get(0).getResolvableErrors().get(0).getDefaultMessage();
     }
 }

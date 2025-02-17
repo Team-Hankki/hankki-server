@@ -41,12 +41,12 @@ public record CustomCursor(
         }
     }
 
-    public static CustomCursorBuilder builder() {
+    private static CustomCursorBuilder builder() {
         return new CustomCursorBuilder();
 
     }
 
-    public static class CustomCursorBuilder {
+    private static class CustomCursorBuilder {
         private Long nextId;
         private Integer nextLowestPrice;
         private Integer nextHeartCount;

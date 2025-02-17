@@ -1,8 +1,6 @@
 package org.hankki.hankkiserver.api.common.advice;
 
-import feign.FeignException;
 import jakarta.validation.ConstraintViolationException;
-import lombok.extern.slf4j.Slf4j;
 import org.hankki.hankkiserver.api.dto.HankkiResponse;
 import org.hankki.hankkiserver.common.code.AuthErrorCode;
 import org.hankki.hankkiserver.common.code.BusinessErrorCode;
@@ -12,15 +10,19 @@ import org.hankki.hankkiserver.common.exception.BadRequestException;
 import org.hankki.hankkiserver.common.exception.ConflictException;
 import org.hankki.hankkiserver.common.exception.NotFoundException;
 import org.hankki.hankkiserver.common.exception.UnauthorizedException;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.core.exception.SdkClientException;
 
 @RestControllerAdvice
@@ -69,10 +71,16 @@ public class GlobalExceptionHandler {
         return HankkiResponse.fail(BusinessErrorCode.BAD_REQUEST);
     }
 
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public HankkiResponse<Void> handleHandlerMethodValidationException(HandlerMethodValidationException e) {
+        log.warn("handleHandlerMethodValidationException() in GlobalExceptionHandler throw HandlerMethodValidationException : {}", e.getMessage());
+        return HankkiResponse.fail(BusinessErrorCode.BAD_REQUEST.getHttpStatus(), getDefaultMessage(e));
+    }
+
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public HankkiResponse<Void> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
         log.warn("handleMethodArgumentTypeMismatchException() in GlobalExceptionHandler throw MethodArgumentTypeMismatchException : {}", e.getMessage());
-        return HankkiResponse.fail(BusinessErrorCode.BAD_REQUEST);
+        return HankkiResponse.fail(BusinessErrorCode.BAD_REQUEST.getHttpStatus(), getRootCauseMessage(e));
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
@@ -115,5 +123,17 @@ public class GlobalExceptionHandler {
     public HankkiResponse<Void> handleFeignException(FeignException e) {
         log.warn("handleFeignException() in GlobalExceptionHandler throw FeignException : {}", e.getMessage());
         return HankkiResponse.fail(AuthErrorCode.INTERNAL_SERVER_ERROR);
+    }
+
+    private String getRootCauseMessage(Throwable throwable) {
+        Throwable cause = throwable;
+        while (cause.getCause() != null) {
+            cause = cause.getCause();
+        }
+        return cause.getMessage();
+    }
+
+    private static String getDefaultMessage(HandlerMethodValidationException e) {
+        return e.getAllValidationResults().get(0).getResolvableErrors().get(0).getDefaultMessage();
     }
 }

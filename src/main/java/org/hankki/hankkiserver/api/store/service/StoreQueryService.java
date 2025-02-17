@@ -1,8 +1,10 @@
 package org.hankki.hankkiserver.api.store.service;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import org.hankki.hankkiserver.api.menu.service.MenuFinder;
 import org.hankki.hankkiserver.api.store.parameter.PriceCategory;
 import org.hankki.hankkiserver.api.store.parameter.SortOption;
@@ -76,40 +78,32 @@ public class StoreQueryService {
     public StorePageResponse getStoresV2(final Long universityId, final StoreCategory storeCategory, final PriceCategory priceCategory, final SortOption sortOption, final CustomCursor cursor) {
         if (universityId == null) {
             List<Store> stores = storeFinder.findAllByDynamicQueryWithPaging(storeCategory, priceCategory, sortOption, cursor, PAGE_SIZE + 1);
-            boolean nextPageAvailable = isNextPageAvailable(stores);
-            if (nextPageAvailable) {
-                stores.remove(stores.size() - 1);
-            }
-            List<StoreResponse> storeResponses = stores.stream().map(StoreResponse::of).toList();
+            return createPageResponse(stores, Function.identity(), sortOption);
 
-            Store lastStore;
-            try {
-                lastStore = stores.get(stores.size() - 1);
-            } catch (IndexOutOfBoundsException e) {
-                return StorePageResponse.of(storeResponses, false, new CustomCursor(null, null, null));
-            }
-            return StorePageResponse.of(storeResponses, nextPageAvailable, CustomCursor.createNextCursor(sortOption, lastStore));
         }
-
-
         List<UniversityStore> universityStores = universityStoreFinder.findAllWithStoreByDynamicQueryWithPaging(
                 universityId, storeCategory, priceCategory, sortOption, cursor, PAGE_SIZE + 1);
-        boolean nextPageAvailable = isNextPageAvailable(universityStores);
-        if (nextPageAvailable) {
-            universityStores.remove(universityStores.size() - 1);
-        }
-        List<StoreResponse> storeResponses = universityStores.stream().map(StoreResponse::of).toList();
-        Store lastStore;
-        try {
-            lastStore = universityStores.get(universityStores.size() - 1).getStore();
-        } catch (IndexOutOfBoundsException e) {
-            return StorePageResponse.of(storeResponses, false, new CustomCursor(null, null, null));
-        }
-        return StorePageResponse.of(storeResponses, nextPageAvailable, CustomCursor.createNextCursor(sortOption, lastStore));
+        return createPageResponse(universityStores, UniversityStore::getStore, sortOption);
     }
 
-    private <T>boolean isNextPageAvailable(List<T> elements) {
-        return elements.size() == PAGE_SIZE + 1;
+    private <T> StorePageResponse createPageResponse(List<T> elements, Function<T, Store> storeExtractor, SortOption sortOption) {
+        if (elements.isEmpty()) {
+            return StorePageResponse.of(Collections.emptyList(), false, null);
+        }
+
+        boolean nextPageAvailable = elements.size() == PAGE_SIZE + 1;
+        if (nextPageAvailable) {
+            elements.remove(elements.size() - 1);
+        }
+
+        List<StoreResponse> storeResponses = elements.stream()
+                .map(storeExtractor)
+                .map(StoreResponse::of)
+                .toList();
+
+        Store lastStore = storeExtractor.apply(elements.get(elements.size() - 1));
+
+        return StorePageResponse.of(storeResponses, nextPageAvailable, CustomCursor.createNextCursor(sortOption, lastStore));
     }
 
     public CategoriesResponse getCategoriesV1() {

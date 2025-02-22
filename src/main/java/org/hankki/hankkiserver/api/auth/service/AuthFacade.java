@@ -44,7 +44,7 @@ public class AuthFacade {
 
     @Transactional
     public UserReissueResponse reissue(final String refreshToken) {
-        Token issuedTokens = authService.generateAccessToken(refreshToken);
+        Token issuedTokens = authService.generateNewTokens(refreshToken);
         return UserReissueResponse.of(issuedTokens);
     }
 }

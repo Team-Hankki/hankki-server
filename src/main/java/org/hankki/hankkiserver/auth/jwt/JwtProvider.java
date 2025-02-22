@@ -14,7 +14,7 @@ public class JwtProvider {
         return Token.of(generateAccessToken(userId, role), generateRefreshToken(userId, role));
     }
 
-    public String generateAccessToken(final Long userId, final String role) {
+    private String generateAccessToken(final Long userId, final String role) {
         return jwtGenerator.generateToken(userId, role, true);
     }
 

@@ -51,12 +51,14 @@ public class AuthService {
         userInfoFinder.getUserInfo(user.getId()).softDelete();
     }
 
-    protected Token generateAccessToken(final String refreshToken) {
+    protected Token generateNewTokens(final String refreshToken) {
         String strippedToken = refreshToken.substring(BEARER.length());
         long userId = jwtProvider.getSubject(strippedToken);
         validateRefreshToken(refreshToken, userId);
-        String accessToken = jwtProvider.generateAccessToken(userId, getUserRole(userId));
-        return Token.of(accessToken, strippedToken);
+        Token issuedTokens = jwtProvider.issueTokens(userId, getUserRole(userId));
+        UserInfo findUserInfo = userInfoFinder.getUserInfo(userId);
+        findUserInfo.updateRefreshToken(issuedTokens.refreshToken());
+        return issuedTokens;
     }
 
     private Token generateTokens(final long userId) {

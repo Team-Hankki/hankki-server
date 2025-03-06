@@ -1,9 +1,12 @@
 package org.hankki.hankkiserver.api.menu.service;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.hankki.hankkiserver.api.menu.service.command.MenuDeleteCommand;
 import org.hankki.hankkiserver.api.menu.service.command.MenuPatchCommand;
+import org.hankki.hankkiserver.api.menu.service.command.MenuPostCommand;
 import org.hankki.hankkiserver.api.menu.service.command.MenusPostCommand;
 import org.hankki.hankkiserver.api.menu.service.response.MenusGetResponse;
 import org.hankki.hankkiserver.api.menu.service.response.MenusPostResponse;
@@ -35,7 +38,7 @@ public class MenuCommandService {
         Menu menu = menuFinder.findByStoreIdAndId(findStore.getId(), command.id());
         menuDeleter.deleteMenu(menu);
         saveToDeletedMenu(menu, findStore.getId());
-        updateLowestPriceInStore(storeFinder.findByIdWhereDeletedIsFalse(command.storeId()));
+        updateLowestPriceInStore(findStore);
         checkNoMenuInStore(findStore, command.userId());
     }
 
@@ -49,10 +52,7 @@ public class MenuCommandService {
     @Transactional
     public MenusPostResponse createMenus(final MenusPostCommand command) {
         Store findStore = storeFinder.findByIdWhereDeletedIsFalse(command.storeId());
-        List<Menu> menus = command.menu().stream()
-                .filter(c -> !validateMenuConflict(findStore, c.name()))
-                .map(c -> Menu.create(findStore, c.name(), c.price()))
-                .toList();
+        List<Menu> menus = filterNotExistedMenu(command.menu(), findStore);
         menuUpdater.saveAll(menus);
         updateLowestPriceInStore(findStore);
         return MenusPostResponse.of(menus);
@@ -69,8 +69,22 @@ public class MenuCommandService {
         findStore.updateLowestPrice(menuFinder.findLowestPriceByStore(findStore));
     }
 
-    private boolean validateMenuConflict(final Store store, final String menuName) {
-        return menuFinder.existsByStoreAndName(store, menuName);
+    private List<Menu> filterNotExistedMenu(final List<MenuPostCommand> menus, final Store store) {
+        Set<String> allMenuNames = parseAllMenuNames(store);
+        return menus.stream()
+                .filter(menu -> !validateMenuConflict(allMenuNames, menu.name()))
+                .map(menu -> Menu.create(store, menu.name(), menu.price()))
+                .toList();
+    }
+
+    private Set<String> parseAllMenuNames(final Store store) {
+        return menuFinder.findAllByStore(store).stream()
+                .map(Menu::getName)
+                .collect(Collectors.toSet());
+    }
+
+    private boolean validateMenuConflict(final Set<String> menus, final String menuName) {
+        return menus.contains(menuName);
     }
 
     private void checkNoMenuInStore(final Store store, final long userId) {

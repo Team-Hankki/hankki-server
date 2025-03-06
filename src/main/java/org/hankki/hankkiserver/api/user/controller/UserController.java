@@ -12,7 +12,7 @@ import org.hankki.hankkiserver.api.user.service.response.UserHeartedStoreListRes
 import org.hankki.hankkiserver.api.user.service.response.UserNicknameResponse;
 import org.hankki.hankkiserver.api.user.service.response.UserStoresReportedGetResponse;
 import org.hankki.hankkiserver.api.user.service.response.UserUniversityFindResponse;
-import org.hankki.hankkiserver.auth.UserId;
+import org.hankki.hankkiserver.api.common.annotation.UserId;
 import org.hankki.hankkiserver.common.code.CommonSuccessCode;
 import org.springframework.web.bind.annotation.*;
 

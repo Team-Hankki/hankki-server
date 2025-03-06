@@ -13,8 +13,4 @@ public class UserUniversityDeleter {
     protected void deleteById(Long id) {
         userUniversityRepository.deleteById(id);
     }
-
-    protected void deleteByUserId(Long userId) {
-        userUniversityRepository.deleteByUserId(userId);
-    }
 }

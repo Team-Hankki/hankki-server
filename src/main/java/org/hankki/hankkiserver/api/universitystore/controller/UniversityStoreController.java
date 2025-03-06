@@ -5,7 +5,7 @@ import org.hankki.hankkiserver.api.dto.HankkiResponse;
 import org.hankki.hankkiserver.api.universitystore.controller.request.UniviersityStoreCreateRequest;
 import org.hankki.hankkiserver.api.universitystore.service.UniversityStoreCommandService;
 import org.hankki.hankkiserver.api.universitystore.service.command.UniversityStorePostCommand;
-import org.hankki.hankkiserver.auth.UserId;
+import org.hankki.hankkiserver.api.common.annotation.UserId;
 import org.hankki.hankkiserver.common.code.CommonSuccessCode;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

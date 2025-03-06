@@ -1,7 +1,6 @@
 package org.hankki.hankkiserver.api.user.service;
 
 import lombok.RequiredArgsConstructor;
-import org.hankki.hankkiserver.api.auth.service.UserInfoFinder;
 import org.hankki.hankkiserver.api.favorite.service.FavoriteFinder;
 import org.hankki.hankkiserver.api.store.service.HeartFinder;
 import org.hankki.hankkiserver.api.user.service.response.UserFavoritesGetResponse;

@@ -1,76 +1,63 @@
 package org.hankki.hankkiserver.domain.store.repository;
 
-import com.querydsl.core.types.Order;
-import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 import org.hankki.hankkiserver.api.store.parameter.PriceCategory;
 import org.hankki.hankkiserver.api.store.parameter.SortOption;
+import org.hankki.hankkiserver.api.store.service.response.CustomCursor;
 import org.hankki.hankkiserver.domain.store.model.Store;
 import org.hankki.hankkiserver.domain.store.model.StoreCategory;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import org.springframework.stereotype.Component;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.RequiredArgsConstructor;
 
 import static org.hankki.hankkiserver.domain.store.model.QStore.store;
 import static org.hankki.hankkiserver.domain.universitystore.model.QUniversityStore.universityStore;
 
+@Component
 @RequiredArgsConstructor
 public class CustomStoreRepositoryImpl implements CustomStoreRepository {
-
     private final JPAQueryFactory jpaQueryFactory;
+    private final OrderSpecifierProvider orderSpecifierProvider;
+    private final CursorProvider cursorProvider;
+    private final DynamicQueryProvider dynamicQueryProvider;
 
     @Override
-    public List<Store> findStoreByCategoryAndLowestPriceAndUniversityIdAndIsDeletedFalseOrderBySortOptions(StoreCategory category, PriceCategory priceCategory, Long universityId, SortOption sortOptions) {
-        OrderSpecifier[] orderSpecifiers = createOrderSpecifier(sortOptions);
+    public List<Store> findAllWithUniversityStoreByCategoryAndLowestPriceAndUniversityIdAndIsDeletedFalseOrderBySortOptions(
+            StoreCategory category,
+            PriceCategory priceCategory,
+            Long universityId,
+            SortOption sortOptions) {
         return jpaQueryFactory
                 .select(store)
                 .from(store)
                 .join(store.universityStores, universityStore).fetchJoin()
-                .where(eqCategory(category),eqUniversity(universityId), evaluatePriceCategory(priceCategory))
+                .where(dynamicQueryProvider.eqCategory(category),
+                        dynamicQueryProvider.hasUniversity(universityId),
+                        dynamicQueryProvider.evaluatePriceCategory(priceCategory))
                 .where(store.isDeleted.isFalse())
-                .orderBy(orderSpecifiers)
+                .orderBy(orderSpecifierProvider.createOrderSpecifier(sortOptions))
                 .fetch();
     }
 
-    private BooleanExpression eqUniversity(Long university) {
-        if (university == null) {
-            return null;
-        }
-        return store.universityStores.any().university.id.eq(university);
-    }
-
-    private BooleanExpression eqCategory(StoreCategory category) {
-        if (category == null) {
-            return null;
-        }
-        return store.category.eq(category);
-    }
-
-    private BooleanExpression evaluatePriceCategory(PriceCategory priceCategory) {
-        if (priceCategory == null) {
-            return null;
-        }
-        return store.lowestPrice.goe(priceCategory.getMinPrice())
-                .and(store.lowestPrice.loe(priceCategory.getMaxPrice()));
-    }
-
-    private OrderSpecifier[] createOrderSpecifier(SortOption sortOption) {
-        List<OrderSpecifier> orderSpecifiers = new ArrayList<>();
-        if (Objects.isNull(sortOption)){
-            orderSpecifiers.add(new OrderSpecifier(Order.DESC, store.createdAt));
-        }
-        else if (SortOption.LATEST == sortOption){
-            orderSpecifiers.add(new OrderSpecifier(Order.DESC, store.createdAt));
-        }
-        else if (SortOption.LOWESTPRICE == sortOption){
-            orderSpecifiers.add(new OrderSpecifier(Order.ASC, store.lowestPrice));
-        }
-        else if (SortOption.RECOMMENDED == sortOption){
-            orderSpecifiers.add(new OrderSpecifier(Order.DESC, store.heartCount));
-        }
-        return orderSpecifiers.toArray(new OrderSpecifier[orderSpecifiers.size()]);
+    @Override
+    public List<Store> findAllByCategoryAndLowestPriceAndUniversityIdAndIsDeletedFalseOrderBySortOptionsWithPaging(
+            StoreCategory category,
+            PriceCategory priceCategory,
+            SortOption sortOptions,
+            CustomCursor cursor,
+            int limitSize) {
+        return jpaQueryFactory
+                .select(store)
+                .from(store)
+                // 커서
+                .where(cursorProvider.createCursorCondition(cursor, sortOptions))
+                // 필터
+                .where(dynamicQueryProvider.eqCategory(category),
+                        dynamicQueryProvider.evaluatePriceCategory(priceCategory))
+                .where(store.isDeleted.isFalse())
+                // 정렬
+                .orderBy(orderSpecifierProvider.createOrderSpecifierForPaging(sortOptions))
+                .limit(limitSize)
+                .fetch();
     }
 }

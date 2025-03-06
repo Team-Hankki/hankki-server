@@ -13,7 +13,7 @@ import org.hankki.hankkiserver.api.menu.service.command.MenusPostCommand;
 import org.hankki.hankkiserver.api.menu.service.response.MenusGetResponse;
 import org.hankki.hankkiserver.api.menu.service.response.MenusPostResponse;
 import org.hankki.hankkiserver.api.store.controller.request.MenuPostRequest;
-import org.hankki.hankkiserver.auth.UserId;
+import org.hankki.hankkiserver.api.common.annotation.UserId;
 import org.hankki.hankkiserver.common.code.CommonSuccessCode;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;

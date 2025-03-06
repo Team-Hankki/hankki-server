@@ -1,5 +1,7 @@
 package org.hankki.hankkiserver.auth.jwt;
 
+import static org.hankki.hankkiserver.auth.filter.JwtAuthenticationFilter.BEARER;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
@@ -7,15 +9,13 @@ import org.hankki.hankkiserver.common.code.AuthErrorCode;
 import org.hankki.hankkiserver.common.exception.UnauthorizedException;
 import org.springframework.stereotype.Component;
 
-import static org.hankki.hankkiserver.auth.filter.JwtAuthenticationFilter.BEARER;
-
 @RequiredArgsConstructor
 @Component
 public class JwtValidator {
 
     private final JwtGenerator jwtGenerator;
 
-    public void validateAccessToken(String accessToken) {
+    public void validateAccessToken(final String accessToken) {
         try {
             String role = parseToken(accessToken).get(JwtGenerator.USER_ROLE_CLAIM_NAME, String.class);
             if (role == null) {
@@ -30,7 +30,6 @@ public class JwtValidator {
 
     public void validateRefreshToken(final String refreshToken) {
         try {
-            System.out.println("refreshToken" + refreshToken);
             parseToken(getToken(refreshToken));
         } catch (ExpiredJwtException e) {
             throw new UnauthorizedException(AuthErrorCode.EXPIRED_REFRESH_TOKEN);
@@ -39,9 +38,7 @@ public class JwtValidator {
         }
     }
 
-    public void equalsRefreshToken(
-            final String refreshToken,
-            final String storedRefreshToken) {
+    public void checkTokenEquality(final String refreshToken, final String storedRefreshToken) {
         if (!getToken(refreshToken).equals(storedRefreshToken)) {
             throw new UnauthorizedException(AuthErrorCode.MISMATCH_REFRESH_TOKEN);
         }

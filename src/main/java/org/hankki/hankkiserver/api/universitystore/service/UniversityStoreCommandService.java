@@ -1,7 +1,7 @@
 package org.hankki.hankkiserver.api.universitystore.service;
 
 import lombok.RequiredArgsConstructor;
-import org.hankki.hankkiserver.api.auth.service.UserFinder;
+import org.hankki.hankkiserver.api.user.service.UserFinder;
 import org.hankki.hankkiserver.api.report.service.ReportUpdater;
 import org.hankki.hankkiserver.api.store.service.StoreFinder;
 import org.hankki.hankkiserver.api.university.service.UniversityFinder;

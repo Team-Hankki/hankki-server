@@ -3,11 +3,11 @@
 # 👋 ABOUT HANKKI
 
 <div align="center">
-  <img witdth= "200px" src=https://github.com/Team-Hankki/hankki-server/assets/109809242/ce261e93-5fde-48dc-a4bc-12a17fc6f91e">
-  
-  **`WHAT?`**  대학교를 중심으로 **8000원 이하의 메뉴를 가진 식당**을 제공하는 프로덕트 
+  <img witdth= "200px" src=https://github.com/Team-Hankki/hankki-server/assets/109809242/ce261e93-5fde-48dc-a4bc-12a17fc6f91e"/>
 
-**`HOW?`** 서울 내의 대학 묶음 9-10개를 중심으로 50개씩 약 500개의 식당을 모아 릴리즈하고, 추후 **유저참여형**으로 운영할 계획 
+**`WHAT?`**  대학교를 중심으로 **8000원 이하의 메뉴를 가진 식당**을 제공하는 프로덕트
+
+**`HOW?`** 서울 내의 대학 묶음 9-10개를 중심으로 50개씩 약 500개의 식당을 모아 릴리즈하고, 추후 **유저참여형**으로 운영할 계획
 
 **`WHY?`** 치솟는 물가에 밥 한끼 먹기도 부담되는 요즘, 저렴한 식당을 공유하며 **함께** **잘 먹고 잘 살기 위해서!**
 
@@ -19,21 +19,20 @@
 | [👑박재연👑](https://github.com/Parkjyun) | [🌱김가연🌱](https://github.com/kgy1008) | [🌱박서진🌱](https://github.com/PicturePark1101)|
 |--------|------- |---------- |
 | <img width="600px" src= "https://github.com/Team-Hankki/hankki-server/assets/109809242/2276da80-d520-4548-8064-8011fb9e92a7"> | <img width="600px" src="https://github.com/Team-Hankki/hankki-server/assets/109809242/cb7addf0-a6ca-41f4-b2cc-7cb1a8a480d3">  | <img width="600px" src="https://github.com/Team-Hankki/hankki-server/assets/109809242/7d62d5c9-9b8d-4e43-a118-0ad4e69fb564"> |
-| ✔️CI/CD 구축<br>✔️DB 설계 <br>✔️홈화면 API <br>✔️제보 API  | ✔️소셜로그인(KAKAO, APPLE) <br> ✔️식당 API <br> ✔️Discord 알림 구현| ✔️마이페이지 API <br> ✔️족보 API |
 
-# ⚒️Stack 
+# ⚒️Stack
 
 <div align = "center">
-  <img src="https://firebasestorage.googleapis.com/v0/b/stackticon-81399.appspot.com/o/images%2F1720497281719?alt=media&token=f40aa73a-b50e-43cc-bd2a-a49e3d62086d)](https://github.com/msdio/stackticon">
+  <img src="https://firebasestorage.googleapis.com/v0/b/stackticon-81399.appspot.com/o/images%2F1737068021699?alt=media&token=b8c8583c-65b0-4111-b9d5-7dcba0c3e065)](https://github.com/msdio/stackticon">
 </div>
 
 
 # 🏗️Architecture
-![한끼아키텍쳐](https://github.com/user-attachments/assets/4c538dd1-5734-42a9-afa7-36bd9222b698)
+![한끼아키텍쳐](https://github.com/user-attachments/assets/3ed4c337-3e4f-426b-999e-8f1c0c796cd8)
 
 <br><br>
 # 📍ERD
-![hankki-DB](https://github.com/user-attachments/assets/bbae0174-e6c7-44e9-a5a8-ca0feb3a25c5)
+![hankki-DB](https://github.com/user-attachments/assets/03b5a06f-e938-4f6b-90d4-68c383962c8d)
 
 <br><br>
 # 📜 Covention
@@ -62,7 +61,7 @@
 ### Branch Naming
 `<Prefix>/<Issue_Number>`
 
-### Commit Message 
+### Commit Message
 `[<Prefix>] <Description>`
 
 ### Pull Request

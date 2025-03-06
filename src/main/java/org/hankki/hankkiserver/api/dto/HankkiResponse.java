@@ -1,9 +1,14 @@
 package org.hankki.hankkiserver.api.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
 import org.hankki.hankkiserver.common.code.ErrorCode;
 import org.hankki.hankkiserver.common.code.SuccessCode;
+import org.springframework.http.HttpStatus;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
@@ -26,5 +31,9 @@ public class HankkiResponse<T> {
 
     public static <T> HankkiResponse<T> fail(ErrorCode error) {
         return new HankkiResponse<>(error.getHttpStatus().value(), error.getMessage());
+    }
+
+    public static <T> HankkiResponse<T> fail(HttpStatus status, String message) {
+        return new HankkiResponse<>(status.value(), message);
     }
 }

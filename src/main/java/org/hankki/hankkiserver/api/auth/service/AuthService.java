@@ -53,12 +53,10 @@ public class AuthService {
 
     protected Token generateNewTokens(final String refreshToken) {
         String strippedToken = refreshToken.substring(BEARER.length());
+        jwtValidator.validateRefreshToken(refreshToken);
         long userId = jwtProvider.getSubject(strippedToken);
         validateRefreshToken(refreshToken, userId);
-        Token issuedTokens = jwtProvider.issueTokens(userId, getUserRole(userId));
-        UserInfo findUserInfo = userInfoFinder.getUserInfo(userId);
-        findUserInfo.updateRefreshToken(issuedTokens.refreshToken());
-        return issuedTokens;
+        return generateTokens(userId);
     }
 
     private Token generateTokens(final long userId) {
@@ -69,7 +67,6 @@ public class AuthService {
     }
 
     private void validateRefreshToken(final String refreshToken, final long userId) {
-        jwtValidator.validateRefreshToken(refreshToken);
         String storedRefreshToken = userInfoFinder.getUserInfo(userId).getRefreshToken();
         jwtValidator.checkTokenEquality(refreshToken, storedRefreshToken);
     }
@@ -100,7 +97,8 @@ public class AuthService {
     private User createNewUser(final UserInfoResponse userInfo, final Platform platform) {
         User newUser = createUser(userInfo.name(), userInfo.email(), userInfo.serialId(), platform);
         saveUserAndUserInfo(newUser);
-        eventPublisher.publish(CreateUserEvent.of(newUser.getId(), newUser.getName(), newUser.getPlatform().toString()));
+        eventPublisher.publish(
+                CreateUserEvent.of(newUser.getId(), newUser.getName(), newUser.getPlatform().toString()));
         return newUser;
     }
 

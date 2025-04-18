@@ -26,7 +26,7 @@ public class SecurityConfig {
     private final JwtValidator jwtValidator;
     private final JwtProvider jwtProvider;
 
-    private static final String[] authWhiteList = {"/api/v1/auth/login", "/api/v1/auth/reissue", "/actuator/health"};
+    private static final String[] authWhiteList = {"/api/v1/auth/login", "/api/v1/auth/reissue", "/actuator/health", "/actuator/prometheus"};
     private static final String[] businessLogicWhileList = {"/api/v1/stores/categories", "/api/v1/stores/sort-options", "/api/v1/stores/price-categories",
     "/api/v1/stores", "/api/v2/stores" ,"/api/v1/stores/pins", "/api/v1/stores/{articleId:\\d+}/thumbnail", "/api/v1/universities", "/api/v1/favorites/shared/{favoriteId:\\d+}"};
 

@@ -75,8 +75,11 @@ dependencies {
 	// Discord Webhook
 	implementation 'com.github.napstr:logback-discord-appender:1.0.0'
 
-	// aop
+	// Aop
 	implementation 'org.springframework.boot:spring-boot-starter-aop'
+
+	// Prometheus
+	implementation 'io.micrometer:micrometer-registry-prometheus'
 }
 
 tasks.named('test') {

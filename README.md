@@ -16,7 +16,7 @@
 
 # 🤼‍♀️Team Member
 
-| [👑박재연👑](https://github.com/Parkjyun) | [🌱김가연🌱](https://github.com/kgy1008) | [🌱박서진🌱](https://github.com/PicturePark1101)|
+| [👑박재연👑](https://github.com/Parkjyun) | [🌱김지안🌱](https://github.com/kgy1008) | [🌱박서진🌱](https://github.com/PicturePark1101)|
 |--------|------- |---------- |
 | <img width="600px" src= "https://github.com/Team-Hankki/hankki-server/assets/109809242/2276da80-d520-4548-8064-8011fb9e92a7"> | <img width="600px" src="https://github.com/Team-Hankki/hankki-server/assets/109809242/cb7addf0-a6ca-41f4-b2cc-7cb1a8a480d3">  | <img width="600px" src="https://github.com/Team-Hankki/hankki-server/assets/109809242/7d62d5c9-9b8d-4e43-a118-0ad4e69fb564"> |
 
